@@ -72,7 +72,7 @@ jobs:
       - name: Regenerate and confirm deterministic
         run: |
           python scripts/generate_startup_data.py --no-png
-          git diff --stat --exit-code -- data/startup
+          git diff --stat --exit-code -- data/startup || { git diff -- data/startup | head -80; exit 1; }
       - run: python scripts/check_startup_data.py
 
   design:
