@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>דוחות · איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  .topbar .search svg, .topbar .btn svg { width: 18px; height: 18px; flex: none; }
+  .topbar .search > span:not(.kbd) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  @media (max-width: 700px) { .topbar .search .kbd { display: none; } }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .tabs { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+  .tab { flex: none; min-height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: transparent; color: var(--ink-2); font-weight: 600; cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--surface-3); color: var(--ink); box-shadow: inset 0 -2px 0 var(--brand); }
+  .select { height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--bg-2); min-width: 190px; }
+  .rp { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+  .desk { background: radial-gradient(120% 60% at 50% 0, var(--surface-2), var(--bg-2)); border: 1px solid var(--line); border-radius: var(--r-xl); padding: 36px 24px; display: grid; justify-items: center; gap: 28px; }
+  .rp-aside { position: sticky; top: 88px; display: grid; gap: 16px; }
+  .rp-aside .card { padding: 18px; }
+  .sec-toggle { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; font-size: .88rem; color: var(--ink-2); }
+  .recip { display: flex; align-items: center; gap: 10px; font-size: .86rem; padding: 6px 0; }
+  .recip .av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: .72rem; font-weight: 700; background: var(--surface-3); color: var(--ink-2); flex: none; }
+
+  /* paper — light document inside the dark app */
+  .sheet {
+    --p-bg: #FBFAF7; --p-ink: #12181F; --p-2: #46505C; --p-mute: #6B7480; --p-line: #E3E0D8; --p-soft: #F1EEE7;
+    width: min(794px, 100%); aspect-ratio: 210 / 297; background: var(--p-bg); color: var(--p-ink); border-radius: 4px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.06);
+    padding: 56px 60px 44px; display: flex; flex-direction: column; gap: 22px; position: relative; font-size: 13.5px; line-height: 1.6;
+  }
+  .sheet .pg { position: absolute; bottom: 18px; inset-inline: 60px; display: flex; justify-content: space-between; font-size: 11px; color: var(--p-mute); border-top: 1px solid var(--p-line); padding-top: 8px; }
+  .sheet h2 { font-size: 19px; font-weight: 800; margin: 0; letter-spacing: -.01em; }
+  .sheet h3 { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--p-mute); margin: 0; }
+  .sheet .kick { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px; }
+  .sheet .kick svg { width: 26px; height: 26px; }
+  .cover { justify-content: space-between; }
+  .cover .title { font-size: 40px; font-weight: 900; line-height: 1.08; letter-spacing: -.03em; margin: 0; }
+  .cover .hero-num { font-size: 76px; font-weight: 900; letter-spacing: -.045em; line-height: 1; }
+  .cover .hero-bar { height: 6px; width: 120px; border-radius: 3px; background: var(--brand-2); }
+  .buckets { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--p-line); }
+  .buckets > div { padding: 14px 0 0; display: grid; gap: 2px; }
+  .buckets > div + div { padding-inline-start: 18px; border-inline-start: 1px solid var(--p-line); }
+  .buckets .v { font-size: 22px; font-weight: 800; }
+  .buckets .l { font-size: 12px; color: var(--p-2); }
+  .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 12px; color: var(--p-2); }
+  .meta-grid b { display: block; color: var(--p-ink); font-size: 13px; }
+  .exec { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: e; }
+  .exec li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; counter-increment: e; }
+  .exec li::before { content: counter(e); width: 22px; height: 22px; border-radius: 6px; background: var(--p-ink); color: var(--p-bg); font-size: 11px; font-weight: 800; display: grid; place-items: center; margin-top: 1px; }
+  .ptable { width: 100%; border-collapse: collapse; font-size: 12.2px; }
+  .ptable th { text-align: start; font-size: 10.5px; letter-spacing: .05em; color: var(--p-mute); font-weight: 700; padding: 6px 8px; border-bottom: 1.5px solid var(--p-ink); }
+  .ptable td { padding: 7px 8px; border-bottom: 1px solid var(--p-line); vertical-align: top; }
+  .ptable .end { text-align: end; }
+  .ptable tfoot td { font-weight: 800; border-bottom: 0; border-top: 1.5px solid var(--p-ink); }
+  .ptable .fid { font-family: var(--mono); font-size: 10.5px; color: var(--p-2); white-space: nowrap; }
+  .pbar { height: 6px; border-radius: 3px; background: var(--p-soft); min-width: 60px; }
+  .pbar i { display: block; height: 100%; border-radius: 3px; background: var(--brand-2); }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--p-soft); color: var(--p-2); white-space: nowrap; }
+  .tag.rec { background: #DDF6EC; color: #0B5E45; }
+  .tag.one { background: #E3EDFF; color: #1F4FA3; }
+  .tag.rev { background: #FFF1D6; color: #7A4B00; }
+  .callout { border-inline-start: 3px solid var(--amber); background: #FFF6E5; padding: 12px 14px; border-radius: 4px; font-size: 12px; color: #4D3A10; }
+  .sources { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; font-size: 12px; color: var(--p-2); }
+  .sources span::before { content: "•"; color: var(--brand-2); margin-inline-end: 6px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--surface-3); border: 1px solid var(--line-2); padding: 12px 18px; border-radius: 12px; font-weight: 600; transition: .25s ease; z-index: 60; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 1180px) { .rp { grid-template-columns: 1fr; } .rp-aside { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 760px) {
+    .rp-aside { grid-template-columns: 1fr; }
+    .desk { padding: 14px 8px; border-radius: var(--r-lg); }
+    .sheet { aspect-ratio: auto; padding: 28px 20px 52px; }
+    .sheet .pg { inset-inline: 20px; }
+    .cover { min-height: 640px; }
+    .cover .title { font-size: 28px; } .cover .hero-num { font-size: 46px; }
+    .buckets { grid-template-columns: 1fr; } .buckets > div + div { padding-inline-start: 0; border-inline-start: 0; border-top: 1px solid var(--p-line); padding-top: 10px; margin-top: 10px; }
+    .meta-grid, .sources { grid-template-columns: 1fr; }
+    .ptable .hide-sm { display: none; }
+    .page-actions .btn { flex: 1; }
+  }
+
+  @media print {
+    @page { size: A4; margin: 0; }
+    body { background: #fff; }
+    .side, .topbar, .synthetic, .page-head, .rp-controls, .rp-aside, .toast { display: none !important; }
+    .app { display: block; } .content { padding: 0; display: block; }
+    .rp { display: block; } .desk { background: none; border: 0; padding: 0; display: block; }
+    .sheet { width: 210mm; height: 297mm; aspect-ratio: auto; box-shadow: none; border-radius: 0; break-after: page; page-break-after: always; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body data-page="report">
+<main data-shell>
+  <div class="page-head">
+    <div class="stack" style="gap:4px">
+      <span class="eyebrow">דוחות</span>
+      <h1 class="h1">דוח חיסכון</h1>
+      <span class="muted small">נבנה אוטומטית מהסריקה האחרונה. כל מספר בדוח מקושר לממצא ולשורות המקור שלו.</span>
+    </div>
+    <div class="row wrap page-actions">
+      <button class="btn" id="mailBtn"><span data-ic="mail"></span>שלח במייל</button>
+      <button class="btn" id="schedBtn" aria-pressed="false"><span data-ic="cal"></span><span>תזמן חודשי</span></button>
+      <button class="btn primary" id="pdfBtn"><span data-ic="dl"></span>הורד PDF</button>
+    </div>
+  </div>
+
+  <div class="row between wrap rp-controls">
+    <div class="tabs" role="tablist" aria-label="סוג דוח" id="tabs"></div>
+    <label class="row small"><span class="muted">תקופה</span>
+      <select class="select" id="period" aria-label="תקופה"></select>
+    </label>
+  </div>
+
+  <div class="rp">
+    <div class="desk" id="paper"></div>
+    <aside class="rp-aside">
+      <div class="card flat stack">
+        <div class="h3">נמענים</div>
+        <div id="recips"></div>
+        <button class="btn sm" style="justify-self:start">הוספת נמען</button>
+      </div>
+      <div class="card flat stack" style="gap:4px">
+        <div class="h3" style="margin-bottom:6px">פרקים בדוח</div>
+        <div id="secs"></div>
+      </div>
+      <div class="card flat small stack" style="gap:8px">
+        <div class="row between"><span class="h3">שליחה מתוזמנת</span><span class="chip" id="schedChip">כבויה</span></div>
+        <span class="muted xs">ב-1 לכל חודש, 08:00, אחרי הסריקה הלילית. PDF חתום + קישור לממצאים (דורש התחברות).</span>
+      </div>
+    </aside>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(function () {
+  const D = window.DEMO, K = D.kpi;
+  const P = {
+    mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    dl: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  };
+  const ic = (k) => P[k] ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[k]}</svg>` : window.icon(k);
+  document.querySelectorAll('[data-ic]').forEach(el => { el.outerHTML = ic(el.dataset.ic); });
+  const m = (n) => `<span class="money">${ils(n)}</span>`;
+
+  const TYPES = {
+    cfo:   { tab: 'חודשי ל-CFO', title: 'דוח חיסכון חודשי', aud: 'מיכל לוי, CFO · צוות כספים', periods: ['אוקטובר 2026', 'ספטמבר 2026', 'אוגוסט 2026'] },
+    board: { tab: 'רבעוני לדירקטוריון', title: 'סקירת יעילות הוצאות לדירקטוריון', aud: 'דירקטוריון טכנוסיס בע״מ', periods: ['רבעון 3 · 2026', 'רבעון 2 · 2026'] },
+    audit: { tab: 'ועדת ביקורת', title: 'דוח בקרות תשלום לוועדת ביקורת', aud: 'ועדת הביקורת · מבקר/ת פנים', periods: ['רבעון 3 · 2026', 'רבעון 2 · 2026'] },
+  };
+  let type = 'cfo';
+
+  const fx = D.findings.filter(f => f.kind !== 'opportunity');
+  const sum = (arr) => arr.reduce((s, f) => s + f.amount, 0);
+  const rec = fx.filter(f => f.kind === 'recurring'), one = fx.filter(f => f.kind === 'recovery'), rev = fx.filter(f => f.kind === 'review');
+  const cloudAi = sum(rec.filter(f => f.cat === 'cloud' || f.cat === 'ai'));
+  const biggestRec = one.slice().sort((a, b) => b.amount - a.amount)[0];
+
+  const cats = Object.keys(D.categories).map(id => {
+    const fs = fx.filter(f => f.cat === id);
+    const base = D.spend.byCategory.find(c => c.id === id);
+    return { id, label: D.categories[id], rec: sum(fs.filter(f => f.kind === 'recurring')), one: sum(fs.filter(f => f.kind === 'recovery')), n: fs.filter(f => f.kind !== 'review').length, spend: base ? base.amount : 0 };
+  }).filter(c => c.n).sort((a, b) => (b.rec + b.one) - (a.rec + a.one));
+  const catMax = Math.max(...cats.map(c => c.rec + c.one));
+
+  const top = fx.slice().sort((a, b) => b.amount - a.amount).slice(0, 10);
+  const KIND = { recurring: ['rec', 'חוזר'], recovery: ['one', 'חד-פעמי'], review: ['rev', 'לבדיקה'] };
+  const STATUS = { open: 'פתוח', in_progress: 'בטיפול', fixed: 'תוקן', reviewed_ok: 'נבדק תקין' };
+
+  // ponytail: monthly split of verified savings is a fixed curve scaled to DEMO.kpi.verifiedSaved (no per-month data in DEMO)
+  const TREND_M = ['05/26', '06/26', '07/26', '08/26', '09/26', '10/26'];
+  const trend = [.07, .16, .31, .49, .72, 1].map(r => Math.round(K.verifiedSaved * r / 100) * 100);
+  const trendSvg = () => {
+    const W = 660, H = 150, px = 30, py = 22, max = K.verifiedSaved * 1.12;
+    const pts = trend.map((v, i) => [px + i * (W - px * 2) / (trend.length - 1), H - py - v / max * (H - py * 2)]);
+    const line = pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ');
+    return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="חיסכון מאומת מצטבר" style="direction:ltr">
+      <line x1="${px}" x2="${W - px}" y1="${H - py}" y2="${H - py}" stroke="#E3E0D8"/>
+      <polygon points="${px},${H - py} ${line} ${W - px},${H - py}" fill="#14B88A" opacity=".12"/>
+      <polyline points="${line}" fill="none" stroke="#14B88A" stroke-width="2.5" stroke-linejoin="round"/>
+      ${pts.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="3.5" fill="#FBFAF7" stroke="#14B88A" stroke-width="2"/><text x="${x}" y="${H - 5}" text-anchor="middle" font-size="11" fill="#6B7480">${TREND_M[i]}</text>` + (i === pts.length - 1 || i === 2 ? `<text x="${x - (i === pts.length - 1 ? 6 : 0)}" y="${y - 10}" text-anchor="${i === pts.length - 1 ? 'end' : 'middle'}" font-size="12" font-weight="700" fill="#12181F">${ilsK(trend[i])}</text>` : '')).join('')}
+    </svg>`;
+  };
+
+  const foot = (n, t) => `<div class="pg"><span>${D.company.name} · ${t.title} · ${period()}</span><span>עמוד ${n} מתוך 4 · סודי</span></div>`;
+  const period = () => document.getElementById('period').value;
+  const conn = D.integrations.filter(i => i.status === 'connected' && i.id !== 'mcp' && i.group !== 'פעולה והתראות');
+
+  const render = () => {
+    const t = TYPES[type];
+    const lead = type === 'audit'
+      ? `<li><span>נבדקו <b class="num">${K.invoicesScanned.toLocaleString('en-US')}</b> חשבוניות ו-<b class="num">${K.rowsScanned.toLocaleString('en-US')}</b> שורות. זוהו ${rev.length} מקרים של <b>חשד לבדיקה</b> בסך ${m(sum(rev))}, ובהם פיצול חשבוניות מתחת לסף האישור. הם לא נספרים כחיסכון עד לבדיקה אנושית.</span></li>`
+      : `<li><span>זוהה <b>חיסכון חוזר של ${m(K.recurringSavings)} לשנה</b> ב-${rec.length} ממצאים. ${Math.round(cloudAi / K.recurringSavings * 100)}% ממנו בענן וב-AI, שם הצמיחה בהוצאה הכי מהירה.</span></li>`;
+    const sheets = [
+      `<section class="sheet cover" aria-label="עמוד שער">
+        <div class="row between"><span class="kick">${window.LOGO}איפה הכסף</span><span style="font-size:12px;color:var(--p-mute)">הופק 01/11/2026 · 08:14</span></div>
+        <div style="display:grid;gap:14px">
+          <span style="font-size:13px;font-weight:700;color:var(--p-mute);letter-spacing:.08em">${D.company.name} · ${period()}</span>
+          <h2 class="title">${t.title}</h2>
+          <span style="color:var(--p-2);font-size:14px">מוגש ל: ${t.aud}</span>
+        </div>
+        <div style="display:grid;gap:12px">
+          <span style="font-size:13px;color:var(--p-2);font-weight:600">חיסכון חוזר שזוהה, ₪ לשנה</span>
+          <span class="hero-num money">${ils(K.recurringSavings)}</span>
+          <span class="hero-bar"></span>
+        </div>
+        <div class="buckets">
+          <div><span class="v money">${ils(K.oneTimeRecovery)}</span><span class="l">החזר חד-פעמי לגבייה</span></div>
+          <div><span class="v money">${ils(K.verifiedSaved)}</span><span class="l">כבר נחסך ואומת</span></div>
+          <div><span class="v money">${ils(K.toReview)}</span><span class="l">לבדיקה, לא נספר כחיסכון</span></div>
+        </div>
+        <div class="meta-grid">
+          <div><b class="num">${K.rowsScanned.toLocaleString('en-US')}</b>שורות נסרקו</div>
+          <div><b class="num">${K.sources}</b>מקורות נתונים</div>
+          <div><b class="num">${K.openFindings}</b>ממצאים פתוחים</div>
+        </div>
+        ${foot(1, t)}
+      </section>`,
+      `<section class="sheet" aria-label="תקציר מנהלים">
+        <div style="display:grid;gap:12px"><h3>תקציר מנהלים</h3>
+          <ul class="exec">
+            ${lead}
+            <li><span><b>${m(K.oneTimeRecovery)} להחזר חד-פעמי</b> מ-${one.length} חיובים כפולים או חסרים. הגדול: ${biggestRec.title} (${m(biggestRec.amount)}, ${biggestRec.id}).</span></li>
+            <li><span><b>${m(K.verifiedSaved)} כבר נחסכו ואומתו</b> מול חשבוניות של החודש שאחרי התיקון. זה המספר היחיד בדוח שהוא כסף שנחסך בפועל.</span></li>
+            <li><span><b>החלטה נדרשת החודש:</b> ${D.findings.find(f => f.id === 'F-1002').action} (${m(D.findings.find(f => f.id === 'F-1002').amount)} לשנה), ופנייה ל-HubSpot על חידוש שעלה ב-34%.</span></li>
+          </ul>
+        </div>
+        <div style="display:grid;gap:10px"><h3>חיסכון לפי קטגוריה</h3>
+          <table class="ptable">
+            <thead><tr><th>קטגוריה</th><th class="end">חוזר, ₪/שנה</th><th class="end hide-sm">חד-פעמי</th><th class="end hide-sm">ממצאים</th><th class="hide-sm" style="width:22%"></th><th class="end">% מההוצאה</th></tr></thead>
+            <tbody>${cats.map(c => `<tr><td style="font-weight:600">${c.label}</td><td class="end">${m(c.rec)}</td><td class="end hide-sm">${c.one ? m(c.one) : '—'}</td><td class="end hide-sm num">${c.n}</td><td class="hide-sm"><div class="pbar"><i style="width:${((c.rec + c.one) / catMax * 100).toFixed(0)}%"></i></div></td><td class="end num">${c.spend ? ((c.rec + c.one) / c.spend * 100).toFixed(1) + '%' : '—'}</td></tr>`).join('')}</tbody>
+            <tfoot><tr><td>סה״כ</td><td class="end">${m(sum(rec))}</td><td class="end hide-sm">${m(sum(one))}</td><td class="end hide-sm num">${rec.length + one.length}</td><td class="hide-sm"></td><td class="end num">${((sum(rec) + sum(one)) / D.spend.total * 100).toFixed(1)}%</td></tr></tfoot>
+          </table>
+        </div>
+        ${foot(2, t)}
+      </section>`,
+      `<section class="sheet" aria-label="10 הממצאים הגדולים">
+        <div class="row between"><h3>10 הממצאים הגדולים</h3><span style="font-size:11px;color:var(--p-mute)">ממוין לפי ₪ · סטטוס נכון ל-01/11/2026</span></div>
+        <table class="ptable">
+          <thead><tr><th>#</th><th>ממצא</th><th class="end">סכום</th><th class="hide-sm">סוג</th><th class="hide-sm">פעולה</th><th>אחראי</th><th class="hide-sm">סטטוס</th></tr></thead>
+          <tbody>${top.map((f, i) => `<tr><td class="num">${i + 1}</td><td><div style="font-weight:600">${f.title}</div><span class="fid">${f.id}</span> <span style="font-size:11px;color:var(--p-mute)">· ${f.vendor}</span></td><td class="end">${m(f.amount)}</td><td class="hide-sm"><span class="tag ${KIND[f.kind][0]}">${KIND[f.kind][1]}</span></td><td class="hide-sm" style="color:var(--p-2);font-size:11.5px">${f.action}</td><td style="white-space:nowrap">${f.owner}</td><td class="hide-sm"><span class="tag">${STATUS[f.status]}</span></td></tr>`).join('')}</tbody>
+        </table>
+        <span style="font-size:11.5px;color:var(--p-mute)">סכום חוזר = ₪ לשנה לפי מחירון נוכחי. חד-פעמי = כסף לגבייה מספק. כל ממצא כולל קישור לשורות המקור באפליקציה.</span>
+        ${foot(3, t)}
+      </section>`,
+      `<section class="sheet" aria-label="מגמה ומתודולוגיה">
+        <div style="display:grid;gap:8px"><div class="row between"><h3>חיסכון מאומת, מצטבר</h3><span style="font-size:12px;font-weight:700">${m(K.verifiedSaved)}</span></div>${trendSvg()}
+          <span style="font-size:11.5px;color:var(--p-mute)">"מאומת" = הממצא סומן כתוקן והחשבונית הבאה של הספק מראה את הירידה בפועל.</span></div>
+        <div style="display:grid;gap:10px"><h3>מתודולוגיה</h3>
+          <p style="margin:0;color:var(--p-2)">המערכת קוראת נתונים בהרשאות קריאה בלבד, מאחדת אותם לטבלאות אחידות ומריצה ${new Set(D.findings.map(f => f.rule)).size} כללים דטרמיניסטיים (כפילויות, מושבים לא בשימוש, קפיצות בחידוש, משאבי ענן בלי שימוש, צריכת AI). כל ממצא נשמר עם השורות המקוריות שהובילו אליו, ציון ביטחון ובעלים. הסוכן מסכם ממצאים קיימים ואינו מחשב סכומים בעצמו. התקופה הנסרקת: ${D.company.period}.</p>
+        </div>
+        <div style="display:grid;gap:10px"><h3>מקורות נתונים</h3>
+          <div class="sources">${conn.map(i => `<span>${i.name}</span>`).join('')}</div>
+        </div>
+        <div class="callout"><b>חשד לבדיקה, לא קביעה.</b> ממצאים מסוג "לבדיקה" (${m(K.toReview)}) מצביעים על חריגה בתהליך, לא על אדם. הם לא נספרים כחיסכון, ואין לפעול לגביהם לפני בדיקה אנושית מול הגורם האחראי. נתוני שכר מוצגים ברמת מזהה עובד (EMP) בלבד.</div>
+        ${foot(4, t)}
+      </section>`,
+    ];
+    document.getElementById('paper').innerHTML = sheets.join('');
+  };
+
+  // tabs + period
+  const tabs = document.getElementById('tabs'), sel = document.getElementById('period');
+  const fillPeriods = () => { sel.innerHTML = TYPES[type].periods.map(p => `<option>${p}</option>`).join(''); };
+  tabs.innerHTML = Object.entries(TYPES).map(([k, t]) => `<button class="tab" role="tab" data-k="${k}" aria-selected="${k === type}">${t.tab}</button>`).join('');
+  tabs.addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; type = b.dataset.k; tabs.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', x === b)); fillPeriods(); render(); });
+  sel.addEventListener('change', render);
+  fillPeriods(); render();
+
+  // aside
+  document.getElementById('recips').innerHTML = [['מל', D.user.name, D.user.role], ['יע', 'יעל', 'Finance'], ['שי', 'שי', 'CTO']].map(([a, n, r]) => `<div class="recip"><span class="av">${a}</span><span class="grow">${n}</span><span class="xs muted">${r}</span></div>`).join('');
+  document.getElementById('secs').innerHTML = ['שער ומספר ראשי', 'תקציר מנהלים', 'חיסכון לפי קטגוריה', '10 הממצאים הגדולים', 'מגמת חיסכון מאומת', 'מתודולוגיה ומקורות'].map(s => `<div class="sec-toggle"><span>${s}</span><button class="toggle" role="switch" aria-checked="true" aria-label="${s}"></button></div>`).join('');
+  document.getElementById('secs').addEventListener('click', e => { const t = e.target.closest('.toggle'); if (t) t.setAttribute('aria-checked', t.getAttribute('aria-checked') !== 'true'); });
+
+  const toast = (msg) => { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2600); };
+  document.getElementById('pdfBtn').onclick = () => window.print();
+  document.getElementById('mailBtn').onclick = () => toast('נשלח ל-3 נמענים · קישור תקף ל-14 יום');
+  const sb = document.getElementById('schedBtn');
+  sb.onclick = () => {
+    const on = sb.getAttribute('aria-pressed') !== 'true'; sb.setAttribute('aria-pressed', on);
+    sb.lastElementChild.textContent = on ? 'מתוזמן · 1 לחודש' : 'תזמן חודשי';
+    const c = document.getElementById('schedChip'); c.textContent = on ? 'פעילה' : 'כבויה'; c.className = 'chip' + (on ? ' fixed' : '');
+    toast(on ? 'הדוח יישלח ב-1 לכל חודש ב-08:00' : 'התזמון בוטל');
+  };
+})();
+</script>
+</body>
+</html>

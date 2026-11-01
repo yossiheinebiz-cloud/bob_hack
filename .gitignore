@@ -1,0 +1,25 @@
+# secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+service-account*.json
+
+
+# local / tool state
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.impeccable/
+.venv/
+venv/
+
+# hackathon screenshots (per AGENTS.md, not in git)
+bob_sessions/*
+!bob_sessions/README.md
+
+# Bob task exports may contain secrets read from .env
+bob-tasks-*.json

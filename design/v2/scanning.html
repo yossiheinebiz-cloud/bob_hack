@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>סריקה ראשונה — איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  html, body { height: 100%; }
+  body { background: radial-gradient(70% 60% at 50% -10%, rgba(46,230,168,.10), transparent 60%), var(--bg); overflow: hidden; }
+  .stage { height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 20px; padding: 18px 28px 24px; max-width: 1440px; margin: 0 auto; }
+  .top { display: flex; align-items: center; gap: 16px; }
+  .brandmark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05rem; white-space: nowrap; }
+  .live { display: inline-flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--ink-2); }
+  .live .dot { color: var(--brand); animation: pulse 1.2s ease-in-out infinite; }
+  .done .live .dot { animation: none; }
+  @keyframes pulse { 50% { opacity: .25; } }
+  .bar { height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--brand); box-shadow: 0 0 12px var(--brand); }
+
+  .meters { display: grid; grid-template-columns: 1.6fr repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .m { padding: 18px 20px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 4px; align-content: center; }
+  .m .v { font-size: 2rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+  .m .l { font-size: .82rem; color: var(--muted); }
+  .m.total { position: relative; overflow: hidden; background: linear-gradient(180deg, #0F2A24, var(--surface)); border-color: rgba(46,230,168,.3); }
+  .m.total .v { font-size: clamp(2.4rem, 4.6vw, 3.8rem); font-weight: 900; color: var(--brand); text-shadow: 0 0 40px var(--brand-glow); }
+  .m.total .sub { font-size: .85rem; color: var(--ink-2); }
+
+  .work { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; min-height: 0; }
+  .panel { border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--surface); display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; overflow: hidden; }
+  .ph { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+  .feed { padding: 14px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; mask-image: linear-gradient(180deg, #000 80%, transparent); }
+  .fc { display: grid; grid-template-columns: 4px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 16px 14px 18px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); animation: drop .5s cubic-bezier(.2,.9,.25,1.15) both; }
+  .fc .stripe { align-self: stretch; border-radius: 4px; }
+  .fc .t { font-weight: 600; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fc .s { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+  .fc .a { text-align: start; font-weight: 800; font-size: 1.1rem; }
+  .fc .a .k { display: block; font-size: .7rem; font-weight: 600; color: var(--muted); }
+  .fc.recurring .a .money { color: var(--brand); } .fc.recovery .a .money { color: var(--amber); } .fc.review .a .money, .fc.opportunity .a .money { color: var(--ok-gray); }
+  @keyframes drop { from { opacity: 0; transform: translateY(-18px) scale(.97); } to { opacity: 1; transform: none; } }
+
+  .term { background: #05080C; }
+  .log { margin: 0; padding: 14px 16px; font-family: var(--mono); font-size: .8rem; line-height: 1.85; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; color: var(--ink-2); }
+  .log div { display: flex; gap: 12px; white-space: nowrap; animation: rise .25s ease both; }
+  .log .ts { color: var(--faint); flex: none; direction: ltr; }
+  .log .id { color: var(--blue); direction: ltr; unicode-bidi: isolate; }
+  .log .ok { color: var(--brand); } .log .hit { color: var(--amber); } .log .zero { color: var(--faint); }
+  .log .he { font-family: var(--font); font-size: .86rem; overflow: hidden; text-overflow: ellipsis; }
+
+  .end { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(5,8,12,.78); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity .5s; z-index: 30; padding: 16px; }
+  .done .end { opacity: 1; pointer-events: auto; }
+  .end .box { width: min(560px, 100%); padding: 40px; text-align: center; display: grid; gap: 18px; justify-items: center; }
+  .end .big-money { font-size: clamp(3rem, 8vw, 4.6rem); }
+  .end .split { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+  .end .split div { padding: 12px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line); }
+  .end .split b { display: block; font-size: 1.15rem; }
+
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    .stage { height: auto; padding: 14px 16px 24px; }
+    .meters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .m.total { grid-column: 1 / -1; }
+    .m { padding: 12px 14px; } .m .v { font-size: 1.3rem; }
+    .work { grid-template-columns: 1fr; }
+    .feed { height: 420px; }
+    .log { height: 240px; font-size: .72rem; }
+    .end .box { padding: 28px 20px; }
+    .top .skip-l, .brandmark span:last-child { display: none; }
+    .live { font-size: .78rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .live .dot { animation: none; } }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <header class="top">
+    <a class="brandmark" href="landing.html"><span data-logo></span><span>איפה הכסף</span></a>
+    <span class="live" role="status"><span class="dot"></span><span id="phase">מתחברים למקורות…</span></span>
+    <button class="btn sm ghost" id="skip" style="margin-inline-start:auto">דלגו לסוף <span class="skip-l xs muted">Esc</span></button>
+  </header>
+  <div>
+    <h1 class="h1" style="margin-bottom:12px">סריקה ראשונה · <span id="co"></span></h1>
+    <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+  </div>
+
+  <div class="work-wrap" style="display:grid;grid-template-rows:auto minmax(0,1fr);gap:16px;min-height:0">
+    <div class="meters">
+      <div class="m total"><span class="l">חיסכון שנתי שנמצא עד עכשיו</span><span class="v money" id="tot">₪0</span><span class="sub">ועוד <span class="money" id="rec">₪0</span> החזר חד-פעמי</span></div>
+      <div class="m"><span class="v num" id="rows">0</span><span class="l">שורות נסרקו</span></div>
+      <div class="m"><span class="v num" id="src">0/11</span><span class="l">מקורות</span></div>
+      <div class="m"><span class="v num" id="rules">0/33</span><span class="l">כללים רצו</span></div>
+    </div>
+    <div class="work">
+      <section class="panel" aria-label="ממצאים">
+        <div class="ph"><span>ממצאים נכנסים</span><span class="num" id="fcount">0</span></div>
+        <div class="feed" id="feed" aria-live="off"></div>
+      </section>
+      <section class="panel term" aria-label="יומן מנוע">
+        <div class="ph"><span>יומן המנוע</span><span class="mono">engine v2.4 · deterministic</span></div>
+        <div class="log" id="log"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="end" role="dialog" aria-labelledby="endH" aria-modal="false">
+  <div class="card glow box">
+    <span class="chip fixed"><span class="dot"></span>הסריקה הושלמה</span>
+    <h2 class="h1" id="endH">מצאנו כסף שדולף</h2>
+    <div class="big-money money" id="endTot"></div>
+    <div class="ink2">בשנה, חוזר. כל ממצא עם השורות המקוריות ופעולה אחת.</div>
+    <div class="split">
+      <div><b class="money" id="endRec"></b><span class="xs muted">החזר חד-פעמי</span></div>
+      <div><b class="num" id="endOpen"></b><span class="xs muted">ממצאים פתוחים</span></div>
+      <div><b class="money" id="endRev"></b><span class="xs muted">לבדיקה אנושית</span></div>
+    </div>
+    <a class="btn primary lg block" href="app-dashboard.html" id="cta">לראות את הממצאים</a>
+    <span class="xs muted">שלחנו סיכום גם ל-<span dir="ltr" id="mail"></span></span>
+  </div>
+</div>
+<div class="synthetic">נתונים סינתטיים · הדגמה</div>
+
+<script src="assets/demo-data.js"></script>
+<script>
+(function () {
+  const D = window.DEMO, K = D.kpi, $ = s => document.querySelector(s);
+  const LOGO = `<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2EE6A8"/><stop offset="1" stop-color="#5B9DFF"/></linearGradient></defs><circle cx="14" cy="14" r="10" fill="none" stroke="url(#lgL)" stroke-width="3.2"/><path d="M21.5 21.5L28 28" stroke="url(#lgL)" stroke-width="3.6" stroke-linecap="round"/><path d="M10 10v6.5a2 2 0 0 0 2 2h3.5M18 18V11.5a2 2 0 0 0-2-2h-3.5" fill="none" stroke="#EAF0F6" stroke-width="1.9" stroke-linecap="round"/></svg>`;
+  document.querySelectorAll('[data-logo]').forEach(e => e.innerHTML = LOGO);
+  $('#co').textContent = D.company.name; $('#mail').textContent = D.user.email;
+  const fmt = n => Math.round(n).toLocaleString('en-US');
+
+  // sources: rows sum to DEMO.kpi.rowsScanned
+  const SRC = [['AWS CUR 2.0', 92310], ['Priority ERP', 31904], ['כרטיס Cal Business', 18422], ['OpenAI Usage API', 12066], ['בנק לאומי', 9871], ['Anthropic Admin API', 8915], ['Gmail · invoices@', 1608], ['Google Workspace', 4212], ['GitHub', 2113], ['Slack Admin', 1163], ['HiBob', 1148]];
+  const ZERO = ['VENDOR_BANK_CHANGED', 'CLOUD_UNUSED_EIP', 'SAAS_TRIAL_CONVERTED', 'AI_RATE_LIMIT_RETRY', 'TELECOM_PLAN_MISMATCH', 'VENDOR_PRICE_DRIFT', 'CLOUD_OLD_GEN'];
+  const F = D.findings;
+  // interleave findings with zero-result rules: 26 + 7 = 33 rules
+  const rules = []; let z = 0;
+  F.forEach((f, i) => { rules.push(f); if (i % 4 === 3 && z < ZERO.length) rules.push(ZERO[z++]); });
+  while (z < ZERO.length) rules.push(ZERO[z++]);
+
+  const T_SRC = 2800, T_END = 11800, start = new Date(2026, 10, 1, 8, 2, 11);
+  const events = [];
+  SRC.forEach((s, i) => events.push({ t: 150 + i * (T_SRC - 300) / SRC.length, type: 'src', s }));
+  rules.forEach((r, i) => events.push({ t: T_SRC + 200 + i * (T_END - T_SRC - 400) / rules.length, type: 'rule', r }));
+
+  const st = { rows: 0, src: 0, rules: 0, tot: 0, rec: 0, n: 0 };
+  const logEl = $('#log'), feed = $('#feed');
+  const ts = ms => { const d = new Date(start.getTime() + ms * 9); return d.toTimeString().slice(0, 8); };
+  const log = (ms, html) => { logEl.insertAdjacentHTML('beforeend', `<div><span class="ts">${ts(ms)}</span>${html}</div>`); while (logEl.children.length > 40) logEl.firstChild.remove(); };
+  const kindLabel = { recurring: 'בשנה', recovery: 'החזר', review: 'לבדיקה', opportunity: 'הזדמנות' };
+
+  function apply(e) {
+    if (e.type === 'src') {
+      st.src++; st.rows += e.s[1];
+      log(e.t, `<span class="ok">✓</span><span class="he">${e.s[0]}</span><span class="zero">· ${fmt(e.s[1])} שורות</span>`);
+    } else {
+      st.rules++;
+      if (typeof e.r === 'string') { log(e.t, `<span class="zero">·</span><span class="id">${e.r}</span><span class="zero">אין ממצאים</span>`); return; }
+      const f = e.r; st.n++;
+      if (f.kind === 'recurring') st.tot += f.amount; else if (f.kind === 'recovery') st.rec += f.amount;
+      log(e.t, `<span class="hit">▲</span><span class="id">${f.rule}</span><span class="he">${f.vendor} · ${f.amount ? ils(f.amount) : 'הזדמנות'}</span>`);
+      feed.insertAdjacentHTML('afterbegin', `<div class="fc ${f.kind}"><span class="stripe" style="background:var(--cat-${f.cat})"></span><div style="min-width:0"><div class="t">${f.title}</div><div class="s">${f.vendor} · ${D.categories[f.cat]} · ביטחון ${Math.round(f.conf * 100)}%</div></div><div class="a"><span class="money">${f.amount ? ils(f.amount) : '—'}</span><span class="k">${kindLabel[f.kind]}</span></div></div>`);
+      while (feed.children.length > 14) feed.lastChild.remove();
+    }
+  }
+  function paint(p) {
+    $('#rows').textContent = fmt(st.rows); $('#src').textContent = st.src + '/' + SRC.length; $('#rules').textContent = st.rules + '/33';
+    $('#tot').textContent = ils(st.tot); $('#rec').textContent = ils(st.rec); $('#fcount').textContent = st.n + ' ממצאים';
+    $('#prog').style.width = (p * 100) + '%';
+    $('#phase').textContent = st.src < SRC.length ? `טוענים ${SRC[st.src] ? SRC[st.src][0] : ''}…` : st.rules < 33 ? `מריצים כללים · ${st.rules}/33` : 'הושלם';
+  }
+  function finish() {
+    if (finished) return; finished = true;
+    while (idx < events.length) apply(events[idx++]);
+    st.rows = K.rowsScanned; paint(1);
+    log(T_END + 100, `<span class="ok">■</span><span class="he">הסריקה הושלמה · ${fmt(K.rowsScanned)} שורות · ${st.n} ממצאים</span>`);
+    $('#endTot').textContent = ils(K.recurringSavings); $('#endRec').textContent = ils(K.oneTimeRecovery);
+    $('#endOpen').textContent = K.openFindings; $('#endRev').textContent = ils(K.toReview);
+    document.body.classList.add('done'); $('#cta').focus({ preventScroll: true });
+  }
+  let idx = 0, finished = false, t0 = null;
+  function tick(now) {
+    if (finished) return;
+    if (t0 === null) t0 = now;
+    const el = now - t0;
+    while (idx < events.length && events[idx].t <= el) apply(events[idx++]);
+    paint(Math.min(1, el / T_END));
+    if (el >= T_END + 300) return finish();
+    requestAnimationFrame(tick);
+  }
+  $('#skip').onclick = finish;
+  addEventListener('keydown', e => { if (e.key === 'Escape') finish(); });
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || location.hash === '#end') finish();
+  else requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

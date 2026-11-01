@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ממצאים · איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  .topbar svg { width:18px; height:18px; flex:none; }
+  .topbar .search { min-width:0; }
+  .content > * { min-width:0; }
+  .topbar .search > span:first-of-type { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  @media (max-width:600px){ .topbar .kbd, .topbar .small { display:none; } }
+
+  .strip { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); border:1px solid var(--line); border-radius:var(--r-lg); background:var(--surface); overflow:hidden; }
+  .strip > div { padding:16px 18px; border-inline-start:1px solid var(--line); }
+  .strip > div:first-child { border-inline-start:0; }
+  .strip .v { font-size:1.45rem; font-weight:800; letter-spacing:-.02em; }
+  .views { display:flex; gap:4px; border-bottom:1px solid var(--line); overflow-x:auto; }
+  .views button { background:none; border:0; padding:10px 14px; min-height:44px; color:var(--muted); font-weight:600; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+  .views button:hover { color:var(--ink); }
+  .views button[aria-pressed="true"] { color:var(--ink); border-bottom-color:var(--brand); }
+  .views .n { font-size:.75rem; color:var(--faint); margin-inline-start:4px; }
+  .filters { display:grid; gap:12px; }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; }
+  .fchip { cursor:pointer; height:32px; }
+  .fchip[aria-pressed="true"] { background:var(--surface-2); color:var(--ink); border-color:var(--ink-2); }
+  .fchip .n { color:var(--faint); font-weight:500; }
+  .seg { display:inline-flex; padding:3px; border-radius:12px; background:var(--bg-2); border:1px solid var(--line); flex-wrap:wrap; }
+  .seg button { border:0; background:none; padding:0 12px; min-height:34px; border-radius:9px; color:var(--muted); font-weight:600; font-size:.85rem; cursor:pointer; }
+  .seg button[aria-pressed="true"] { background:var(--surface-3); color:var(--ink); }
+  .sel { height:38px; border-radius:10px; border:1px solid var(--line-2); background:var(--bg-2); padding:0 10px; font-size:.85rem; }
+  .range { display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--ink-2); }
+  .range input { accent-color:var(--brand); width:110px; }
+  .search-in { height:38px; max-width:260px; }
+
+  .list { border:1px solid var(--line); border-radius:var(--r-lg); overflow:hidden; background:var(--surface); }
+  .lrow { display:grid; grid-template-columns: 40px 60px minmax(0,2.4fr) minmax(0,1fr) 76px 116px 60px minmax(150px,1.1fr) 92px 48px; align-items:center; gap:10px; padding:10px 14px; border-top:1px solid var(--line); font-size:.88rem; cursor:pointer; }
+  .lrow.head { cursor:default; border-top:0; color:var(--muted); font-size:.74rem; font-weight:600; letter-spacing:.03em; background:var(--surface); }
+  .lrow:not(.head):hover { background:var(--surface-2); }
+  .lrow.sel-on { background:rgba(91,157,255,.07); }
+  .lrow .title { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lrow .rule { font-family:var(--mono); font-size:.68rem; color:var(--faint); direction:ltr; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lrow .amt { text-align:end; font-weight:800; }
+  .lrow .amt small { display:block; font-weight:500; font-size:.72rem; color:var(--muted); }
+  .lrow.dim .amt .money { color:var(--muted); }
+  .cb { width:18px; height:18px; accent-color:var(--brand); cursor:pointer; margin:0; }
+  .cbwrap { display:grid; place-items:center; min-width:40px; min-height:40px; }
+  .av { width:26px; height:26px; border-radius:50%; display:inline-grid; place-items:center; font-size:.72rem; font-weight:800; color:#06121A; flex:none; }
+  .owner { display:flex; align-items:center; gap:8px; min-width:0; }
+  .owner span:last-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink-2); }
+  .bulk { position:sticky; bottom:16px; z-index:30; display:none; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 14px; border-radius:16px; box-shadow:0 20px 50px -10px rgba(0,0,0,.7); }
+  .bulk.on { display:flex; }
+  .empty { padding:48px 20px; text-align:center; color:var(--muted); }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--surface-3); border:1px solid var(--line-2); padding:10px 16px; border-radius:12px; font-size:.9rem; opacity:0; transition:.2s; z-index:60; pointer-events:none; }
+  .toast.on { opacity:1; transform:translateX(-50%); }
+  .m-only { display:none; }
+  @media (max-width:1200px){ .lrow { grid-template-columns: 40px minmax(0,2.4fr) minmax(0,1fr) 76px 116px minmax(140px,1fr) 92px; } .c-id, .c-age, .c-conf { display:none; } }
+  @media (max-width:760px){
+    .strip { grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .strip > div:nth-child(3) { border-inline-start:0; }
+    .strip > div:nth-child(n+3) { border-top:1px solid var(--line); }
+    .lrow.head { display:none; }
+    .lrow { grid-template-columns: 36px minmax(0,1fr) auto; grid-template-areas: "cb title amt" "cb meta meta"; padding:14px 12px; gap:6px 10px; }
+    .lrow > * { grid-area:auto; }
+    .lrow .c-cb { grid-area:cb; align-self:start; }
+    .lrow .c-title { grid-area:title; }
+    .lrow .c-amt { grid-area:amt; }
+    .lrow .c-vendor, .lrow .c-kind, .lrow .c-owner, .lrow .c-status { display:none; }
+    .m-only { display:flex; grid-area:meta; flex-wrap:wrap; gap:6px 10px; align-items:center; font-size:.8rem; color:var(--muted); }
+    .lrow .title { white-space:normal; }
+    .search-in { max-width:none; }
+  }
+</style>
+</head>
+<body data-page="findings">
+<main data-shell>
+  <div class="page-head">
+    <div><div class="eyebrow">תור עבודה</div><h1 class="h1">ממצאים</h1></div>
+    <div class="row wrap"><button class="btn sm" id="export">ייצוא CSV</button><a class="btn sm" href="app-agent.html">שאל את הסוכן</a></div>
+  </div>
+
+  <div class="strip" id="strip"></div>
+
+  <nav class="views" id="views" aria-label="תצוגות שמורות"></nav>
+
+  <section class="filters" aria-label="סינון">
+    <div class="chips" id="cats"></div>
+    <div class="row wrap" style="gap:10px">
+      <div class="seg" id="status" role="group" aria-label="סטטוס"></div>
+      <select class="sel" id="kind" aria-label="סוג"><option value="">כל הסוגים</option><option value="recurring">חוזר ₪/שנה</option><option value="recovery">החזר חד-פעמי</option><option value="review">לבדיקה</option><option value="opportunity">הזדמנות</option></select>
+      <select class="sel" id="owner" aria-label="בעלים"></select>
+      <label class="range">ביטחון מ-<input type="range" id="conf" min="0" max="100" step="5" value="0"><b class="num" id="confV">0%</b></label>
+      <input class="input search-in grow" id="q" type="search" placeholder="חיפוש: ספק, כלל, מזהה…" aria-label="חיפוש">
+      <select class="sel" id="sort" aria-label="מיון"><option value="amt">מיון: ₪ מהגבוה</option><option value="amtAsc">₪ מהנמוך</option><option value="conf">ביטחון</option><option value="age">הכי ישנים</option></select>
+    </div>
+  </section>
+
+  <div class="row between small"><span class="muted" id="count"></span><button class="btn ghost sm" id="clear">ניקוי סינון</button></div>
+
+  <div class="list" id="list" role="table" aria-label="רשימת ממצאים"></div>
+
+  <div class="bulk glass" id="bulk" role="region" aria-label="פעולות על נבחרים">
+    <b id="bulkN"></b><span class="muted small" id="bulkSum"></span>
+    <span class="grow"></span>
+    <button class="btn sm" data-b="assign">שייך לבעלים</button>
+    <button class="btn sm" data-b="progress">סמן בטיפול</button>
+    <button class="btn sm" data-b="slack">שלח ל-Slack</button>
+    <button class="btn sm primary" data-b="jira">צור משימות ב-Jira</button>
+    <button class="btn ghost sm" data-b="none" aria-label="בטל בחירה">✕</button>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(() => {
+  const D = DEMO, $ = (s) => document.querySelector(s);
+  const STATUS = { open: ['open', 'פתוח'], in_progress: ['progress', 'בטיפול'], fixed: ['fixed', 'נחסך'], reviewed_ok: ['ok', 'נבדק תקין'] };
+  const KIND = { recurring: ['₪/שנה', 'חוזר'], recovery: ['חד-פעמי', 'החזר'], review: ['לבדיקה', 'לבדיקה'], opportunity: ['הזדמנות', 'הזדמנות'] };
+  const AVC = ['#2EE6A8', '#5B9DFF', '#A78BFA', '#FFB547', '#38BDF8', '#F472B6', '#FACC15'];
+  const owners = [...new Set(D.findings.map(f => f.owner))];
+  const av = (o) => `<span class="av" style="background:${AVC[owners.indexOf(o) % AVC.length]}" aria-hidden="true">${o[0]}</span>`;
+  const conf = (c) => `<span class="conf" title="ביטחון ${Math.round(c * 100)}%">${[.2, .4, .6, .8, .95].map(t => `<i class="${c >= t ? 'on' : ''}"></i>`).join('')}</span>`;
+  const age = (f) => (+f.id.slice(2) * 37) % 58 + 2; // ponytail: deterministic demo age, real one = detected_at
+  const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); };
+  const me = owners.find(o => o.startsWith('מיכל'));
+
+  const st = { cat: '', status: 'active', kind: '', owner: '', conf: 0, q: '', sort: 'amt', view: 'open' };
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('cat')) { st.cat = qs.get('cat'); st.view = ''; }
+  const sel = new Set();
+
+  const VIEWS = [
+    ['open', 'כל הפתוחים', { status: 'active', cat: '', owner: '', kind: '' }],
+    ['cloud', 'ענן', { status: 'active', cat: 'cloud', owner: '', kind: '' }],
+    ['ai', 'AI', { status: 'active', cat: 'ai', owner: '', kind: '' }],
+    ['mine', 'שלי', { status: 'active', cat: '', owner: me, kind: '' }],
+    ['all', 'הכל כולל סגורים', { status: '', cat: '', owner: '', kind: '' }],
+  ];
+  const STAT_OPTS = [['active', 'פתוח + בטיפול'], ['open', 'פתוח'], ['in_progress', 'בטיפול'], ['fixed', 'נחסך'], ['reviewed_ok', 'נבדק תקין'], ['', 'הכל']];
+  const matchStatus = (f, s) => !s || (s === 'active' ? (f.status === 'open' || f.status === 'in_progress') : f.status === s);
+  const base = (f, skip) => (skip === 'cat' || !st.cat || f.cat === st.cat) && matchStatus(f, st.status) && (!st.kind || f.kind === st.kind) && (!st.owner || f.owner === st.owner) && f.conf * 100 >= st.conf &&
+    (!st.q || (f.id + f.title + f.vendor + f.rule + f.why).toLowerCase().includes(st.q.toLowerCase()));
+
+  $('#owner').innerHTML = '<option value="">כל הבעלים</option>' + owners.map(o => `<option>${o}</option>`).join('');
+  $('#status').innerHTML = STAT_OPTS.map(([v, l]) => `<button data-v="${v}">${l}</button>`).join('');
+
+  function render() {
+    // views
+    $('#views').innerHTML = VIEWS.map(([id, l, p]) => { const n = D.findings.filter(f => (!p.cat || f.cat === p.cat) && matchStatus(f, p.status) && (!p.owner || f.owner === p.owner)).length; return `<button data-view="${id}" aria-pressed="${st.view === id}">${l}<span class="n num">${n}</span></button>`; }).join('');
+    // category chips with counts (counts ignore the cat filter itself)
+    const pool = D.findings.filter(f => base(f, 'cat'));
+    $('#cats').innerHTML = `<button class="chip fchip" data-cat="" aria-pressed="${!st.cat}">כל הקטגוריות <span class="n num">${pool.length}</span></button>` +
+      Object.entries(D.categories).map(([c, l]) => { const n = pool.filter(f => f.cat === c).length; return `<button class="chip fchip" data-cat="${c}" aria-pressed="${st.cat === c}"><i class="dot" style="color:var(--cat-${c})"></i>${l} <span class="n num">${n}</span></button>`; }).join('');
+    $('#status').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === st.status));
+    $('#kind').value = st.kind; $('#owner').value = st.owner; $('#conf').value = st.conf; $('#confV').textContent = st.conf + '%'; $('#sort').value = st.sort;
+
+    let rows = D.findings.filter(f => base(f));
+    const S = { amt: (a, b) => b.amount - a.amount, amtAsc: (a, b) => a.amount - b.amount, conf: (a, b) => b.conf - a.conf, age: (a, b) => age(b) - age(a) };
+    rows.sort(S[st.sort]);
+
+    // strip: buckets for the current view, never mixed
+    const sum = (k) => rows.filter(f => f.kind === k).reduce((a, f) => a + f.amount, 0);
+    const cnt = (k) => rows.filter(f => f.kind === k).length;
+    $('#strip').innerHTML = `
+      <div><div class="eyebrow">חיסכון חוזר</div><div class="v money" style="color:var(--brand)">${ils(sum('recurring'))}</div><div class="xs muted">לשנה · ${cnt('recurring')} ממצאים</div></div>
+      <div><div class="eyebrow">החזר חד-פעמי</div><div class="v money">${ils(sum('recovery'))}</div><div class="xs muted">${cnt('recovery')} ממצאים לגבייה</div></div>
+      <div><div class="eyebrow">לבדיקה</div><div class="v money" style="color:var(--amber)">${ils(sum('review'))}</div><div class="xs muted">${cnt('review')} · לא נספר כחיסכון</div></div>
+      <div><div class="eyebrow">נחסך ואומת</div><div class="v money">${ils(D.kpi.verifiedSaved)}</div><div class="xs muted">עד היום, כל הממצאים</div></div>`;
+    $('#count').innerHTML = `<span class="num">${rows.length}</span> ממצאים מתוך <span class="num">${D.findings.length}</span>`;
+
+    const head = `<div class="lrow head" role="row"><span class="cbwrap"><input type="checkbox" class="cb" id="all" aria-label="בחר הכל" ${rows.length && rows.every(f => sel.has(f.id)) ? 'checked' : ''}></span><span class="c-id">מזהה</span><span>ממצא</span><span>ספק</span><span>סוג</span><span class="end" style="text-align:end">סכום</span><span class="c-conf">ביטחון</span><span>בעלים</span><span>סטטוס</span><span class="c-age">גיל</span></div>`;
+    $('#list').innerHTML = rows.length ? head + rows.map(f => {
+      const dim = f.status === 'reviewed_ok' || f.kind === 'opportunity';
+      return `<div class="lrow ${sel.has(f.id) ? 'sel-on' : ''} ${dim ? 'dim' : ''}" role="row" data-id="${f.id}" tabindex="0">
+        <span class="cbwrap c-cb"><input type="checkbox" class="cb" data-sel="${f.id}" aria-label="בחר ${f.id}" ${sel.has(f.id) ? 'checked' : ''}></span>
+        <span class="mono muted c-id">${f.id}</span>
+        <div class="c-title" style="min-width:0"><div class="title">${f.title}</div><div class="rule">${f.rule}</div></div>
+        <span class="row c-vendor" style="gap:8px; min-width:0"><i class="dot" style="color:var(--cat-${f.cat}); flex:none" title="${D.categories[f.cat]}"></i><span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${f.vendor}</span></span>
+        <span class="c-kind"><span class="chip xs ${f.kind === 'review' ? 'open' : ''}">${KIND[f.kind][1]}</span></span>
+        <span class="amt c-amt">${f.amount ? `<span class="money">${ils(f.amount)}</span>` : '<span class="muted">—</span>'}<small>${KIND[f.kind][0]}</small></span>
+        <span class="c-conf">${conf(f.conf)}</span>
+        <span class="owner c-owner">${av(f.owner)}<span>${f.owner}</span></span>
+        <span class="c-status"><span class="chip ${STATUS[f.status][0]}">${STATUS[f.status][1]}</span></span>
+        <span class="num muted xs c-age">${age(f)} ימ׳</span>
+        <div class="m-only"><i class="dot" style="color:var(--cat-${f.cat})"></i>${f.vendor}<span class="chip ${STATUS[f.status][0]}">${STATUS[f.status][1]}</span>${conf(f.conf)}${av(f.owner)}<span>${f.owner}</span><span class="mono">${f.id}</span></div>
+      </div>`;
+    }).join('') : `<div class="empty"><div class="h3" style="color:var(--ink)">אין ממצאים שתואמים לסינון</div><div class="small" style="margin-top:6px">נסו להוריד את סף הביטחון או לבחור "הכל"</div></div>`;
+
+    const chosen = D.findings.filter(f => sel.has(f.id));
+    $('#bulk').classList.toggle('on', chosen.length > 0);
+    $('#bulkN').textContent = `${chosen.length} נבחרו`;
+    $('#bulkSum').innerHTML = ['recurring', 'recovery', 'review'].map(k => { const s = chosen.filter(f => f.kind === k).reduce((a, f) => a + f.amount, 0); return s ? `<span class="money">${ils(s)}</span> ${KIND[k][0]}` : ''; }).filter(Boolean).join(' · ');
+  }
+
+  const set = (p) => { Object.assign(st, p); render(); };
+  $('#views').addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (!b) return; const v = VIEWS.find(x => x[0] === b.dataset.view); set({ ...v[2], view: v[0] }); });
+  $('#cats').addEventListener('click', (e) => { const b = e.target.closest('[data-cat]'); if (b) set({ cat: b.dataset.cat, view: '' }); });
+  $('#status').addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (b) set({ status: b.dataset.v, view: '' }); });
+  $('#kind').onchange = (e) => set({ kind: e.target.value, view: '' });
+  $('#owner').onchange = (e) => set({ owner: e.target.value, view: '' });
+  $('#conf').oninput = (e) => set({ conf: +e.target.value });
+  $('#q').oninput = (e) => set({ q: e.target.value });
+  $('#sort').onchange = (e) => set({ sort: e.target.value });
+  $('#clear').onclick = () => { $('#q').value = ''; set({ cat: '', status: '', kind: '', owner: '', conf: 0, q: '', view: 'all' }); };
+  $('#list').addEventListener('click', (e) => {
+    if (e.target.id === 'all') { const ids = [...document.querySelectorAll('[data-sel]')].map(c => c.dataset.sel); e.target.checked ? ids.forEach(i => sel.add(i)) : ids.forEach(i => sel.delete(i)); return render(); }
+    const c = e.target.closest('[data-sel]'); if (c) { c.checked ? sel.add(c.dataset.sel) : sel.delete(c.dataset.sel); return render(); }
+    if (e.target.closest('.cbwrap')) return;
+    const r = e.target.closest('.lrow[data-id]'); if (r) location.href = 'app-finding.html?id=' + r.dataset.id;
+  });
+  $('#list').addEventListener('keydown', (e) => { const r = e.target.closest('.lrow[data-id]'); if (r && e.key === 'Enter') location.href = 'app-finding.html?id=' + r.dataset.id; });
+  $('#bulk').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-b]'); if (!b) return; const n = sel.size;
+    const msg = { assign: `${n} ממצאים שויכו`, progress: `${n} ממצאים סומנו "בטיפול"`, slack: `נשלחו ${n} ממצאים לבעלים ב-Slack`, jira: `נפתחו ${n} משימות בפרויקט FIN ב-Jira` }[b.dataset.b];
+    if (b.dataset.b === 'progress') D.findings.forEach(f => { if (sel.has(f.id) && f.status === 'open') f.status = 'in_progress'; });
+    if (b.dataset.b !== 'assign') sel.clear();
+    if (msg) toast(msg); render();
+  });
+  $('#export').onclick = () => {
+    const rows = D.findings.filter(f => base(f)).map(f => [f.id, f.rule, f.vendor, f.kind, f.amount, f.conf, f.owner, f.status].join(','));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿id,rule,vendor,kind,amount_ils,confidence,owner,status\n' + rows.join('\n')], { type: 'text/csv' })); a.download = 'findings.csv'; a.click();
+  };
+  render();
+})();
+</script>
+</body>
+</html>

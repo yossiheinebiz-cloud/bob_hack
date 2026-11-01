@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>לוח בקרה · איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  /* shell patch: topbar icons have no size in ds.css */
+  .topbar svg { width:18px; height:18px; flex:none; }
+  .topbar .search { min-width:0; }
+  .content > * { min-width:0; }
+  .topbar .search > span:first-of-type { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  @media (max-width:600px){ .topbar .kbd, .topbar .small { display:none; } }
+  .digest { display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:var(--r); background:linear-gradient(90deg, var(--blue-bg), transparent 70%); border:1px solid var(--line); }
+  .digest svg { width:20px; height:20px; color:var(--blue); flex:none; }
+  .digest .grow { flex:1 1 220px; }
+  .digest .ids { display:flex; gap:6px; flex-wrap:wrap; }
+  .hero { display:grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap:28px; padding:28px; }
+  .hero .main-num { font-size:clamp(3rem, 6.4vw, 5.2rem); font-weight:900; letter-spacing:-.045em; line-height:1; color:var(--brand); text-shadow:0 0 48px var(--brand-glow), 0 0 12px rgba(46,230,168,.18); }
+  .hero .per { font-size:1.1rem; font-weight:700; color:var(--brand-2); margin-inline-start:6px; }
+  .buckets { display:grid; gap:12px; align-content:start; position:relative; }
+  .bucket { padding:14px 16px; border-radius:var(--r); background:var(--bg-2); border:1px solid var(--line); }
+  .bucket .v { font-size:1.6rem; font-weight:800; letter-spacing:-.02em; }
+  .meter { height:8px; border-radius:99px; background:var(--surface-3); overflow:hidden; }
+  .meter > i { display:block; height:100%; border-radius:99px; background:var(--brand); }
+  .row2 { display:grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); gap:16px; }
+  .chart-wrap { position:relative; }
+  .tip { position:absolute; pointer-events:none; background:var(--surface-3); border:1px solid var(--line-2); border-radius:10px; padding:8px 10px; font-size:.8rem; white-space:nowrap; opacity:0; transition:opacity .12s; z-index:2; }
+  .legend { display:flex; gap:16px; font-size:.8rem; color:var(--ink-2); }
+  .legend .sw { width:10px; height:10px; border-radius:3px; display:inline-block; margin-inline-end:6px; vertical-align:-1px; }
+  .hbar { display:grid; grid-template-columns: 120px minmax(0,1fr) 84px; align-items:center; gap:10px; padding:7px 0; font-size:.88rem; border-radius:8px; }
+  .hbar .track { height:12px; border-radius:4px; background:var(--surface-3); overflow:hidden; }
+  .hbar .track i { display:block; height:100%; border-radius:4px; }
+  .hbar:hover .track i { filter:brightness(1.15); }
+  .top-item { display:grid; grid-template-columns: 28px minmax(0,1fr) auto; gap:14px; align-items:center; padding:14px 6px; border-top:1px solid var(--line); }
+  .top-item:first-child { border-top:0; }
+  .top-item:hover { background:rgba(255,255,255,.015); }
+  .rank { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; background:var(--surface-3); font-weight:800; font-size:.8rem; color:var(--ink-2); }
+  .top-item .t { font-weight:600; }
+  .top-item .t a:hover { color:var(--brand); }
+  .top-item .meta { display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; margin-top:4px; font-size:.8rem; color:var(--muted); }
+  .top-item .amt { text-align:end; }
+  .top-item .amt .money { font-size:1.15rem; font-weight:800; }
+  .qa { display:flex; gap:6px; margin-top:8px; justify-content:flex-end; }
+  .qa .btn svg { width:15px; height:15px; }
+  .side-col { display:grid; gap:16px; align-content:start; }
+  .ren { padding:10px 0; border-top:1px solid var(--line); }
+  .ren:first-of-type { border-top:0; }
+  .seat { height:6px; border-radius:99px; background:var(--amber-bg); overflow:hidden; margin-top:6px; }
+  .seat i { display:block; height:100%; background:var(--ink-2); border-radius:99px; }
+  .days { font-weight:800; font-size:1.05rem; }
+  .ai-card { background:linear-gradient(160deg, rgba(167,139,250,.12), var(--surface) 60%); }
+  .ai-card .x { font-size:2.4rem; font-weight:900; color:var(--violet); letter-spacing:-.03em; line-height:1; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--surface-3); border:1px solid var(--line-2); padding:10px 16px; border-radius:12px; font-size:.9rem; opacity:0; transition:.2s; z-index:60; pointer-events:none; }
+  .toast.on { opacity:1; transform:translateX(-50%); }
+  @media (max-width:1100px){ .row2 { grid-template-columns:1fr; } }
+  @media (max-width:800px){ .hero { grid-template-columns:1fr; padding:20px; gap:20px; } .hbar { grid-template-columns: 96px minmax(0,1fr) 70px; } }
+  @media (max-width:520px){ .top-item { grid-template-columns: minmax(0,1fr); } .rank { display:none; } .top-item .amt { text-align:start; } .qa { justify-content:flex-start; } .digest { flex-wrap:wrap; } }
+</style>
+</head>
+<body data-page="dashboard">
+<main data-shell>
+  <div class="page-head">
+    <div>
+      <div class="eyebrow" id="period"></div>
+      <h1 class="h1">בוקר טוב, מיכל</h1>
+    </div>
+    <div class="row wrap">
+      <a class="btn sm" href="app-report.html">דוח לדירקטוריון</a>
+      <a class="btn sm primary" href="app-findings.html">לתור הממצאים</a>
+    </div>
+  </div>
+
+  <div class="digest rise" id="digest"></div>
+
+  <section class="card glow hero rise" aria-label="סיכום חיסכון">
+    <div class="stack" style="align-content:start; position:relative">
+      <div class="row"><span class="eyebrow">חיסכון שנתי חוזר שנמצא</span><span class="chip fixed xs" id="recCount"></span></div>
+      <div><span class="main-num money" id="countup">₪0</span><span class="per">לשנה</span></div>
+      <div class="ink2" id="ofSpend"></div>
+      <div class="xs muted" id="scanLine"></div>
+      <hr class="divider" style="margin:6px 0">
+      <div>
+        <div class="row between small"><span class="ink2">נחסך ואומת עד היום</span><span><b class="money" id="verified"></b> <span class="muted">מתוך יעד <span class="money" id="target"></span></span></span></div>
+        <div class="meter" style="margin-top:8px" role="progressbar" id="verMeter" aria-label="התקדמות מול יעד"><i id="verBar" style="width:0"></i></div>
+        <div class="xs muted" style="margin-top:6px" id="verNote"></div>
+      </div>
+    </div>
+    <div class="buckets">
+      <div class="bucket">
+        <div class="row between"><span class="eyebrow">החזר חד-פעמי</span><span class="chip progress xs">לגבות</span></div>
+        <div class="v money" id="recovery"></div>
+        <div class="xs muted" id="recoveryNote"></div>
+      </div>
+      <div class="bucket">
+        <div class="row between"><span class="eyebrow">לבדיקה</span><span class="chip open xs">לא נספר כחיסכון</span></div>
+        <div class="v money" style="color:var(--amber)" id="review"></div>
+        <div class="xs muted" id="reviewNote"></div>
+      </div>
+      <div class="bucket">
+        <div class="row between"><span class="eyebrow">ממצאים פתוחים</span><span class="xs muted" id="statusMix"></span></div>
+        <div class="v"><span class="num" id="openCount"></span></div>
+        <div class="meter" style="display:flex; gap:2px; background:none" id="statusBar"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="row2">
+    <section class="card">
+      <div class="row between wrap">
+        <div><h2 class="h2">הוצאה חודשית שאינה שכר</h2><div class="xs muted">24 חודשים · ₪ · מקור: Priority, Cal, AWS CUR, OpenAI, Anthropic</div></div>
+        <div class="legend"><span><i class="sw" style="background:var(--blue)"></i>שאר ההוצאה</span><span><i class="sw" style="background:var(--violet)"></i>AI וטוקנים</span></div>
+      </div>
+      <div class="chart-wrap" id="spendChart" style="margin-top:12px"></div>
+    </section>
+    <section class="card">
+      <h2 class="h2">חיסכון שנתי לפי קטגוריה</h2>
+      <div class="xs muted" style="margin-bottom:10px">רק ממצאים חוזרים, ₪/שנה</div>
+      <div id="catBars"></div>
+    </section>
+  </div>
+
+  <div class="row2">
+    <section class="card">
+      <div class="row between"><h2 class="h2">5 הממצאים הגדולים</h2><a class="btn ghost sm" href="app-findings.html">כל <span class="num" id="allCount"></span> הממצאים ←</a></div>
+      <div id="top5" style="margin-top:8px"></div>
+    </section>
+    <div class="side-col">
+      <section class="card">
+        <div class="row between"><h2 class="h2">חידושים ב-90 הימים הקרובים</h2><a class="btn ghost sm" href="app-renewals.html">לוח</a></div>
+        <div id="renewals" style="margin-top:6px"></div>
+      </section>
+      <section class="card ai-card">
+        <div class="row between"><h2 class="h2">הוצאת AI</h2><span class="chip ai xs">AI</span></div>
+        <div class="row" style="margin-top:12px; align-items:flex-end; gap:16px">
+          <div><div class="x num" id="aiX"></div><div class="xs muted">צמיחה ב-24 חודשים</div></div>
+          <svg id="aiSpark" width="140" height="44" viewBox="0 0 140 44" aria-hidden="true" style="margin-inline-start:auto"></svg>
+        </div>
+        <hr class="divider">
+        <div class="small stack" style="gap:6px" id="aiFacts"></div>
+        <a class="btn sm block" style="margin-top:14px" href="app-ai-spend.html">פירוט לפי מודל ופרויקט</a>
+      </section>
+    </div>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(() => {
+  const D = DEMO, K = D.kpi, $ = (s) => document.querySelector(s);
+  const TODAY = new Date(2026, 10, 1); // demo "today" = 01/11/2026
+  const TARGET = 600000; // ponytail: yearly verified-savings target lives here until settings own it
+  const STATUS = { open: ['open', 'פתוח'], in_progress: ['progress', 'בטיפול'], fixed: ['fixed', 'נחסך'], reviewed_ok: ['ok', 'נבדק תקין'] };
+  const KIND = { recurring: '₪/שנה', recovery: 'חד-פעמי', review: 'לבדיקה' };
+  const conf = (c) => `<span class="conf" title="ביטחון ${Math.round(c * 100)}%" aria-label="ביטחון ${Math.round(c * 100)}%">${[.2, .4, .6, .8, .95].map(t => `<i class="${c >= t ? 'on' : ''}"></i>`).join('')}</span>`;
+  const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const months = D.spend.monthlyNonPayroll.map((_, i) => { const m = (10 + i) % 12 + 1, y = 2024 + Math.floor((10 + i) / 12); return String(m).padStart(2, '0') + '/' + String(y).slice(2); });
+
+  $('#period').textContent = `${D.company.name} · תקופה ${D.company.period} · עודכן היום 08:14`;
+  const nonPayroll = D.spend.total - D.spend.byCategory.find(c => c.id === 'payroll').amount;
+  const rec = D.findings.filter(f => f.kind === 'recurring');
+  $('#recCount').textContent = rec.length + ' ממצאים';
+  $('#ofSpend').innerHTML = `מתוך <b class="money">₪${(nonPayroll / 1e6).toFixed(1)}M</b> הוצאה שאינה שכר · <span class="money">${(K.recurringSavings / nonPayroll * 100).toFixed(1)}%</span> מההוצאה`;
+  $('#scanLine').textContent = `${K.rowsScanned.toLocaleString('en-US')} שורות · ${K.invoicesScanned.toLocaleString('en-US')} חשבוניות · ${K.vendors} ספקים · ${K.sources} מקורות`;
+  $('#verified').textContent = ils(K.verifiedSaved);
+  $('#target').textContent = ils(TARGET);
+  const vp = K.verifiedSaved / TARGET * 100;
+  $('#verMeter').setAttribute('aria-valuenow', Math.round(vp));
+  requestAnimationFrame(() => { $('#verBar').style.transition = 'width 1.2s cubic-bezier(.2,.8,.2,1)'; $('#verBar').style.width = vp + '%'; });
+  $('#verNote').textContent = `${Math.round(vp)}% מהיעד ל-2026 · ${D.findings.filter(f => f.status === 'fixed').length} ממצא נסגר ואומת מול החשבונית הבאה`;
+  $('#recovery').textContent = ils(K.oneTimeRecovery);
+  const recv = D.findings.filter(f => f.kind === 'recovery');
+  $('#recoveryNote').textContent = `${recv.length} זיכויים והחזרים לבקש מספקים`;
+  $('#review').textContent = ils(K.toReview);
+  $('#reviewNote').textContent = `${D.findings.filter(f => f.kind === 'review').length} חשדות לבדיקה אנושית`;
+  $('#openCount').textContent = K.openFindings;
+  const counted = D.findings.filter(f => f.kind !== 'opportunity');
+  const mix = Object.keys(STATUS).map(s => [s, counted.filter(f => f.status === s).length]);
+  const col = { open: 'var(--amber)', in_progress: 'var(--blue)', fixed: 'var(--brand)', reviewed_ok: 'var(--ok-gray)' };
+  $('#statusBar').innerHTML = mix.map(([s, n]) => `<i title="${STATUS[s][1]}: ${n}" style="flex:${n}; background:${col[s]}; border-radius:3px"></i>`).join('');
+  $('#statusMix').textContent = mix.map(([s, n]) => `${n} ${STATUS[s][1]}`).join(' · ');
+
+  // count-up
+  const el = $('#countup'), end = K.recurringSavings;
+  if (reduce) el.textContent = ils(end);
+  else { const t0 = performance.now(), dur = 1600; const step = (t) => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 4); el.textContent = ils(end * e); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
+
+  // digest
+  const dig = ['F-1016', 'F-1022', 'F-1025'].map(id => D.findings.find(f => f.id === id));
+  $('#digest').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/></svg>
+    <div class="grow small"><b>השבוע: ${dig.length} ממצאים חדשים, <span class="money">${ils(dig.reduce((a, f) => a + f.amount, 0))}</span></b> <span class="muted">· הסיכום השבועי נשלח ל-#finance ב-Slack ביום ראשון 08:00</span></div>
+    <div class="ids">${dig.map(f => `<a class="chip" href="app-finding.html?id=${f.id}"><span class="mono">${f.id}</span></a>`).join('')}</div>`;
+
+  // spend chart
+  function chart() {
+    const tot = D.spend.monthlyNonPayroll, ai = D.spend.monthlyAi, n = tot.length;
+    const box = $('#spendChart'), W = Math.max(340, Math.round(box.clientWidth)), H = W < 500 ? 220 : 250, L = 22, R = 92, T = 14, B = 26, max = 1500000;
+    const x = (i) => L + i * (W - L - R) / (n - 1), y = (v) => T + (H - T - B) * (1 - v / max);
+    const path = (arr) => arr.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+    const area = (top, bot) => path(top) + ' ' + bot.map((v, i) => [i, v]).reverse().map(([i, v]) => 'L' + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ') + 'Z';
+    const zeros = tot.map(() => 0);
+    const grid = [0, 500000, 1000000, 1500000].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${W - R + 8}" y="${y(v) + 4}" fill="var(--faint)" font-size="11">${ilsK(v)}</text>`).join('');
+    const xl = months.map((m, i) => i % (W < 500 ? 8 : 4) === 0 || i === n - 1 ? `<text x="${x(i)}" y="${H - 6}" fill="var(--muted)" font-size="11" text-anchor="middle">${m}</text>` : '').join('');
+    const last = n - 1;
+    const svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="direction:ltr; display:block" role="img" aria-label="הוצאה חודשית שאינה שכר, מ-${ilsK(tot[0])} ל-${ilsK(tot[last])}; AI מ-${ilsK(ai[0])} ל-${ilsK(ai[last])}">
+      <defs><linearGradient id="gT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5B9DFF" stop-opacity=".28"/><stop offset="1" stop-color="#5B9DFF" stop-opacity=".02"/></linearGradient>
+      <linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A78BFA" stop-opacity=".55"/><stop offset="1" stop-color="#A78BFA" stop-opacity=".15"/></linearGradient></defs>
+      ${grid}
+      <path d="${area(tot, ai)}" fill="url(#gT)"/>
+      <path d="${area(ai, zeros)}" fill="url(#gA)"/>
+      <path d="${path(tot)}" fill="none" stroke="var(--blue)" stroke-width="2"/>
+      <path d="${path(ai)}" fill="none" stroke="var(--violet)" stroke-width="2.5"/>
+      <circle cx="${x(last)}" cy="${y(tot[last])}" r="4" fill="var(--blue)" stroke="var(--surface)" stroke-width="2"/>
+      <circle cx="${x(last)}" cy="${y(ai[last])}" r="4" fill="var(--violet)" stroke="var(--surface)" stroke-width="2"/>
+      <text x="${x(last) - 8}" y="${y(tot[last]) - 10}" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="end">${ilsK(tot[last])} סה״כ</text>
+      <text x="${x(last) - 8}" y="${y(ai[last]) - 10}" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="end">AI ${ilsK(ai[last])} · ×${(ai[last] / ai[0]).toFixed(1)}</text>
+      <text x="${x(0) + 4}" y="${y(tot[0]) - 10}" fill="var(--muted)" font-size="11">${ilsK(tot[0])}</text>
+      ${xl}
+      <line id="xh" y1="${T}" y2="${H - B}" stroke="var(--line-2)" stroke-dasharray="3 3" opacity="0"/>
+      <rect x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent" id="hit"/>
+    </svg><div class="tip" id="tip"></div>`;
+    box.innerHTML = svg;
+    const s = box.querySelector('svg'), tip = $('#tip'), xh = s.querySelector('#xh');
+    s.querySelector('#hit').addEventListener('mousemove', (e) => {
+      const r = s.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * W;
+      const i = Math.max(0, Math.min(n - 1, Math.round((px - L) / ((W - L - R) / (n - 1)))));
+      xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('opacity', 1);
+      tip.innerHTML = `<div class="muted xs">${months[i]}</div><div>סה״כ <b class="money">${ils(tot[i])}</b></div><div style="color:var(--violet)">AI <b class="money">${ils(ai[i])}</b> <span class="muted">(${(ai[i] / tot[i] * 100).toFixed(1)}%)</span></div>`;
+      const left = x(i) / W * r.width; tip.style.left = Math.min(r.width - 170, Math.max(0, left - 80)) + 'px'; tip.style.top = '0px'; tip.style.opacity = 1;
+    });
+    s.querySelector('#hit').addEventListener('mouseleave', () => { tip.style.opacity = 0; xh.setAttribute('opacity', 0); });
+  }
+  chart(); let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(chart, 150); });
+
+  // savings by category (recurring only, sums to K.recurringSavings)
+  const byCat = {}; rec.forEach(f => byCat[f.cat] = (byCat[f.cat] || 0) + f.amount);
+  const cats = Object.entries(byCat).sort((a, b) => b[1] - a[1]), cmax = cats[0][1];
+  $('#catBars').innerHTML = cats.map(([c, v]) => `<a class="hbar" href="app-findings.html?cat=${c}" title="${D.categories[c]}: ${ils(v)} לשנה">
+      <span class="ink2" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${D.categories[c]}</span>
+      <span class="track"><i style="width:${v / cmax * 100}%; background:var(--cat-${c})"></i></span>
+      <span class="money small" style="font-weight:700; text-align:end">${ilsK(v)}</span></a>`).join('') +
+    `<hr class="divider" style="margin:10px 0"><div class="row between small"><span class="muted">סה״כ</span><b class="money">${ils(cats.reduce((a, c) => a + c[1], 0))}</b></div>`;
+
+  // top 5
+  $('#allCount').textContent = D.findings.length;
+  const top = [...counted].filter(f => f.status === 'open' || f.status === 'in_progress').sort((a, b) => b.amount - a.amount).slice(0, 5);
+  $('#top5').innerHTML = top.map((f, i) => `<div class="top-item">
+      <span class="rank num">${i + 1}</span>
+      <div style="min-width:0">
+        <div class="t"><a href="app-finding.html?id=${f.id}">${f.title}</a></div>
+        <div class="meta"><span class="row" style="gap:6px"><i class="dot" style="color:var(--cat-${f.cat})"></i>${f.vendor}</span><span class="chip ${STATUS[f.status][0]}">${STATUS[f.status][1]}</span>${conf(f.conf)}<span>${f.owner}</span><span class="mono">${f.id}</span></div>
+      </div>
+      <div class="amt"><span class="money">${ils(f.amount)}</span><div class="xs muted">${KIND[f.kind]}</div>
+        <div class="qa"><button class="btn sm" data-slack="${f.owner}">${icon('chat')}Slack</button><button class="btn sm" data-jira="${f.id}">${icon('doc')}Jira</button></div></div>
+    </div>`).join('');
+  $('#top5').addEventListener('click', (e) => {
+    const s = e.target.closest('[data-slack]'), j = e.target.closest('[data-jira]');
+    if (s) toast(`נשלח ל-${s.dataset.slack} ב-Slack עם הראיות`);
+    if (j) toast(`נפתחה משימה FIN-${400 + +j.dataset.jira.slice(2) % 100} ב-Jira`);
+  });
+
+  // renewals ≤ 90 days
+  const parse = (d) => { const [dd, mm, yy] = d.split('/').map(Number); return new Date(yy, mm - 1, dd); };
+  const soon = D.renewals.map(r => ({ ...r, days: Math.round((parse(r.date) - TODAY) / 864e5) })).filter(r => r.days <= 90);
+  $('#renewals').innerHTML = soon.map(r => `<div class="ren">
+      <div class="row between"><b>${r.vendor}</b><span><span class="days num" style="color:${r.days <= 30 ? 'var(--amber)' : 'var(--ink)'}">${r.days}</span> <span class="xs muted">ימים</span></span></div>
+      <div class="row between xs muted"><span class="num">${r.date}</span><span class="money">${ils(r.amount)}</span></div>
+      ${r.seatsPaid ? `<div class="seat" title="${r.seatsUsed} בשימוש מתוך ${r.seatsPaid}"><i style="width:${r.seatsUsed / r.seatsPaid * 100}%"></i></div>
+      <div class="xs" style="margin-top:4px"><span class="ink2">${r.seatsUsed} בשימוש מתוך ${r.seatsPaid} מושבים</span> · <span style="color:var(--amber)">${r.seatsPaid - r.seatsUsed} עודפים</span>${r.autoRenew ? ' · <span class="muted">חידוש אוטומטי</span>' : ''}</div>` : ''}
+    </div>`).join('');
+
+  // AI card
+  const ai = D.spend.monthlyAi;
+  $('#aiX').textContent = '×' + (ai[ai.length - 1] / ai[0]).toFixed(1);
+  const sx = (i) => 2 + i * 136 / (ai.length - 1), sy = (v) => 40 - v / 200000 * 36;
+  $('#aiSpark').innerHTML = `<path d="${ai.map((v, i) => (i ? 'L' : 'M') + sx(i).toFixed(1) + ' ' + sy(v).toFixed(1)).join(' ')}" fill="none" stroke="var(--violet)" stroke-width="2"/><circle cx="${sx(ai.length - 1)}" cy="${sy(ai[ai.length - 1])}" r="3" fill="var(--violet)"/>`;
+  const topP = [...D.ai.projects].sort((a, b) => b.usd - a.usd)[0];
+  const aiSave = D.findings.filter(f => f.cat === 'ai' && f.kind === 'recurring').reduce((a, f) => a + f.amount, 0);
+  $('#aiFacts').innerHTML = `
+    <div class="row between"><span class="muted">החודש</span><span><b class="money">$${D.ai.monthlyUsd.toLocaleString('en-US')}</b> <span class="muted xs">≈ <span class="money">${ils(D.ai.monthlyUsd * D.company.usdIls)}</span></span></span></div>
+    <div class="row between"><span class="muted">פרויקט מוביל</span><span><span class="mono">${topP.name}</span> · <span class="money">$${topP.usd.toLocaleString('en-US')}</span></span></div>
+    <div class="row between"><span class="muted">חיסכון שנמצא</span><b class="money" style="color:var(--brand)">${ils(aiSave)}</b></div>`;
+})();
+</script>
+</body>
+</html>

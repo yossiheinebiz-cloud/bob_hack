@@ -1,0 +1,1271 @@
+{
+  "company": "טכנוסיס בע\"מ",
+  "generated_at": "2026-11-01T12:00:00",
+  "total_at_risk": 2580297.0,
+  "findings_count": 34,
+  "by_category": {
+    "payroll": 592000.0,
+    "duplicates": 1749800.0,
+    "cloud": 51969.0,
+    "licenses": 186528.0
+  },
+  "findings": [
+    {
+      "finding_id": "F001",
+      "rule_id": "PAYROLL_DUPLICATE_BANK",
+      "title": "חשבון בנק משותף — 2 עובדים (BAN: IL12-1****4321)",
+      "amount_at_risk": 520000.0,
+      "confidence": 0.95,
+      "category": "payroll",
+      "domain": "hitech",
+      "action": "עובדים EMP1055, EMP1062 שותפים לחשבון בנק. בדוק מול HR: האם מדובר בטעות הזנה, בן משפחה, או עובד רפאים.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.512782",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "employee_id": "EMP1055",
+          "department": "Finance",
+          "role": "Accountant",
+          "base_salary": 24000,
+          "start_date": "2021-10-09",
+          "end_date": NaN,
+          "bank_account": "IL12-123456-987654321",
+          "status": "active",
+          "_planted": "PAYROLL_DUPLICATE_BANK"
+        },
+        {
+          "employee_id": "EMP1062",
+          "department": "HR",
+          "role": "HR Manager",
+          "base_salary": 28000,
+          "start_date": "2023-11-08",
+          "end_date": NaN,
+          "bank_account": "IL12-123456-987654321",
+          "status": "active",
+          "_planted": "PAYROLL_DUPLICATE_BANK"
+        }
+      ]
+    },
+    {
+      "finding_id": "F002",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — מילגם בע\"מ",
+      "amount_at_risk": 241600.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "8 חשבוניות של מילגם בע\"מ בחלון 45 יום, סה\"כ ₪241,600 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.492493",
+      "evidence_count": 8,
+      "evidence": [
+        {
+          "invoice_id": "INV04463",
+          "vendor_name": "מילגם בע\"מ",
+          "vendor_id": "IL-vendor-001",
+          "amount": 23400.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-21T00:00:00",
+          "payment_date": "2026-01-28",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04207",
+          "vendor_name": "מילגם בע\"מ",
+          "vendor_id": "IL-vendor-001",
+          "amount": 13900.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-26T00:00:00",
+          "payment_date": "2026-02-02",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04140",
+          "vendor_name": "מילגם בע\"מ",
+          "vendor_id": "IL-vendor-001",
+          "amount": 48500.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-26T00:00:00",
+          "payment_date": "2026-02-15",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F003",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — ClickUp",
+      "amount_at_risk": 199100.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "8 חשבוניות של ClickUp בחלון 45 יום, סה\"כ ₪199,100 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.473492",
+      "evidence_count": 8,
+      "evidence": [
+        {
+          "invoice_id": "INV04018",
+          "vendor_name": "ClickUp",
+          "vendor_id": "IL-vendor-010",
+          "amount": 32800.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-04T00:00:00",
+          "payment_date": "2026-01-20",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04373",
+          "vendor_name": "ClickUp",
+          "vendor_id": "IL-vendor-010",
+          "amount": 26700.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-14T00:00:00",
+          "payment_date": "2026-02-03",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04239",
+          "vendor_name": "ClickUp",
+          "vendor_id": "IL-vendor-010",
+          "amount": 47500.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-22T00:00:00",
+          "payment_date": "2026-02-10",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F004",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — Zoom",
+      "amount_at_risk": 168900.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "6 חשבוניות של Zoom בחלון 45 יום, סה\"כ ₪168,900 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.483658",
+      "evidence_count": 6,
+      "evidence": [
+        {
+          "invoice_id": "INV04445",
+          "vendor_name": "Zoom",
+          "vendor_id": "IL-vendor-011",
+          "amount": 36100.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-09T00:00:00",
+          "payment_date": "2026-01-21",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04143",
+          "vendor_name": "Zoom",
+          "vendor_id": "IL-vendor-011",
+          "amount": 9000.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-21T00:00:00",
+          "payment_date": "2026-02-04",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04098",
+          "vendor_name": "Zoom",
+          "vendor_id": "IL-vendor-011",
+          "amount": 38000.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-27T00:00:00",
+          "payment_date": "2026-02-07",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F005",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — מטריקס",
+      "amount_at_risk": 135000.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "6 חשבוניות של מטריקס בחלון 45 יום, סה\"כ ₪135,000 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.488083",
+      "evidence_count": 6,
+      "evidence": [
+        {
+          "invoice_id": "INV04203",
+          "vendor_name": "מטריקס",
+          "vendor_id": "IL-vendor-002",
+          "amount": 12700.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-16T00:00:00",
+          "payment_date": "2026-01-23",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04218",
+          "vendor_name": "מטריקס",
+          "vendor_id": "IL-vendor-002",
+          "amount": 34200.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-22T00:00:00",
+          "payment_date": "2026-02-09",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04318",
+          "vendor_name": "מטריקס",
+          "vendor_id": "IL-vendor-002",
+          "amount": 12200.0,
+          "currency": "ILS",
+          "invoice_date": "2026-02-07T00:00:00",
+          "payment_date": "2026-02-26",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F006",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — HubSpot Inc",
+      "amount_at_risk": 128000.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "7 חשבוניות של HubSpot Inc בחלון 45 יום, סה\"כ ₪128,000 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.480837",
+      "evidence_count": 7,
+      "evidence": [
+        {
+          "invoice_id": "INV04108",
+          "vendor_name": "HubSpot Inc",
+          "vendor_id": "IL-vendor-009",
+          "amount": 23300.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-02T00:00:00",
+          "payment_date": "2026-01-16",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04295",
+          "vendor_name": "HubSpot Inc",
+          "vendor_id": "IL-vendor-009",
+          "amount": 40700.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-19T00:00:00",
+          "payment_date": "2026-01-30",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04365",
+          "vendor_name": "HubSpot Inc",
+          "vendor_id": "IL-vendor-009",
+          "amount": 4200.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-20T00:00:00",
+          "payment_date": "2026-01-29",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F007",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — Atlassian",
+      "amount_at_risk": 125600.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "4 חשבוניות של Atlassian בחלון 45 יום, סה\"כ ₪125,600 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.471242",
+      "evidence_count": 4,
+      "evidence": [
+        {
+          "invoice_id": "INV04453",
+          "vendor_name": "Atlassian",
+          "vendor_id": "IL-vendor-007",
+          "amount": 26100.0,
+          "currency": "ILS",
+          "invoice_date": "2026-02-01T00:00:00",
+          "payment_date": "2026-02-11",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04434",
+          "vendor_name": "Atlassian",
+          "vendor_id": "IL-vendor-007",
+          "amount": 29800.0,
+          "currency": "ILS",
+          "invoice_date": "2026-02-02T00:00:00",
+          "payment_date": "2026-02-08",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04027",
+          "vendor_name": "Atlassian",
+          "vendor_id": "IL-vendor-007",
+          "amount": 22000.0,
+          "currency": "ILS",
+          "invoice_date": "2026-02-11T00:00:00",
+          "payment_date": "2026-03-03",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F008",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — Google Cloud",
+      "amount_at_risk": 112500.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "5 חשבוניות של Google Cloud בחלון 45 יום, סה\"כ ₪112,500 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.479338",
+      "evidence_count": 5,
+      "evidence": [
+        {
+          "invoice_id": "INV04469",
+          "vendor_name": "Google Cloud",
+          "vendor_id": "IL-vendor-004",
+          "amount": 47300.0,
+          "currency": "ILS",
+          "invoice_date": "2026-05-25T00:00:00",
+          "payment_date": "2026-06-11",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04378",
+          "vendor_name": "Google Cloud",
+          "vendor_id": "IL-vendor-004",
+          "amount": 2400.0,
+          "currency": "ILS",
+          "invoice_date": "2026-06-10T00:00:00",
+          "payment_date": "2026-06-28",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04461",
+          "vendor_name": "Google Cloud",
+          "vendor_id": "IL-vendor-004",
+          "amount": 22300.0,
+          "currency": "ILS",
+          "invoice_date": "2026-06-19T00:00:00",
+          "payment_date": "2026-06-26",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F009",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — Slack Technologies",
+      "amount_at_risk": 111800.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "5 חשבוניות של Slack Technologies בחלון 45 יום, סה\"כ ₪111,800 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.482371",
+      "evidence_count": 5,
+      "evidence": [
+        {
+          "invoice_id": "INV04178",
+          "vendor_name": "Slack Technologies",
+          "vendor_id": "IL-vendor-008",
+          "amount": 43200.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-23T00:00:00",
+          "payment_date": "2026-02-06",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04066",
+          "vendor_name": "Slack Technologies",
+          "vendor_id": "IL-vendor-008",
+          "amount": 29500.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-27T00:00:00",
+          "payment_date": "2026-02-09",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04068",
+          "vendor_name": "Slack Technologies",
+          "vendor_id": "IL-vendor-008",
+          "amount": 7000.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-28T00:00:00",
+          "payment_date": "2026-02-06",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F010",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — AWS Israel",
+      "amount_at_risk": 106300.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "4 חשבוניות של AWS Israel בחלון 45 יום, סה\"כ ₪106,300 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.469117",
+      "evidence_count": 4,
+      "evidence": [
+        {
+          "invoice_id": "INV04260",
+          "vendor_name": "AWS Israel",
+          "vendor_id": "IL-vendor-003",
+          "amount": 14500.0,
+          "currency": "ILS",
+          "invoice_date": "2026-03-26T00:00:00",
+          "payment_date": "2026-04-14",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04379",
+          "vendor_name": "AWS Israel",
+          "vendor_id": "IL-vendor-003",
+          "amount": 35600.0,
+          "currency": "ILS",
+          "invoice_date": "2026-04-15T00:00:00",
+          "payment_date": "2026-05-03",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "AWS-2026-0512",
+          "vendor_name": "AWS Israel",
+          "vendor_id": "IL-vendor-003",
+          "amount": 12000.0,
+          "currency": "USD",
+          "invoice_date": "2026-05-01T00:00:00",
+          "payment_date": "2026-05-11",
+          "status": "paid",
+          "note": "PLANTED:DUP_CURRENCY_USD"
+        }
+      ]
+    },
+    {
+      "finding_id": "F011",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — Cloudflare",
+      "amount_at_risk": 105300.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "4 חשבוניות של Cloudflare בחלון 45 יום, סה\"כ ₪105,300 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.474976",
+      "evidence_count": 4,
+      "evidence": [
+        {
+          "invoice_id": "INV04100",
+          "vendor_name": "Cloudflare",
+          "vendor_id": "IL-vendor-012",
+          "amount": 41600.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-15T00:00:00",
+          "payment_date": "2026-01-27",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04433",
+          "vendor_name": "Cloudflare",
+          "vendor_id": "IL-vendor-012",
+          "amount": 19100.0,
+          "currency": "ILS",
+          "invoice_date": "2026-02-07T00:00:00",
+          "payment_date": "2026-02-13",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04125",
+          "vendor_name": "Cloudflare",
+          "vendor_id": "IL-vendor-012",
+          "amount": 8400.0,
+          "currency": "ILS",
+          "invoice_date": "2026-02-20T00:00:00",
+          "payment_date": "2026-02-28",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F012",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — טבעות תוכנה בע\"מ",
+      "amount_at_risk": 101900.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "4 חשבוניות של טבעות תוכנה בע\"מ בחלון 45 יום, סה\"כ ₪101,900 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.485750",
+      "evidence_count": 4,
+      "evidence": [
+        {
+          "invoice_id": "INV04359",
+          "vendor_name": "טבעות תוכנה בע\"מ",
+          "vendor_id": "IL-vendor-006",
+          "amount": 4600.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-27T00:00:00",
+          "payment_date": "2026-02-07",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04360",
+          "vendor_name": "טבעות תוכנה בע\"מ",
+          "vendor_id": "IL-vendor-006",
+          "amount": 47400.0,
+          "currency": "ILS",
+          "invoice_date": "2026-02-07T00:00:00",
+          "payment_date": "2026-02-24",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04372",
+          "vendor_name": "טבעות תוכנה בע\"מ",
+          "vendor_id": "IL-vendor-006",
+          "amount": 28700.0,
+          "currency": "ILS",
+          "invoice_date": "2026-02-26T00:00:00",
+          "payment_date": "2026-03-16",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F013",
+      "rule_id": "INVOICE_SPLITTING",
+      "title": "פיצול חשבוניות חשוד — רד-האט ישראל",
+      "amount_at_risk": 101800.0,
+      "confidence": 0.75,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "5 חשבוניות של רד-האט ישראל בחלון 45 יום, סה\"כ ₪101,800 — כל אחת מתחת לסף האישור (₪50,000). בדוק מול הספק אם מדובר בעבודה אחת שפוצלה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.494861",
+      "evidence_count": 5,
+      "evidence": [
+        {
+          "invoice_id": "INV04034",
+          "vendor_name": "רד-האט ישראל",
+          "vendor_id": "IL-vendor-005",
+          "amount": 9900.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-14T00:00:00",
+          "payment_date": "2026-01-28",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04236",
+          "vendor_name": "רד-האט ישראל",
+          "vendor_id": "IL-vendor-005",
+          "amount": 39700.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-20T00:00:00",
+          "payment_date": "2026-01-26",
+          "status": "paid",
+          "note": NaN
+        },
+        {
+          "invoice_id": "INV04296",
+          "vendor_name": "רד-האט ישראל",
+          "vendor_id": "IL-vendor-005",
+          "amount": 30900.0,
+          "currency": "ILS",
+          "invoice_date": "2026-01-25T00:00:00",
+          "payment_date": "2026-02-09",
+          "status": "paid",
+          "note": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F014",
+      "rule_id": "PAYROLL_POST_TERMINATION",
+      "title": "שכר אחרי סיום העסקה — EMP1046",
+      "amount_at_risk": 72000.0,
+      "confidence": 1.0,
+      "category": "payroll",
+      "domain": "hitech",
+      "action": "עובד EMP1046 סיים ב-2026-07-31. שולם שכר 3 חודשים אחרי הסיום. בדוק ובקש החזר.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.510508",
+      "evidence_count": 3,
+      "evidence": [
+        {
+          "payroll_id": "PAY000426",
+          "employee_id": "EMP1046",
+          "month": "2026-08-01",
+          "base_salary": 24000,
+          "overtime": 0,
+          "total": 24000,
+          "bank_account": "IL61-161483-276777762",
+          "end_date": "2026-07-31",
+          "month_date": "2026-08-01",
+          "end_date_dt": "2026-07-31"
+        },
+        {
+          "payroll_id": "PAY000427",
+          "employee_id": "EMP1046",
+          "month": "2026-09-01",
+          "base_salary": 24000,
+          "overtime": 0,
+          "total": 24000,
+          "bank_account": "IL61-161483-276777762",
+          "end_date": "2026-07-31",
+          "month_date": "2026-09-01",
+          "end_date_dt": "2026-07-31"
+        },
+        {
+          "payroll_id": "PAY000428",
+          "employee_id": "EMP1046",
+          "month": "2026-10-01",
+          "base_salary": 24000,
+          "overtime": 0,
+          "total": 24000,
+          "bank_account": "IL61-161483-276777762",
+          "end_date": "2026-07-31",
+          "month_date": "2026-10-01",
+          "end_date_dt": "2026-07-31"
+        }
+      ]
+    },
+    {
+      "finding_id": "F015",
+      "rule_id": "CLOUD_ZOMBIE",
+      "title": "שרת זומבי — ec2-staging",
+      "amount_at_risk": 51969.0,
+      "confidence": 0.95,
+      "category": "cloud",
+      "domain": "hitech",
+      "action": "שרת ec2-staging פועל 8 חודשים ללא תעבורה. עלות חודשית: ₪4,331. כבה או הקטן.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.503103",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "month": "2027-02-20T00:00:00",
+          "service": "ec2-staging",
+          "provider": "AWS",
+          "cost_ils": 3982.0,
+          "traffic_gb": 0,
+          "planted_issue": "CLOUD_ZOMBIE"
+        },
+        {
+          "month": "2027-03-22T00:00:00",
+          "service": "ec2-staging",
+          "provider": "AWS",
+          "cost_ils": 4386.0,
+          "traffic_gb": 0,
+          "planted_issue": "CLOUD_ZOMBIE"
+        }
+      ]
+    },
+    {
+      "finding_id": "F016",
+      "rule_id": "LICENSE_DUPLICATE_FUNC",
+      "title": "כפילות פונקציונלית — Jira ו-Monday.com (ניהול פרויקטים)",
+      "amount_at_risk": 48600.0,
+      "confidence": 0.7,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "Jira ו-Monday.com מבצעים את אותה מטרה (ניהול פרויקטים). שקול לאחד תחת כלי אחד. ביטול Jira יחסוך ~₪48,600/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.496176",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "tool": "Jira",
+          "seats_paid": 45,
+          "seats_used_30d": 43,
+          "price_per_seat_ils": 90,
+          "monthly_total": 4050,
+          "renewal_date": "2026-12-06",
+          "prev_year_price": 90,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_DUPLICATE_FUNC"
+        },
+        {
+          "tool": "Monday.com",
+          "seats_paid": 42,
+          "seats_used_30d": 38,
+          "price_per_seat_ils": 100,
+          "monthly_total": 4200,
+          "renewal_date": "2027-04-11",
+          "prev_year_price": 100,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_DUPLICATE_FUNC"
+        }
+      ]
+    },
+    {
+      "finding_id": "F017",
+      "rule_id": "DUP_CROSS_CURRENCY",
+      "title": "חשבונית כפולה בין-מטבעית — AWS Israel (ILS/USD)",
+      "amount_at_risk": 44400.0,
+      "confidence": 0.85,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "חשבונית AWS-2026-0512 שולמה פעמיים: ILS/USD. פנה ל-AWS Israel לקבלת זיכוי על התשלום הכפול.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.460609",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "invoice_id": "AWS-2026-0512",
+          "vendor_name": "AWS Israel",
+          "vendor_id": "IL-vendor-003",
+          "amount": 44200.0,
+          "currency": "ILS",
+          "invoice_date": "2026-05-01",
+          "payment_date": "2026-05-11",
+          "status": "paid",
+          "note": "PLANTED:DUP_CURRENCY_ILS",
+          "amount_ils": 44200.0
+        },
+        {
+          "invoice_id": "AWS-2026-0512",
+          "vendor_name": "AWS Israel",
+          "vendor_id": "IL-vendor-003",
+          "amount": 12000.0,
+          "currency": "USD",
+          "invoice_date": "2026-05-01",
+          "payment_date": "2026-05-11",
+          "status": "paid",
+          "note": "PLANTED:DUP_CURRENCY_USD",
+          "amount_ils": 44400.0
+        }
+      ]
+    },
+    {
+      "finding_id": "F018",
+      "rule_id": "DUP_INVOICE_EXACT",
+      "title": "חשבונית כפולה — AWS Israel",
+      "amount_at_risk": 44200.0,
+      "confidence": 1.0,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "פנה לספק לקבלת זיכוי על התשלום הכפול",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.423596",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "invoice_id": "AWS-2026-0512",
+          "vendor_name": "AWS Israel",
+          "vendor_id": "IL-vendor-003",
+          "amount": 44200.0,
+          "currency": "ILS",
+          "invoice_date": "2026-05-01",
+          "payment_date": "2026-05-11",
+          "status": "paid",
+          "note": "PLANTED:DUP_CURRENCY_ILS"
+        },
+        {
+          "invoice_id": "AWS-2026-0512",
+          "vendor_name": "AWS Israel",
+          "vendor_id": "IL-vendor-003",
+          "amount": 12000.0,
+          "currency": "USD",
+          "invoice_date": "2026-05-01",
+          "payment_date": "2026-05-11",
+          "status": "paid",
+          "note": "PLANTED:DUP_CURRENCY_USD"
+        }
+      ]
+    },
+    {
+      "finding_id": "F019",
+      "rule_id": "LICENSE_DUPLICATE_FUNC",
+      "title": "כפילות פונקציונלית — Jira ו-Linear (ניהול פרויקטים)",
+      "amount_at_risk": 43200.0,
+      "confidence": 0.7,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "Jira ו-Linear מבצעים את אותה מטרה (ניהול פרויקטים). שקול לאחד תחת כלי אחד. ביטול Linear יחסוך ~₪43,200/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.496205",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "tool": "Jira",
+          "seats_paid": 45,
+          "seats_used_30d": 43,
+          "price_per_seat_ils": 90,
+          "monthly_total": 4050,
+          "renewal_date": "2026-12-06",
+          "prev_year_price": 90,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_DUPLICATE_FUNC"
+        },
+        {
+          "tool": "Linear",
+          "seats_paid": 45,
+          "seats_used_30d": 42,
+          "price_per_seat_ils": 80,
+          "monthly_total": 3600,
+          "renewal_date": "2027-02-25",
+          "prev_year_price": 80,
+          "price_change_pct": 0.0,
+          "planted_issue": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F020",
+      "rule_id": "LICENSE_DUPLICATE_FUNC",
+      "title": "כפילות פונקציונלית — Monday.com ו-Linear (ניהול פרויקטים)",
+      "amount_at_risk": 43200.0,
+      "confidence": 0.7,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "Monday.com ו-Linear מבצעים את אותה מטרה (ניהול פרויקטים). שקול לאחד תחת כלי אחד. ביטול Linear יחסוך ~₪43,200/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.496229",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "tool": "Monday.com",
+          "seats_paid": 42,
+          "seats_used_30d": 38,
+          "price_per_seat_ils": 100,
+          "monthly_total": 4200,
+          "renewal_date": "2027-04-11",
+          "prev_year_price": 100,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_DUPLICATE_FUNC"
+        },
+        {
+          "tool": "Linear",
+          "seats_paid": 45,
+          "seats_used_30d": 42,
+          "price_per_seat_ils": 80,
+          "monthly_total": 3600,
+          "renewal_date": "2027-02-25",
+          "prev_year_price": 80,
+          "price_change_pct": 0.0,
+          "planted_issue": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F021",
+      "rule_id": "DUP_INVOICE_EXACT",
+      "title": "חשבונית כפולה — מילגם בע\"מ",
+      "amount_at_risk": 23400.0,
+      "confidence": 1.0,
+      "category": "duplicates",
+      "domain": "hitech",
+      "action": "פנה לספק לקבלת זיכוי על התשלום הכפול",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.424705",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "invoice_id": "INV04471",
+          "vendor_name": "מילגם בע\"מ",
+          "vendor_id": "IL-vendor-001",
+          "amount": 23400.0,
+          "currency": "ILS",
+          "invoice_date": "2026-03-12",
+          "payment_date": "2026-03-21",
+          "status": "paid",
+          "note": "PLANTED:DUP_EXACT_1"
+        },
+        {
+          "invoice_id": "INV04471",
+          "vendor_name": "מילגם בע\"מ",
+          "vendor_id": "IL-vendor-001",
+          "amount": 23400.0,
+          "currency": "ILS",
+          "invoice_date": "2026-03-15",
+          "payment_date": "2026-04-04",
+          "status": "paid",
+          "note": "PLANTED:DUP_EXACT_2"
+        }
+      ]
+    },
+    {
+      "finding_id": "F022",
+      "rule_id": "AUTO_RENEWAL_JUMP",
+      "title": "קפיצת מחיר בחידוש — HubSpot CRM (+32%)",
+      "amount_at_risk": 13968.0,
+      "confidence": 0.9,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "HubSpot CRM עלה ב-32% בחידוש האחרון (₪303 → ₪400/רישיון) (חידוש: 2026-11-18). בקש הצעת מחיר מתחרה לפני הזדמנות הוידוא הבאה. עלות עודפת: ₪13,968/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.496508",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "HubSpot CRM",
+          "seats_paid": 12,
+          "seats_used_30d": 11,
+          "price_per_seat_ils": 400,
+          "monthly_total": 4800,
+          "renewal_date": "2026-11-18",
+          "prev_year_price": 303,
+          "price_change_pct": 32.0,
+          "planted_issue": "AUTO_RENEWAL_JUMP"
+        }
+      ]
+    },
+    {
+      "finding_id": "F023",
+      "rule_id": "LICENSE_UNUSED",
+      "title": "רישיונות Figma — 8 מתוך 14 לא בשימוש (57%)",
+      "amount_at_risk": 13440,
+      "confidence": 0.9,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בטל 8 רישיונות מיותרים בסבב החידוש הבא. חיסכון: ₪13,440/שנה",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.495339",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Figma",
+          "seats_paid": 14,
+          "seats_used_30d": 6,
+          "price_per_seat_ils": 140,
+          "monthly_total": 1960,
+          "renewal_date": "2027-05-15",
+          "prev_year_price": 140,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_UNUSED"
+        }
+      ]
+    },
+    {
+      "finding_id": "F024",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות HubSpot CRM — 1 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 4800.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות HubSpot CRM בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪4,800/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514519",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "HubSpot CRM",
+          "seats_paid": 12,
+          "seats_used_30d": 11,
+          "price_per_seat_ils": 400,
+          "monthly_total": 4800,
+          "renewal_date": "2026-11-18",
+          "prev_year_price": 303,
+          "price_change_pct": 32.0,
+          "planted_issue": "AUTO_RENEWAL_JUMP"
+        }
+      ]
+    },
+    {
+      "finding_id": "F025",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Figma — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 3360.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Figma בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪3,360/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514199",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Figma",
+          "seats_paid": 14,
+          "seats_used_30d": 6,
+          "price_per_seat_ils": 140,
+          "monthly_total": 1960,
+          "renewal_date": "2027-05-15",
+          "prev_year_price": 140,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_UNUSED"
+        }
+      ]
+    },
+    {
+      "finding_id": "F026",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Monday.com — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 2400.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Monday.com בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪2,400/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514411",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Monday.com",
+          "seats_paid": 42,
+          "seats_used_30d": 38,
+          "price_per_seat_ils": 100,
+          "monthly_total": 4200,
+          "renewal_date": "2027-04-11",
+          "prev_year_price": 100,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_DUPLICATE_FUNC"
+        }
+      ]
+    },
+    {
+      "finding_id": "F027",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Jira — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 2160.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Jira בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪2,160/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514359",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Jira",
+          "seats_paid": 45,
+          "seats_used_30d": 43,
+          "price_per_seat_ils": 90,
+          "monthly_total": 4050,
+          "renewal_date": "2026-12-06",
+          "prev_year_price": 90,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_DUPLICATE_FUNC"
+        }
+      ]
+    },
+    {
+      "finding_id": "F028",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Slack Pro — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 1920.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Slack Pro בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪1,920/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514271",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Slack Pro",
+          "seats_paid": 87,
+          "seats_used_30d": 82,
+          "price_per_seat_ils": 80,
+          "monthly_total": 6960,
+          "renewal_date": "2026-11-02",
+          "prev_year_price": 80,
+          "price_change_pct": 0.0,
+          "planted_issue": "LICENSE_DEPARTED"
+        }
+      ]
+    },
+    {
+      "finding_id": "F029",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Miro — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 1920.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Miro בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪1,920/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514721",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Miro",
+          "seats_paid": 10,
+          "seats_used_30d": 7,
+          "price_per_seat_ils": 80,
+          "monthly_total": 800,
+          "renewal_date": "2027-03-10",
+          "prev_year_price": 80,
+          "price_change_pct": 0.0,
+          "planted_issue": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F030",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Linear — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 1920.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Linear בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪1,920/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514778",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Linear",
+          "seats_paid": 45,
+          "seats_used_30d": 42,
+          "price_per_seat_ils": 80,
+          "monthly_total": 3600,
+          "renewal_date": "2027-02-25",
+          "prev_year_price": 80,
+          "price_change_pct": 0.0,
+          "planted_issue": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F031",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Zoom — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 1680.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Zoom בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪1,680/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514464",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Zoom",
+          "seats_paid": 30,
+          "seats_used_30d": 28,
+          "price_per_seat_ils": 70,
+          "monthly_total": 2100,
+          "renewal_date": "2026-12-30",
+          "prev_year_price": 70,
+          "price_change_pct": 0.0,
+          "planted_issue": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F032",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Notion — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 1440.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Notion בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪1,440/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514575",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Notion",
+          "seats_paid": 20,
+          "seats_used_30d": 18,
+          "price_per_seat_ils": 60,
+          "monthly_total": 1200,
+          "renewal_date": "2027-05-01",
+          "prev_year_price": 60,
+          "price_change_pct": 0.0,
+          "planted_issue": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F033",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Canva — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 1320.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Canva בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪1,320/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514835",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Canva",
+          "seats_paid": 12,
+          "seats_used_30d": 8,
+          "price_per_seat_ils": 55,
+          "monthly_total": 660,
+          "renewal_date": "2027-02-04",
+          "prev_year_price": 55,
+          "price_change_pct": 0.0,
+          "planted_issue": NaN
+        }
+      ]
+    },
+    {
+      "finding_id": "F034",
+      "rule_id": "LICENSE_DEPARTED",
+      "title": "רישיונות Postman — 2 עשויים שייכים לעובדים שעזבו",
+      "amount_at_risk": 1200.0,
+      "confidence": 0.8,
+      "category": "licenses",
+      "domain": "hitech",
+      "action": "בדוק עם IT/HR אם רישיונות Postman בוטלו לאחר עזיבת 2 עובדים ב-6 החודשים האחרונים. חיסכון פוטנציאלי: ₪1,200/שנה.",
+      "status": "open",
+      "created_at": "2026-11-01T15:03:41.514915",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "tool": "Postman",
+          "seats_paid": 20,
+          "seats_used_30d": 18,
+          "price_per_seat_ils": 50,
+          "monthly_total": 1000,
+          "renewal_date": "2026-11-16",
+          "prev_year_price": 50,
+          "price_change_pct": 0.0,
+          "planted_issue": NaN
+        }
+      ]
+    }
+  ]
+}

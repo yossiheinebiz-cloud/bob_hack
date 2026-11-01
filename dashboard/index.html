@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>איפה הכסף — לוח בקרה</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg:      #080A10;
+  --surface: #0F1219;
+  --card:    #131720;
+  --line:    #1C2030;
+  --line2:   #242840;
+  --ink:     #E4E8F4;
+  --muted:   #52586E;
+  --dim:     #282C40;
+  --orange:  #F59E0B;
+  --green:   #10B981;
+  --red:     #EF4444;
+  --blue:    #60A5FA;
+  --purple:  #A78BFA;
+}
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  direction: rtl;
+}
+
+/* ── TOP BAR ─────────────────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 0;
+  height: 52px; padding: 0 28px;
+}
+.logo {
+  font-size: 15px; font-weight: 800; color: var(--orange);
+  letter-spacing: -0.02em; margin-left: 32px; white-space: nowrap;
+}
+.logo em { color: var(--ink); font-style: normal; }
+.topnav { display: flex; gap: 2px; flex: 1; }
+.tnav {
+  padding: 6px 14px; border-radius: 5px;
+  font-size: 13px; color: var(--muted);
+  cursor: pointer; border: none; background: none;
+  transition: color .15s, background .15s;
+}
+.tnav:hover { color: var(--ink); }
+.tnav.active { color: var(--ink); background: var(--dim); }
+.topbar-right { display: flex; align-items: center; gap: 12px; margin-right: auto; }
+.company-pill {
+  font-size: 12px; color: var(--muted);
+  border: 1px solid var(--line2); border-radius: 4px;
+  padding: 4px 10px;
+}
+.run-btn {
+  background: var(--orange); color: #000;
+  border: none; border-radius: 5px;
+  padding: 7px 16px; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: opacity .15s;
+}
+.run-btn:hover { opacity: .85; }
+
+/* ── LAYOUT ──────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 0;
+  min-height: calc(100vh - 52px);
+}
+.main-col { padding: 28px; border-left: 1px solid var(--line); overflow: hidden; }
+.side-col { padding: 24px 20px; overflow-y: auto; }
+
+/* ── HERO STRIP ──────────────────────────────── */
+.hero-strip {
+  display: grid;
+  grid-template-columns: auto 1px 1fr 1px auto 1px auto;
+  align-items: center;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.hero-divider { background: var(--line); align-self: stretch; }
+.hero-cell { padding: 20px 28px; }
+.hero-cell:first-child { min-width: 220px; }
+.hc-label {
+  font-size: 11px; color: var(--muted);
+  margin-bottom: 6px; letter-spacing: 0;
+}
+.hc-num {
+  font-size: 36px; font-weight: 800;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--orange);
+}
+.hc-num.green { color: var(--green); }
+.hc-num.red   { color: var(--red); }
+.hc-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+.hc-fill { flex: 1; padding: 20px 28px; }
+
+/* ── SCAN TICKER ─────────────────────────────── */
+.scan-bar {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+  font-size: 12px; color: var(--muted);
+  overflow: hidden;
+}
+.scan-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .3; }
+}
+.scan-ticker {
+  display: flex; gap: 32px; overflow: hidden;
+  white-space: nowrap;
+}
+.scan-item { display: flex; gap: 6px; align-items: center; }
+.scan-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ── SECTION HEADER ──────────────────────────── */
+.sec-head {
+  display: flex; align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.sec-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+.sec-link {
+  font-size: 12px; color: var(--orange);
+  cursor: pointer; border: none; background: none;
+  padding: 0;
+}
+
+/* ── CATEGORY TILES ──────────────────────────── */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.cat-tile {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color .15s;
+  position: relative;
+  overflow: hidden;
+}
+.cat-tile::after {
+  content: '';
+  position: absolute; bottom: 0; right: 0; left: 0;
+  height: 2px;
+  background: var(--accent-color, var(--line));
+}
+.cat-tile:hover { border-color: var(--accent-color, var(--orange)); }
+.cat-tile.active { border-color: var(--accent-color, var(--orange)); background: var(--surface); }
+.ct-label { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.ct-num {
+  font-size: 22px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em; line-height: 1;
+  color: var(--accent-color, var(--ink));
+}
+.ct-count { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.ct-bar {
+  position: absolute; bottom: 2px; right: 0; left: 0;
+  height: 2px; background: var(--accent-color, var(--line));
+  opacity: .7;
+}
+
+/* ── FINDINGS TABLE ──────────────────────────── */
+.ftable { width: 100%; }
+.ftable-head {
+  display: grid;
+  grid-template-columns: 28px 1fr 110px 72px 90px;
+  gap: 12px;
+  padding: 8px 12px;
+  font-size: 11px; color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.frow {
+  display: grid;
+  grid-template-columns: 28px 1fr 110px 72px 90px;
+  gap: 12px;
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  transition: background .1s;
+  align-items: center;
+}
+.frow:last-child { border-bottom: none; }
+.frow:hover { background: rgba(245,158,11,.04); }
+.frow.active-row { background: rgba(245,158,11,.07); border-right: 2px solid var(--orange); }
+.f-rank { font-size: 11px; color: var(--muted); font-weight: 600; text-align: center; }
+.f-title { font-size: 13px; font-weight: 500; line-height: 1.3; }
+.f-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.f-amt {
+  font-size: 14px; font-weight: 700; color: var(--orange);
+  font-variant-numeric: tabular-nums; text-align: left;
+}
+.f-conf { font-size: 11px; color: var(--muted); text-align: center; }
+.conf-pips {
+  display: flex; gap: 2px; justify-content: center; margin-bottom: 2px;
+}
+.pip {
+  width: 5px; height: 12px; border-radius: 1px;
+  background: var(--line2);
+}
+.pip.on { background: var(--orange); }
+.sbadge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 3px;
+}
+.s-open   { background: rgba(245,158,11,.12); color: var(--orange); }
+.s-prog   { background: rgba(96,165,250,.12);  color: var(--blue); }
+.s-fixed  { background: rgba(16,185,129,.12);  color: var(--green); }
+.s-ok     { background: rgba(82,88,110,.15);   color: var(--muted); }
+
+/* ── CATEGORY BADGES ─────────────────────────── */
+.cbadge {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  padding: 1px 6px; border-radius: 3px; margin-top: 2px;
+}
+.cb-dup  { background: rgba(239,68,68,.1);    color: #FCA5A5; }
+.cb-pay  { background: rgba(96,165,250,.1);   color: var(--blue); }
+.cb-lic  { background: rgba(245,158,11,.1);   color: var(--orange); }
+.cb-cld  { background: rgba(16,185,129,.1);   color: var(--green); }
+.cb-gen  { background: rgba(167,139,250,.1);  color: var(--purple); }
+
+/* ── SIDE PANEL: DETAIL ──────────────────────── */
+.side-empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100%; gap: 12px;
+  color: var(--muted); text-align: center;
+  padding: 40px 20px;
+}
+.side-empty-icon {
+  font-size: 40px; line-height: 1;
+  opacity: .3;
+  filter: grayscale(1);
+}
+.side-empty-text { font-size: 13px; line-height: 1.6; }
+
+.detail-wrap { display: flex; flex-direction: column; gap: 0; }
+
+.d-top {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+}
+.d-category { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.d-title { font-size: 16px; font-weight: 700; line-height: 1.3; margin-bottom: 16px; }
+.d-amount {
+  font-size: 44px; font-weight: 800;
+  color: var(--orange); letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums; line-height: 1;
+  margin-bottom: 4px;
+}
+.d-amount-label { font-size: 11px; color: var(--muted); }
+
+.d-section { margin-bottom: 20px; }
+.d-sec-label {
+  font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 8px;
+}
+.d-text {
+  font-size: 13px; color: var(--ink);
+  line-height: 1.6;
+  background: var(--surface); border-radius: 5px;
+  padding: 12px; border-right: 2px solid var(--orange);
+}
+.d-rule-chip {
+  display: inline-block; font-size: 11px;
+  font-family: monospace; padding: 3px 8px;
+  background: var(--dim); border-radius: 3px;
+  color: var(--muted); margin-bottom: 12px;
+}
+
+/* EVIDENCE TABLE */
+.ev-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.ev-table th {
+  text-align: right; padding: 5px 8px;
+  color: var(--muted); border-bottom: 1px solid var(--line);
+  font-weight: 500; white-space: nowrap;
+}
+.ev-table td {
+  padding: 7px 8px; border-bottom: 1px solid var(--line);
+  color: var(--ink); vertical-align: top;
+}
+.ev-table tr:last-child td { border-bottom: none; }
+.ev-hl { color: var(--orange); font-weight: 700; }
+
+/* TIMELINE in evidence */
+.ev-timeline { display: flex; flex-direction: column; gap: 6px; }
+.ev-tl-row {
+  display: flex; align-items: baseline; gap: 10px;
+  font-size: 12px; padding: 8px 10px;
+  background: var(--surface); border-radius: 4px;
+}
+.ev-tl-date { color: var(--muted); min-width: 90px; white-space: nowrap; }
+.ev-tl-val { color: var(--orange); font-weight: 700; font-variant-numeric: tabular-nums; }
+.ev-tl-note { color: var(--muted); font-size: 11px; }
+
+/* ACTION BUTTONS */
+.d-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+.dact {
+  width: 100%; padding: 10px 16px; border: none; border-radius: 5px;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: opacity .15s; text-align: center;
+}
+.dact-primary { background: var(--green); color: #000; }
+.dact-secondary { background: var(--blue); color: #000; }
+.dact-ghost {
+  background: none; color: var(--muted);
+  border: 1px solid var(--line2);
+}
+.dact:hover { opacity: .85; }
+
+/* ── TOAST ───────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--green); color: #000;
+  padding: 10px 18px; border-radius: 5px;
+  font-size: 13px; font-weight: 700;
+  z-index: 999; display: none;
+  animation: slideup .2s ease;
+}
+@keyframes slideup {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── FILTER TABS ─────────────────────────────── */
+.filter-tabs {
+  display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.ftab {
+  font-size: 12px; padding: 4px 12px;
+  border-radius: 4px; border: 1px solid var(--line2);
+  color: var(--muted); cursor: pointer; background: none;
+  transition: all .15s;
+}
+.ftab:hover { color: var(--ink); border-color: var(--muted); }
+.ftab.active { background: var(--dim); color: var(--ink); border-color: var(--line2); }
+
+/* ── EMPTY STATE ─────────────────────────────── */
+.empty-state { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">איפה <em>הכסף</em></div>
+  <nav class="topnav">
+    <button class="tnav active" onclick="setView('open')">פתוחים</button>
+    <button class="tnav" onclick="setView('all')">הכל</button>
+    <button class="tnav" onclick="setView('fixed')">טופלו</button>
+  </nav>
+  <div class="topbar-right">
+    <span class="company-pill" id="company-pill">טוען...</span>
+    <button class="run-btn" onclick="showToastMsg('⚡ סריקה הושלמה — 5 ממצאים חדשים')">הרץ סריקה</button>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- MAIN COLUMN -->
+  <div class="main-col">
+
+    <!-- SCAN TICKER -->
+    <div class="scan-bar">
+      <div class="scan-dot"></div>
+      <span>סריקה אחרונה:</span>
+      <div class="scan-ticker" id="scan-ticker">
+        <span class="scan-item">עובדים: <span class="scan-val">91</span></span>
+        <span class="scan-item">חשבוניות: <span class="scan-val">488</span></span>
+        <span class="scan-item">רישיונות: <span class="scan-val">15</span></span>
+        <span class="scan-item">שורות ענן: <span class="scan-val">192</span></span>
+        <span class="scan-item">זמן ריצה: <span class="scan-val">1.8s</span></span>
+        <span class="scan-item">תאריך: <span class="scan-val">01/11/2026 14:43</span></span>
+      </div>
+    </div>
+
+    <!-- HERO STRIP -->
+    <div class="hero-strip" id="hero-strip">
+      <div class="hero-cell">
+        <div class="hc-label">כסף בסיכון</div>
+        <div class="hc-num" id="h-risk">—</div>
+        <div class="hc-sub" id="h-sub">ממצאים פתוחים</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hc-fill"></div>
+      <div class="hero-divider"></div>
+      <div class="hero-cell">
+        <div class="hc-label">ממצאים</div>
+        <div class="hc-num red" id="h-count">—</div>
+        <div class="hc-sub">פתוחים</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-cell">
+        <div class="hc-label">ממוצע לממצא</div>
+        <div class="hc-num" id="h-avg" style="font-size:26px">—</div>
+        <div class="hc-sub">בסיכון</div>
+      </div>
+    </div>
+
+    <!-- CATEGORY TILES -->
+    <div class="cat-grid" id="cat-grid"></div>
+
+    <!-- FINDINGS TABLE -->
+    <div class="sec-head">
+      <span class="sec-title" id="findings-label">ממצאים</span>
+      <div class="filter-tabs" id="filter-tabs"></div>
+    </div>
+
+    <div class="ftable">
+      <div class="ftable-head">
+        <span>#</span>
+        <span>ממצא</span>
+        <span style="text-align:left">סכום בסיכון</span>
+        <span style="text-align:center">ביטחון</span>
+        <span>סטטוס</span>
+      </div>
+      <div id="findings-body"></div>
+    </div>
+
+  </div><!-- /main-col -->
+
+  <!-- SIDE COLUMN -->
+  <div class="side-col" id="side-col">
+    <div class="side-empty" id="side-empty">
+      <div class="side-empty-icon">🔍</div>
+      <div class="side-empty-text">בחר ממצא<br>לצפייה בפרטים ובראיות</div>
+    </div>
+    <div class="detail-wrap" id="detail-wrap" style="display:none"></div>
+  </div>
+
+</div><!-- /shell -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ── DATA ──────────────────────────────────────── */
+let DATA = null;
+let activeId = null;
+let currentView = 'open';
+let catFilter = null;
+
+const CAT_LABELS = {
+  duplicates: 'תשלומים כפולים',
+  payroll:    'שכר',
+  licenses:   'רישיונות',
+  cloud:      'ענן',
+  general:    'כללי'
+};
+const CAT_ACCENT = {
+  duplicates: '#EF4444',
+  payroll:    '#60A5FA',
+  licenses:   '#F59E0B',
+  cloud:      '#10B981',
+  general:    '#A78BFA'
+};
+const CAT_BADGE = {
+  duplicates: 'cb-dup',
+  payroll:    'cb-pay',
+  licenses:   'cb-lic',
+  cloud:      'cb-cld',
+  general:    'cb-gen'
+};
+
+/* ── UTILS ─────────────────────────────────────── */
+function ils(n) {
+  return '₪' + Math.round(n).toLocaleString('he-IL');
+}
+function pct(n) { return Math.round(n * 100) + '%'; }
+
+function pips(confidence) {
+  const filled = Math.round(confidence * 5);
+  return Array.from({length: 5}, (_, i) =>
+    `<div class="pip ${i < filled ? 'on' : ''}"></div>`
+  ).join('');
+}
+
+function statusBadge(s) {
+  const map = {
+    open:        ['s-open',  'פתוח'],
+    in_progress: ['s-prog',  'בטיפול'],
+    fixed:       ['s-fixed', 'טופל'],
+    reviewed_ok: ['s-ok',    'תקין']
+  };
+  const [cls, label] = map[s] || ['s-ok', s];
+  return `<span class="sbadge ${cls}">${label}</span>`;
+}
+
+/* ── FETCH ─────────────────────────────────────── */
+async function load() {
+  try {
+    const r = await fetch('findings.json');
+    DATA = await r.json();
+  } catch {
+    DATA = FALLBACK;
+  }
+  render();
+}
+
+/* ── RENDER ────────────────────────────────────── */
+function render() {
+  document.getElementById('company-pill').textContent = DATA.company || 'חברה';
+
+  const visible = getVisible();
+
+  renderHero(visible);
+  renderCatGrid(visible);
+  renderTable(visible);
+}
+
+function getVisible() {
+  let list = DATA.findings || [];
+  if (currentView === 'open')  list = list.filter(f => f.status === 'open');
+  if (currentView === 'fixed') list = list.filter(f => ['fixed','reviewed_ok'].includes(f.status));
+  if (catFilter) list = list.filter(f => f.category === catFilter);
+  return list;
+}
+
+function renderHero(visible) {
+  const total = visible.reduce((s, f) => s + f.amount_at_risk, 0);
+  const count = visible.length;
+  document.getElementById('h-risk').textContent  = count ? ils(total) : '₪0';
+  document.getElementById('h-count').textContent = count;
+  document.getElementById('h-avg').textContent   = count ? ils(total / count) : '—';
+  document.getElementById('h-sub').textContent   = `${count} ממצאים פתוחים`;
+}
+
+function renderCatGrid(visible) {
+  const el = document.getElementById('cat-grid');
+  const all = DATA.findings || [];
+
+  // aggregate by category from all data
+  const agg = {};
+  all.forEach(f => {
+    if (!agg[f.category]) agg[f.category] = {total: 0, count: 0};
+    agg[f.category].total += f.amount_at_risk;
+    agg[f.category].count++;
+  });
+
+  el.innerHTML = Object.entries(agg)
+    .sort((a,b) => b[1].total - a[1].total)
+    .map(([cat, d]) => {
+      const accent = CAT_ACCENT[cat] || '#888';
+      const isActive = catFilter === cat;
+      return `<div class="cat-tile${isActive ? ' active' : ''}"
+                   style="--accent-color:${accent}"
+                   onclick="toggleCat('${cat}')">
+        <div class="ct-label">${CAT_LABELS[cat] || cat}</div>
+        <div class="ct-num">${ils(d.total)}</div>
+        <div class="ct-count">${d.count} ממצאים</div>
+      </div>`;
+    }).join('');
+}
+
+function renderTable(visible) {
+  const el = document.getElementById('findings-body');
+  document.getElementById('findings-label').textContent =
+    `ממצאים (${visible.length})`;
+
+  if (!visible.length) {
+    el.innerHTML = `<div class="empty-state">אין ממצאים להצגה</div>`;
+    return;
+  }
+
+  const sorted = [...visible].sort((a,b) => b.amount_at_risk - a.amount_at_risk);
+
+  el.innerHTML = sorted.map((f, i) => {
+    const isActive = f.finding_id === activeId;
+    const catCls = CAT_BADGE[f.category] || 'cb-gen';
+    return `<div class="frow${isActive ? ' active-row' : ''}" onclick="openDetail('${f.finding_id}')">
+      <div class="f-rank">${i+1}</div>
+      <div>
+        <div class="f-title">${f.title}</div>
+        <span class="cbadge ${catCls}">${CAT_LABELS[f.category] || f.category}</span>
+      </div>
+      <div class="f-amt">${ils(f.amount_at_risk)}</div>
+      <div class="f-conf">
+        <div class="conf-pips">${pips(f.confidence)}</div>
+        <div>${pct(f.confidence)}</div>
+      </div>
+      <div>${statusBadge(f.status)}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── DETAIL PANEL ──────────────────────────────── */
+function openDetail(id) {
+  const f = DATA.findings.find(x => x.finding_id === id);
+  if (!f) return;
+  activeId = id;
+  render(); // re-highlight row
+
+  const wrap = document.getElementById('detail-wrap');
+  document.getElementById('side-empty').style.display = 'none';
+  wrap.style.display = 'flex';
+  wrap.style.flexDirection = 'column';
+
+  const accent = CAT_ACCENT[f.category] || '#888';
+  const catLabel = CAT_LABELS[f.category] || f.category;
+
+  wrap.innerHTML = `
+    <div class="d-top">
+      <div class="d-category">${catLabel}</div>
+      <div class="d-title">${f.title}</div>
+      <div class="d-amount">${ils(f.amount_at_risk)}</div>
+      <div class="d-amount-label">בסיכון · ${statusBadge(f.status)}</div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-sec-label">כלל</div>
+      <div class="d-rule-chip">${f.rule_id}</div>
+      <div class="d-text">${f.action}</div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-sec-label">ראיות (${(f.evidence||[]).length} שורות)</div>
+      ${renderEvidence(f)}
+    </div>
+
+    <div class="d-actions">
+      <button class="dact dact-primary"  onclick="actOnFinding('${id}','fixed')">✅ הוחזר כסף — סגור ממצא</button>
+      <button class="dact dact-secondary" onclick="actOnFinding('${id}','in_progress')">🔄 בטיפול</button>
+      <button class="dact dact-ghost"    onclick="actOnFinding('${id}','reviewed_ok')">✗ נבדק — תקין</button>
+    </div>
+  `;
+}
+
+function renderEvidence(f) {
+  const ev = f.evidence || [];
+  if (!ev.length) return '<div style="color:var(--muted);font-size:12px">אין ראיות</div>';
+
+  // Choose rendering strategy by rule type
+  if (f.category === 'payroll') return renderPayrollEvidence(ev, f);
+  if (f.category === 'cloud')   return renderCloudEvidence(ev, f);
+  if (f.category === 'duplicates') return renderInvoiceEvidence(ev, f);
+  return renderGenericEvidence(ev);
+}
+
+function renderPayrollEvidence(ev, f) {
+  const end = ev[0]?.end_date || '—';
+  return `
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
+      סיום העסקה: <strong style="color:var(--ink)">${end}</strong>
+    </div>
+    <div class="ev-timeline">
+      ${ev.map(row => `
+        <div class="ev-tl-row">
+          <span class="ev-tl-date">${fmtMonth(row.month)}</span>
+          <span class="ev-tl-val">${ils(row.total)}</span>
+          <span class="ev-tl-note">${row.payroll_id || ''}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px">
+      סה"כ שולם אחרי סיום: <strong style="color:var(--orange)">${ils(ev.reduce((s,r) => s+r.total, 0))}</strong>
+    </div>
+  `;
+}
+
+function renderCloudEvidence(ev, f) {
+  return `
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
+      שרת <strong style="color:var(--ink)">${ev[0]?.service || ''}</strong> —
+      אפס תעבורה ${ev.length} חודשים רצופים
+    </div>
+    <div class="ev-timeline">
+      ${ev.map(row => `
+        <div class="ev-tl-row">
+          <span class="ev-tl-date">${fmtMonth(row.month)}</span>
+          <span class="ev-tl-val">${ils(row.cost_ils)}</span>
+          <span class="ev-tl-note">תעבורה: ${row.traffic_gb} GB</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderInvoiceEvidence(ev, f) {
+  return `
+    <table class="ev-table">
+      <thead><tr><th>מספר חשבונית</th><th>ספק</th><th>תאריך</th><th>סכום</th><th>מטבע</th></tr></thead>
+      <tbody>
+        ${ev.map((row, i) => `
+          <tr>
+            <td class="${i > 0 ? 'ev-hl' : ''}">${row.invoice_id || '—'}</td>
+            <td>${row.vendor_name || '—'}</td>
+            <td>${row.invoice_date || '—'}</td>
+            <td class="ev-hl">${ils(row.amount)}</td>
+            <td>${row.currency || 'ILS'}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:var(--red);font-weight:600">
+      ⚠ אותה חשבונית שולמה ${ev.length} פעמים
+    </div>
+  `;
+}
+
+function renderGenericEvidence(ev) {
+  const keys = Object.keys(ev[0])
+    .filter(k => !['_planted','planted_issue','month_date','end_date_dt'].includes(k))
+    .slice(0, 6);
+  return `
+    <table class="ev-table">
+      <thead><tr>${keys.map(k => `<th>${k}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${ev.slice(0,5).map(row =>
+          `<tr>${keys.map(k => `<td>${row[k] ?? '—'}</td>`).join('')}</tr>`
+        ).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function fmtMonth(m) {
+  if (!m) return '—';
+  const d = new Date(m);
+  if (isNaN(d)) return m;
+  return d.toLocaleDateString('he-IL', {month: 'short', year: 'numeric'});
+}
+
+/* ── ACTIONS ───────────────────────────────────── */
+function actOnFinding(id, status) {
+  const f = DATA.findings.find(x => x.finding_id === id);
+  if (!f) return;
+  f.status = status;
+  activeId = null;
+  document.getElementById('side-empty').style.display = 'flex';
+  document.getElementById('detail-wrap').style.display = 'none';
+  const msgs = {
+    fixed:       `✅ ${ils(f.amount_at_risk)} סומנו כהוחזרו`,
+    in_progress: '🔄 ממצא עבר לטיפול',
+    reviewed_ok: 'ממצא סומן כתקין'
+  };
+  showToastMsg(msgs[status] || 'עודכן');
+  render();
+}
+
+function setView(v) {
+  currentView = v;
+  catFilter = null;
+  document.querySelectorAll('.tnav').forEach((el, i) => {
+    el.classList.toggle('active', ['open','all','fixed'][i] === v);
+  });
+  render();
+}
+
+function toggleCat(cat) {
+  catFilter = catFilter === cat ? null : cat;
+  render();
+}
+
+function showToastMsg(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.style.display = 'none', 2800);
+}
+
+/* ── FALLBACK DATA ─────────────────────────────── */
+const FALLBACK = {
+  company: "טכנוסיס בע\"מ",
+  generated_at: "2026-11-01T14:43:12",
+  total_at_risk: 205009,
+  findings_count: 5,
+  by_category: {duplicates:67600, payroll:72000, licenses:13440, cloud:51969},
+  findings: [
+    {finding_id:"F001",rule_id:"PAYROLL_POST_TERMINATION",title:"שכר אחרי סיום העסקה — EMP1046",amount_at_risk:72000,confidence:1.0,category:"payroll",action:"עובד EMP1046 סיים ב-31/07/2026. שולם שכר 3 חודשים אחרי הסיום. בדוק ובקש החזר.",status:"open",evidence:[{payroll_id:"PAY000426",employee_id:"EMP1046",month:"2026-08-01",total:24000,end_date:"2026-07-31"},{payroll_id:"PAY000427",employee_id:"EMP1046",month:"2026-09-01",total:24000,end_date:"2026-07-31"},{payroll_id:"PAY000428",employee_id:"EMP1046",month:"2026-10-01",total:24000,end_date:"2026-07-31"}]},
+    {finding_id:"F002",rule_id:"CLOUD_ZOMBIE",title:"שרת זומבי — ec2-staging",amount_at_risk:51969,confidence:0.95,category:"cloud",action:"שרת ec2-staging פועל 8 חודשים ללא תעבורה. עלות חודשית: ₪4,331. כבה או הקטן.",status:"open",evidence:[{month:"2026-08-01",service:"ec2-staging",cost_ils:4291,traffic_gb:0},{month:"2026-09-01",service:"ec2-staging",cost_ils:4388,traffic_gb:0},{month:"2026-10-01",service:"ec2-staging",cost_ils:4290,traffic_gb:0}]},
+    {finding_id:"F003",rule_id:"DUP_INVOICE_EXACT",title:"חשבונית כפולה — AWS Israel",amount_at_risk:44200,confidence:1.0,category:"duplicates",action:"פנה לספק לקבלת זיכוי על התשלום הכפול",status:"open",evidence:[{invoice_id:"AWS-2026-0512",vendor_name:"AWS Israel",amount:44200,currency:"ILS",invoice_date:"2026-05-01"},{invoice_id:"AWS-2026-0512",vendor_name:"AWS Israel",amount:12000,currency:"USD",invoice_date:"2026-05-01"}]},
+    {finding_id:"F004",rule_id:"DUP_INVOICE_EXACT",title:"חשבונית כפולה — מילגם בע\"מ",amount_at_risk:23400,confidence:1.0,category:"duplicates",action:"פנה לספק לקבלת זיכוי על התשלום הכפול",status:"open",evidence:[{invoice_id:"INV04471",vendor_name:"מילגם בע\"מ",amount:23400,currency:"ILS",invoice_date:"2026-03-12"},{invoice_id:"INV04471",vendor_name:"מילגם בע\"מ",amount:23400,currency:"ILS",invoice_date:"2026-03-15"}]},
+    {finding_id:"F005",rule_id:"LICENSE_UNUSED",title:"רישיונות Figma — 8 מתוך 14 לא בשימוש (57%)",amount_at_risk:13440,confidence:0.9,category:"licenses",action:"בטל 8 רישיונות מיותרים בסבב החידוש הבא. חיסכון: ₪13,440/שנה",status:"open",evidence:[{tool:"Figma",seats_paid:14,seats_used_30d:6,price_per_seat_ils:140,renewal_date:"2027-05-15"}]}
+  ]
+};
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>יצירת סביבת עבודה — איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  body { background: radial-gradient(60% 50% at 80% 0%, rgba(46,230,168,.06), transparent), var(--bg); min-height: 100vh; }
+  .top { height: 68px; display: flex; align-items: center; justify-content: space-between; }
+  .brandmark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; }
+  .stepper { list-style: none; margin: 24px 0 32px; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .stepper li { display: grid; gap: 8px; font-size: .85rem; color: var(--muted); }
+  .stepper .bar { height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; }
+  .stepper .bar i { display: block; height: 100%; width: 0; background: var(--brand); transition: width .4s ease; }
+  .stepper li.done .bar i, .stepper li.cur .bar i { width: 100%; }
+  .stepper li.cur { color: var(--ink); font-weight: 600; }
+  .stepper li.done { color: var(--ink-2); }
+  .stepper .n { font-family: var(--mono); font-size: .75rem; color: var(--faint); }
+  .wrap2 { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; padding-bottom: 64px; }
+  .panel { padding: 32px; }
+  .step { display: none; gap: 24px; }
+  .step.on { display: grid; animation: rise .35s cubic-bezier(.2,.8,.2,1) both; }
+  .step h1 { font-size: 1.9rem; font-weight: 900; letter-spacing: -.02em; margin: 0; }
+  .step > p.lead { margin: -14px 0 0; color: var(--ink-2); }
+  .foot { display: flex; justify-content: space-between; gap: 12px; padding-top: 8px; flex-wrap: wrap; }
+  select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: 18px 19px, 23px 19px; background-size: 5px 5px; background-repeat: no-repeat; }
+  .seg { display: flex; gap: 6px; padding: 4px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line-2); flex-wrap: wrap; }
+  .seg label { flex: 1; min-width: 80px; text-align: center; padding: 9px 10px; border-radius: 9px; cursor: pointer; font-size: .9rem; color: var(--ink-2); }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg input:checked + span { color: var(--ink); }
+  .seg label:has(input:checked) { background: var(--surface-3); color: var(--ink); font-weight: 600; }
+  .seg label:has(input:focus-visible) { outline: 2px solid var(--brand); }
+  .opt { display: flex; gap: 14px; align-items: flex-start; padding: 18px; border-radius: 16px; border: 1px solid var(--line-2); background: var(--surface); cursor: pointer; }
+  .opt:has(input:checked) { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-glow); }
+  .opt input { accent-color: var(--brand); width: 18px; height: 18px; margin-top: 3px; flex: none; }
+  .dns { display: grid; grid-template-columns: 90px 70px minmax(0, 1fr) auto; gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; direction: ltr; font-size: .85rem; }
+  .dns > div { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .dns .h { font-size: .72rem; color: var(--muted); background: var(--surface); font-family: var(--font); }
+  .dns .v { font-family: var(--mono); overflow-wrap: anywhere; }
+  .dns .last { border-bottom: 0; }
+  .dns .cp { display: flex; align-items: center; }
+  .verify-st { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: var(--amber-bg); color: var(--amber); font-size: .88rem; }
+  .verify-st.ok { background: var(--brand-glow); color: var(--brand); }
+  .spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-top-color: transparent; animation: sp .9s linear infinite; flex: none; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .invite { display: grid; grid-template-columns: minmax(0, 1fr) 150px 140px 44px; gap: 8px; align-items: center; }
+  .invite .tag { font-size: .8rem; color: var(--muted); }
+  .rm { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+  .rm:hover { color: var(--ink); border-color: var(--line-2); }
+  .roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .roles div { padding: 12px 14px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line); font-size: .83rem; color: var(--ink-2); }
+  .roles b { display: block; color: var(--ink); font-size: .9rem; margin-bottom: 2px; }
+  .set { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .set:last-child { border-bottom: 0; }
+  .set .d { font-size: .85rem; color: var(--muted); margin-top: 2px; }
+  .set select { width: 190px; flex: none; }
+  .aside { padding: 24px; display: grid; gap: 16px; position: sticky; top: 24px; }
+  .aside .tip { display: none; gap: 12px; }
+  .aside .tip.on { display: grid; }
+  .aside ul { margin: 0; padding-inline-start: 18px; color: var(--ink-2); font-size: .88rem; display: grid; gap: 8px; }
+  .aside .art { aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: radial-gradient(90% 90% at 50% 30%, #12403A, var(--bg-2)); }
+  .aside .art img { width: 100%; height: 100%; object-fit: cover; }
+  .err { color: var(--coral); font-size: .8rem; display: none; }
+  .field.bad .err { display: block; } .field.bad .input { border-color: var(--coral); }
+  @media (max-width: 960px) { .wrap2 { grid-template-columns: 1fr; } .aside { position: static; } }
+  @media (max-width: 640px) {
+    .panel { padding: 20px; }
+    .stepper li span.t { display: none; }
+    .stepper li.cur span.t { display: inline; }
+    .invite { grid-template-columns: minmax(0, 1fr) 44px; }
+    .invite .input:first-child { grid-column: 1 / -1; }
+    .invite select { grid-column: 1; }
+    .invite .tag { display: none; }
+    .dns { grid-template-columns: 1fr auto; }
+    .dns .h { display: none; }
+    .dns .v.host, .dns .v.type { display: none; }
+    .set { flex-direction: column; } .set select { width: 100%; }
+    .roles { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="top">
+    <a class="brandmark" href="landing.html"><span data-logo></span><span>איפה הכסף</span></a>
+    <a class="btn ghost sm" href="login.html">כבר יש חשבון? כניסה</a>
+  </header>
+
+  <ol class="stepper" id="stepper" aria-label="שלבי הרשמה">
+    <li><span class="bar"><i></i></span><span><span class="n">1/4</span> <span class="t">פרטי החברה</span></span></li>
+    <li><span class="bar"><i></i></span><span><span class="n">2/4</span> <span class="t">אימות דומיין</span></span></li>
+    <li><span class="bar"><i></i></span><span><span class="n">3/4</span> <span class="t">צוות והרשאות</span></span></li>
+    <li><span class="bar"><i></i></span><span><span class="n">4/4</span> <span class="t">פרטיות ונתונים</span></span></li>
+  </ol>
+
+  <div class="wrap2">
+    <form class="card panel" id="wiz" novalidate>
+      <!-- 1 -->
+      <section class="step on" data-step="1" aria-labelledby="s1h">
+        <h1 id="s1h">נבנה את סביבת העבודה של החברה</h1>
+        <p class="lead">כמה פרטים, כדי שהכללים יתאימו לגודל, למטבע ולחוקי המס שלכם.</p>
+        <div class="grid g2">
+          <div class="field"><label class="label" for="cname">שם החברה</label><input class="input" id="cname" required></div>
+          <div class="field" id="hpF"><label class="label" for="hp">ח.פ.</label><input class="input num" id="hp" inputmode="numeric" maxlength="9" dir="ltr" style="text-align:right"><span class="err">ח.פ. צריך להיות 9 ספרות</span></div>
+        </div>
+        <div class="field">
+          <span class="label">מספר עובדים</span>
+          <div class="seg" role="radiogroup">
+            <label><input type="radio" name="size" value="1-50"><span>עד 50</span></label>
+            <label><input type="radio" name="size" value="51-150" checked><span>51–150</span></label>
+            <label><input type="radio" name="size" value="151-500"><span>151–500</span></label>
+            <label><input type="radio" name="size" value="500+"><span>500+</span></label>
+          </div>
+        </div>
+        <div class="grid g2">
+          <div class="field"><label class="label" for="cur">מטבע הדיווח</label>
+            <select class="input" id="cur"><option value="ILS" selected>₪ שקל (ILS)</option><option value="USD">$ דולר (USD)</option></select></div>
+          <div class="field"><label class="label" for="fy">שנת כספים מתחילה ב</label>
+            <select class="input" id="fy"><option selected>ינואר</option><option>אפריל</option><option>יולי</option></select></div>
+        </div>
+        <div class="set" style="border:0;padding:0">
+          <div><div class="h3">יש לחברה גם חשבון דולרי</div><div class="d">נשווה תשלומים ב-$ מהחשבון הדולרי מול חיובי כרטיס עם עמלת המרה, ונזהה חשבוניות ששולמו פעמיים בשני מטבעות.</div></div>
+          <button type="button" class="toggle" role="switch" aria-checked="true" aria-label="חשבון דולרי"></button>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="step" data-step="2" aria-labelledby="s2h">
+        <h1 id="s2h">אימות הדומיין <span class="mono" id="domH" style="font-size:.7em;color:var(--ink-2)"></span></h1>
+        <p class="lead">כך רק עובדים עם מייל של החברה יוכלו להצטרף, ונדע לחבר את כלי ה-SaaS לאותו ארגון.</p>
+        <label class="opt"><input type="radio" name="vm" value="auto" checked>
+          <div class="stack" style="gap:4px"><div class="row wrap"><span class="h3">אימות אוטומטי דרך Google Workspace</span><span class="chip fixed xs">מומלץ · 30 שניות</span></div><div class="small muted">אם אתם Super Admin, נאמת את הבעלות על הדומיין עם הרשאת קריאה אחת: <span class="mono">admin.directory.domain.readonly</span></div></div></label>
+        <label class="opt"><input type="radio" name="vm" value="dns">
+          <div class="stack" style="gap:4px;min-width:0;flex:1"><span class="h3">הוספת רשומת DNS מסוג TXT</span><div class="small muted">למי שמנהל את ה-DNS ב-Cloudflare, Route 53 או אצל רשם הדומיין.</div>
+            <div class="dns" style="margin-top:10px">
+              <div class="h">Host</div><div class="h">Type</div><div class="h">Value</div><div class="h"></div>
+              <div class="v host last">@</div><div class="v type last">TXT</div><div class="v last" id="txt">ayefokesef-verify=7f3c9a1e2b8d4f60</div><div class="cp last"><button type="button" class="btn sm" id="copy">העתק</button></div>
+            </div>
+          </div></label>
+        <div class="verify-st" id="vst" role="status"><span class="spin"></span><span id="vtext">ממתינים לאימות. בודקים שוב כל דקה, או לחצו "בדקו עכשיו".</span></div>
+        <div><button type="button" class="btn" id="checkNow">בדקו עכשיו</button></div>
+      </section>
+
+      <!-- 3 -->
+      <section class="step" data-step="3" aria-labelledby="s3h">
+        <h1 id="s3h">מי עוד צריך לראות את הכסף?</h1>
+        <p class="lead">בדרך כלל: כספים, DevOps ו-IT. כל ממצא יגיע לבעלים הנכון, ואף אחד לא רואה יותר ממה שהוא צריך.</p>
+        <div class="stack" id="invites"></div>
+        <div><button type="button" class="btn sm" id="addInv">+ הוספת אדם</button></div>
+        <div class="roles">
+          <div><b>Admin</b>חיבור מקורות, משתמשים, הגדרות וחיוב</div>
+          <div><b>Finance</b>כל הממצאים כולל שכר וספקים, שינוי סטטוס ופעולות</div>
+          <div><b>Viewer</b>רק הממצאים שהוקצו לו או לצוות שלו, בלי שכר</div>
+          <div><b>DPO</b>יומן ביקורת, הגדרות פרטיות ובקשות מחיקה, בלי ממצאים</div>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="step" data-step="4" aria-labelledby="s4h">
+        <h1 id="s4h">איך נשמור על הנתונים שלכם</h1>
+        <p class="lead">ברירות המחדל הן המחמירות. אפשר לשנות כל דבר מאוחר יותר בהגדרות, וכל שינוי נרשם ביומן.</p>
+        <div>
+          <div class="set"><div><div class="h3">הסתרת זהות עובדים</div><div class="d">שמות מוחלפים במזהה EMP-xxxx בכל מסך, דוח ותשובת סוכן. רק Finance ו-Admin יכולים לחשוף, וכל חשיפה נרשמת.</div></div><button type="button" class="toggle" role="switch" aria-checked="true" aria-label="הסתרת זהות עובדים"></button></div>
+          <div class="set"><div><div class="h3">קבצים גולמיים</div><div class="d">קבצי CSV, PDF וייצוא שהועלו או נמשכו נמחקים אחרי 24 שעות. נשמרות רק שורות הראיה.</div></div><span class="chip">24 שעות · קבוע</span></div>
+          <div class="set"><div><div class="h3">שמירת שורות ראיה וממצאים</div><div class="d">אחרי התקופה, ממצאים סגורים נשמרים כסכום בלבד, בלי שורות מקור.</div></div>
+            <select class="input" aria-label="תקופת שמירה"><option>6 חודשים</option><option selected>12 חודשים</option><option>24 חודשים</option><option>7 שנים (דרישת ספרים)</option></select></div>
+          <div class="set"><div><div class="h3">אזור אחסון הנתונים</div><div class="d">לא ניתן להעביר אזור אחרי הסריקה הראשונה.</div></div>
+            <select class="input" aria-label="אזור נתונים"><option selected>ישראל (תל אביב)</option><option>האיחוד האירופי (פרנקפורט)</option></select></div>
+          <div class="set"><div><div class="h3">אימון מודלים על הנתונים שלכם</div><div class="d">הסוכן משתמש במודל בלי לשמור או לאמן על הנתונים. האפשרות הזו כבויה ולא ניתנת להפעלה.</div></div><button type="button" class="toggle" role="switch" aria-checked="false" aria-disabled="true" aria-label="אימון מודלים" style="opacity:.5;cursor:not-allowed"></button></div>
+        </div>
+        <label class="row small ink2" style="align-items:flex-start"><input type="checkbox" id="dpa" style="accent-color:var(--brand);width:18px;height:18px;margin-top:3px"> <span>קראתי ואני מאשר/ת את <a href="#" style="color:var(--brand)">הסכם עיבוד הנתונים (DPA)</a> בשם החברה, כולל מינוי ממונה הגנת פרטיות מצד החברה.</span></label>
+      </section>
+
+      <div class="foot">
+        <button type="button" class="btn ghost" id="prev">חזרה</button>
+        <button type="submit" class="btn primary lg" id="next">המשך</button>
+      </div>
+    </form>
+
+    <aside class="card flat aside" aria-label="הסבר">
+      <div class="art"><img src="img/empty-state.png" alt="" onerror="this.style.visibility='hidden'"></div>
+      <div class="tip on" data-tip="1"><div class="h3">למה אנחנו שואלים</div><ul><li>ח.פ. מאפשר לזהות חשבוניות שהוצאו לחברה ולבדוק מספרי הקצאה.</li><li>גודל החברה קובע ספים: מה נחשב "קפיצה" בחשבון ומתי מושב נחשב לא פעיל.</li><li>חשבון דולרי פותח כלל עמלות המרה וכפילויות חוצות מטבע.</li></ul></div>
+      <div class="tip" data-tip="2"><div class="h3">מה האימות לא נותן לנו</div><ul><li>אין גישה למיילים, ליומן או לקבצים.</li><li>אין שינוי ברשומות ה-DNS. אתם מוסיפים, אנחנו רק קוראים.</li><li>אפשר להסיר את רשומת ה-TXT אחרי האימות.</li></ul></div>
+      <div class="tip" data-tip="3"><div class="h3">הזמנות</div><ul><li>ההזמנות יישלחו רק אחרי סיום ההרשמה.</li><li>רק כתובות בדומיין המאומת יכולות להצטרף.</li><li>DPO יכול לראות מי צפה במה, אבל לא את הממצאים עצמם.</li></ul></div>
+      <div class="tip" data-tip="4"><div class="h3">תיקון 13 בקצרה</div><ul><li>אתם בעלי המאגר, אנחנו מעבדים מטעמכם לפי DPA.</li><li>מזעור מידע: נמשכים רק השדות שכלל צריך.</li><li>זכות עיון ומחיקה מטופלת ממסך ה-DPO.</li></ul></div>
+    </aside>
+  </div>
+</div>
+
+<script src="assets/demo-data.js"></script>
+<script>
+(function () {
+  const D = window.DEMO, $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const LOGO = `<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2EE6A8"/><stop offset="1" stop-color="#5B9DFF"/></linearGradient></defs><circle cx="14" cy="14" r="10" fill="none" stroke="url(#lgL)" stroke-width="3.2"/><path d="M21.5 21.5L28 28" stroke="url(#lgL)" stroke-width="3.6" stroke-linecap="round"/><path d="M10 10v6.5a2 2 0 0 0 2 2h3.5M18 18V11.5a2 2 0 0 0-2-2h-3.5" fill="none" stroke="#EAF0F6" stroke-width="1.9" stroke-linecap="round"/></svg>`;
+  $$('[data-logo]').forEach(e => e.innerHTML = LOGO);
+  $('#cname').value = D.company.name; $('#hp').value = D.company.hp; $('#domH').textContent = D.company.domain;
+
+  $$('.toggle').forEach(t => t.onclick = () => { if (t.getAttribute('aria-disabled') !== 'true') t.setAttribute('aria-checked', t.getAttribute('aria-checked') !== 'true'); });
+
+  // invites
+  const ROLES = ['Admin', 'Finance', 'Viewer', 'DPO'];
+  const people = [
+    [D.user.email, 'Admin', 'את/ה · CFO', true], ['yael@technosis.io', 'Finance', 'Finance'],
+    ['ron@technosis.io', 'Viewer', 'DevOps'], ['noa@technosis.io', 'Admin', 'IT ו-Ops'], ['dpo@technosis.io', 'DPO', 'ממונה פרטיות'],
+  ];
+  const row = ([em, role, tag, me]) => `<div class="invite"><input class="input" dir="ltr" style="text-align:right" value="${em}" aria-label="מייל" ${me ? 'readonly' : ''}>
+    <select class="input" aria-label="תפקיד" ${me ? 'disabled' : ''}>${ROLES.map(r => `<option ${r === role ? 'selected' : ''}>${r}</option>`).join('')}</select>
+    <span class="tag">${tag}</span>${me ? '<span></span>' : '<button type="button" class="rm" aria-label="הסרה">×</button>'}</div>`;
+  $('#invites').innerHTML = people.map(row).join('');
+  $('#addInv').onclick = () => { $('#invites').insertAdjacentHTML('beforeend', row(['', 'Viewer', ''])); $('#invites').lastElementChild.querySelector('input').focus(); };
+  $('#invites').onclick = e => { if (e.target.classList.contains('rm')) e.target.parentElement.remove(); };
+
+  // domain verify
+  $('#copy').onclick = e => { navigator.clipboard?.writeText($('#txt').textContent); e.target.textContent = 'הועתק'; setTimeout(() => e.target.textContent = 'העתק', 1500); };
+  let verified = false;
+  $('#checkNow').onclick = () => { $('#vtext').textContent = 'בודקים…'; setTimeout(() => { verified = true; $('#vst').classList.add('ok'); $('#vst').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12l4 4 10-10"/></svg><span>הדומיין <b class="mono">${D.company.domain}</b> אומת. עובדים עם מייל בדומיין יוכלו להצטרף.</span>`; $('#checkNow').hidden = true; }, 900); };
+
+  // steps
+  let cur = 1;
+  const show = n => {
+    cur = n;
+    $$('.step').forEach(s => s.classList.toggle('on', +s.dataset.step === n));
+    $$('.tip').forEach(s => s.classList.toggle('on', +s.dataset.tip === n));
+    $$('#stepper li').forEach((li, i) => { li.className = i + 1 < n ? 'done' : i + 1 === n ? 'cur' : ''; li.toggleAttribute('aria-current', i + 1 === n); });
+    $('#prev').style.visibility = n === 1 ? 'hidden' : 'visible';
+    $('#next').textContent = n === 4 ? 'יצירת סביבת עבודה' : n === 2 && !verified ? 'המשך (אאמת אחר כך)' : 'המשך';
+    $('.step.on h1').focus?.();
+  };
+  $('#prev').onclick = () => show(cur - 1);
+  $('#checkNow').addEventListener('click', () => setTimeout(() => show(2), 950));
+  $('#wiz').onsubmit = e => {
+    e.preventDefault();
+    if (cur === 1) { const ok = /^\d{9}$/.test($('#hp').value); $('#hpF').classList.toggle('bad', !ok); if (!ok) return $('#hp').focus(); }
+    if (cur === 4) { if (!$('#dpa').checked) { $('#dpa').focus(); $('#dpa').parentElement.style.color = 'var(--amber)'; return; } location.href = 'onboarding-connect.html'; return; }
+    show(cur + 1);
+  };
+  const start = +(location.hash.replace('#step', '')) || 1;
+  show(Math.min(4, Math.max(1, start)));
+})();
+</script>
+</body>
+</html>

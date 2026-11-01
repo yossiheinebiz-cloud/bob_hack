@@ -1,0 +1,3 @@
+data/startup/** -text
+*.png binary
+*.pdf binary

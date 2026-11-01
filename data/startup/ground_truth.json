@@ -1,0 +1,585 @@
+{
+  "company": "טכנוסיס בע״מ",
+  "synthetic": true,
+  "seed": 42,
+  "period": [
+    "2024-11-01",
+    "2026-10-31"
+  ],
+  "usd_ils_for_annualizing": 3.7,
+  "source": "design/v2/assets/demo-data.js",
+  "planted": [
+    {
+      "finding_id": "F-1001",
+      "rule_id": "AI_MODEL_OVERKILL",
+      "kind": "recurring",
+      "expected_amount_ils": 214000,
+      "files": {
+        "ai_usage.csv": [
+          "api_key_name=ticket-classifier-prod, model=claude-opus-4-5"
+        ]
+      },
+      "how": "classification route on the flagship model, avg 380 output tokens. amount = Oct-2026 cost × 0.80 (haiku-4-5 is 1/5 the price) × 12 × 3.70."
+    },
+    {
+      "finding_id": "F-1002",
+      "rule_id": "CLOUD_NO_COMMITMENT",
+      "kind": "recurring",
+      "expected_amount_ils": 172000,
+      "files": {
+        "aws_cur.csv": [
+          "i-00f54f30445a3577e",
+          "i-018a0a5abcca95bf8",
+          "i-0e2f8559f823cdef7",
+          "i-0f73edd77b6c29163",
+          "i-0d00d68df6db75d0c",
+          "i-03f7eb9340051e467",
+          "i-0ab4a36ee0987b354",
+          "i-04242b30e58d656ec",
+          "i-04f3378c19cd5840f"
+        ]
+      },
+      "how": "prod EC2 BoxUsage with pricing_term=OnDemand (9 nodes, flat for 24 months) ≈ 68% of all EC2 compute. amount = last-12m prod On-Demand compute USD × 0.75 (cover 75% of base) × 0.28 (1y no-upfront Compute SP discount) × 3.70."
+    },
+    {
+      "finding_id": "F-1003",
+      "rule_id": "CLOUD_ZOMBIE",
+      "kind": "recurring",
+      "expected_amount_ils": 96000,
+      "files": {
+        "aws_cur.csv": [
+          "resource_tags_user_cluster=staging-old"
+        ]
+      },
+      "how": "all resources tagged cluster=staging-old; LCUUsage usage_amount = 0 from 2026-09-15. amount = avg daily cost 15/09–31/10 × 365 × 3.70."
+    },
+    {
+      "finding_id": "F-1004",
+      "rule_id": "SAAS_TIER_OVERKILL",
+      "kind": "recurring",
+      "expected_amount_ils": 88000,
+      "files": {
+        "invoices.csv": [
+          "Datadog lines 'Indexed Logs 15d — status:debug'"
+        ],
+        "invoice_lines.csv": [
+          "description contains status:debug"
+        ]
+      },
+      "how": "61% of indexed log spend is DEBUG level. amount = last-12m 'status:debug' invoice lines USD × 3.70."
+    },
+    {
+      "finding_id": "F-1005",
+      "rule_id": "AI_KEY_ORPHAN",
+      "kind": "recurring",
+      "expected_amount_ils": 81600,
+      "files": {
+        "ai_usage.csv": [
+          "api_key_name=dan-experiments"
+        ],
+        "employees.csv": [
+          "EMP-1061"
+        ]
+      },
+      "how": "key owner EMP-1061 end_date 2026-07-14; daily cron continues at the same volume. amount = Oct-2026 cost × 12 × 3.70."
+    },
+    {
+      "finding_id": "F-1006",
+      "rule_id": "CLOUD_DEV_ALWAYS_ON",
+      "kind": "recurring",
+      "expected_amount_ils": 63000,
+      "files": {
+        "aws_cur.csv": [
+          "i-0c92637e64b6ba086",
+          "i-05ef5aa370e2e30bd",
+          "i-0b0e7ab8d7e349eff",
+          "i-0ade2925fd81b34bf",
+          "i-07e8df33809cd89bf",
+          "i-06e31c021f6b75d27",
+          "i-015bd8a28f7d134bb",
+          "i-08831b5bd5a03d76e",
+          "i-082f142f51d1c30ea",
+          "i-083859dafc1eb0330",
+          "i-00183873de573ecad",
+          "i-006b0974afa741933",
+          "i-004885ee914f149f8",
+          "i-03b5ae08e9df0b3f1"
+        ]
+      },
+      "how": "14 env=dev instances bill 24h every day incl. Fri/Sat. amount = last-12m dev BoxUsage USD × 98/168 off-hours share (21:00–07:00 Sun–Thu + weekend) × 3.70."
+    },
+    {
+      "finding_id": "F-1007",
+      "rule_id": "AI_NO_PROMPT_CACHE",
+      "kind": "recurring",
+      "expected_amount_ils": 58000,
+      "files": {
+        "ai_usage.csv": [
+          "api_key_name=support-copilot-prod"
+        ]
+      },
+      "how": "cached_input_tokens = 0 on every row. amount = last-12m requests × 0.92 (share with the shared 3,200-token prefix) × 3,200 × (1.25−0.125)$/1M × 3.70."
+    },
+    {
+      "finding_id": "F-1008",
+      "rule_id": "LICENSE_DUPLICATE_FUNC",
+      "kind": "recurring",
+      "expected_amount_ils": 52000,
+      "files": {
+        "saas_seats.csv": [
+          "tool in (jira, monday) snapshot 2026-10-31"
+        ],
+        "card_transactions.csv": [
+          "merchant=MONDAY.COM"
+        ]
+      },
+      "how": "Jira (R&D+Product) and monday.com (Sales/Marketing/CS + 8 Product) both in use, 12 users in both. amount = last-12m monday.com card spend (charged_ils)."
+    },
+    {
+      "finding_id": "F-1009",
+      "rule_id": "AUTO_RENEWAL_JUMP",
+      "kind": "recurring",
+      "expected_amount_ils": 47500,
+      "files": {
+        "invoices.csv": [
+          "AP-25-000075",
+          "AP-26-000076"
+        ],
+        "vendors.csv": [
+          "V-028"
+        ]
+      },
+      "how": "auto_renew=TRUE; renewal 01/10/2026 ₪187,500 vs ₪140,000 a year earlier, 14 seats both years. amount = difference."
+    },
+    {
+      "finding_id": "F-1010",
+      "rule_id": "CLOUD_EGRESS_SPIKE",
+      "kind": "recurring",
+      "expected_amount_ils": 44000,
+      "files": {
+        "aws_cur.csv": [
+          "nat-0ingest7c1e5a9d2f40"
+        ]
+      },
+      "how": "NatGateway-Bytes on the ingest NAT: 9,000 GB/month until 07/2026, 28,000 GB/month from 08/2026. amount = (avg monthly Aug–Oct 2026 − avg monthly Jan–Jul 2026) × 12 × 3.70."
+    },
+    {
+      "finding_id": "F-1011",
+      "rule_id": "LICENSE_UNUSED",
+      "kind": "recurring",
+      "expected_amount_ils": 41000,
+      "files": {
+        "saas_seats.csv": [
+          "figma|EMP-1013|2026-10-31",
+          "figma|EMP-1027|2026-10-31",
+          "figma|EMP-1028|2026-10-31",
+          "figma|EMP-1058|2026-10-31",
+          "figma|EMP-1068|2026-10-31",
+          "figma|EMP-1073|2026-10-31",
+          "figma|EMP-1083|2026-10-31",
+          "figma|EMP-1087|2026-10-31",
+          "figma|EMP-1091|2026-10-31",
+          "figma|EMP-1107|2026-10-31",
+          "figma|EMP-1115|2026-10-31",
+          "figma|EMP-1125|2026-10-31",
+          "figma|EMP-1130|2026-10-31"
+        ]
+      },
+      "how": "Oct-2026 snapshot: 22 Figma editor seats, 13 with last_active_date > 90 days and 0 actions. amount = 13 × seat_cost_usd_month × 12 × 3.70."
+    },
+    {
+      "finding_id": "F-1012",
+      "rule_id": "DUP_CROSS_CURRENCY",
+      "kind": "recovery",
+      "expected_amount_ils": 38900,
+      "files": {
+        "invoices.csv": [
+          "AP-26-000073"
+        ],
+        "card_transactions.csv": [
+          "MONGODB CLOUD 2026-08-03 USD 10,450"
+        ],
+        "bank_transactions.csv": [
+          "ILS 2026-08-11 debit 38,900 'MongoDB Inc INV-ATL-88213'"
+        ]
+      },
+      "how": "same Atlas invoice charged $10,450 on the Cal card (03/08/2026) and paid again ₪38,900 by bank transfer (11/08/2026). amount = the bank debit."
+    },
+    {
+      "finding_id": "F-1013",
+      "rule_id": "CLOUD_ORPHAN_STORAGE",
+      "kind": "recurring",
+      "expected_amount_ils": 31200,
+      "files": {
+        "aws_cur.csv": [
+          "38 vol-* + 214 snap-* whose resource_tags_user_source_instance has no BoxUsage in the last 60 days"
+        ]
+      },
+      "how": "EBS volumes/snapshots of terminated instances. amount = Oct-2026 cost × 12 × 3.70. (DEMO status: fixed — rows kept so the evidence exists.)"
+    },
+    {
+      "finding_id": "F-1014",
+      "rule_id": "PAYROLL_POST_TERMINATION",
+      "kind": "recovery",
+      "expected_amount_ils": 31500,
+      "files": {
+        "employees.csv": [
+          "EMP-1047"
+        ],
+        "payroll.csv": [
+          "EMP-1047|2026-10"
+        ]
+      },
+      "how": "end_date 2026-09-30, payslip period 2026-10 generated & paid (payment_date 2026-10-29). amount = total_employer_cost of that payslip."
+    },
+    {
+      "finding_id": "F-1015",
+      "rule_id": "LICENSE_DEPARTED",
+      "kind": "recurring",
+      "expected_amount_ils": 28400,
+      "files": {
+        "saas_seats.csv": [
+          "EMP-1015",
+          "EMP-1024",
+          "EMP-1040",
+          "EMP-1042",
+          "EMP-1082",
+          "EMP-1085",
+          "EMP-1093"
+        ],
+        "employees.csv": [
+          "EMP-1015",
+          "EMP-1024",
+          "EMP-1040",
+          "EMP-1042",
+          "EMP-1082",
+          "EMP-1085",
+          "EMP-1093"
+        ]
+      },
+      "how": "Oct-2026 snapshot rows of 7 terminated employees in Slack, Google Workspace, GitHub, Notion, Zoom, 1Password. amount = Σ seat_cost_usd_month × 12 × 3.70."
+    },
+    {
+      "finding_id": "F-1016",
+      "rule_id": "FX_CARD_FEES",
+      "kind": "recurring",
+      "expected_amount_ils": 27000,
+      "files": {
+        "card_transactions.csv": [
+          "original_currency=USD (fx_fee_ils)"
+        ]
+      },
+      "how": "≈₪1.08M/yr of USD subscriptions on the Cal card, each with a 2.5% foreign-transaction fee, while a USD account exists. amount = last-12m Σ fx_fee_ils."
+    },
+    {
+      "finding_id": "F-1017",
+      "rule_id": "DUP_INVOICE_EXACT",
+      "kind": "recovery",
+      "expected_amount_ils": 23400,
+      "files": {
+        "invoices.csv": [
+          "AP-26-000106",
+          "AP-26-000107"
+        ],
+        "bank_transactions.csv": [
+          "2 ILS debits 23,400 to שמיר-כהן"
+        ]
+      },
+      "how": "same vendor + invoice_number 2026-0412 + same total ₪23,400, two separate AP entries and two bank transfers 9–10 days apart. amount = one total."
+    },
+    {
+      "finding_id": "F-1018",
+      "rule_id": "AI_SEAT_OVERLAP",
+      "kind": "recurring",
+      "expected_amount_ils": 22300,
+      "files": {
+        "saas_seats.csv": [
+          "copilot|EMP-1030",
+          "copilot|EMP-1048",
+          "copilot|EMP-1081",
+          "copilot|EMP-1020",
+          "copilot|EMP-1012",
+          "copilot|EMP-1070",
+          "copilot|EMP-1063",
+          "copilot|EMP-1079",
+          "copilot|EMP-1074",
+          "copilot|EMP-1033",
+          "copilot|EMP-1035",
+          "copilot|EMP-1090",
+          "copilot|EMP-1032",
+          "copilot|EMP-1080",
+          "copilot|EMP-1031",
+          "copilot|EMP-1016",
+          "copilot|EMP-1043",
+          "copilot|EMP-1064",
+          "copilot|EMP-1065",
+          "copilot|EMP-1078",
+          "copilot|EMP-1036",
+          "copilot|EMP-1046",
+          "copilot|EMP-1076",
+          "copilot|EMP-1086",
+          "copilot|EMP-1022",
+          "copilot|EMP-1060",
+          "copilot|EMP-1089",
+          "copilot|EMP-1056",
+          "copilot|EMP-1054",
+          "copilot|EMP-1052",
+          "copilot|EMP-1077"
+        ]
+      },
+      "how": "Oct-2026: 31 users with Cursor actions_30d>0 and Copilot actions_30d=0. amount = Σ copilot seat_cost × 12 × 3.70."
+    },
+    {
+      "finding_id": "F-1019",
+      "rule_id": "PAYROLL_DUPLICATE_BANK",
+      "kind": "review",
+      "expected_amount_ils": 22000,
+      "files": {
+        "employees.csv": [
+          "EMP-1033",
+          "EMP-1088"
+        ],
+        "payroll.csv": [
+          "EMP-1033|2026-10",
+          "EMP-1088|2026-10"
+        ]
+      },
+      "how": "two active employees share one bank_account_hash. amount = Oct-2026 net paid to the second record (EMP-1088)."
+    },
+    {
+      "finding_id": "F-1020",
+      "rule_id": "INVOICE_NO_ALLOCATION",
+      "kind": "recovery",
+      "expected_amount_ils": 19800,
+      "files": {
+        "invoices.csv": [
+          "AP-25-000108",
+          "AP-25-000109",
+          "AP-26-000110",
+          "AP-26-000111",
+          "AP-26-000112",
+          "AP-26-000113"
+        ]
+      },
+      "how": "Israeli tax invoices with amount_before_vat above the Tax Authority threshold for their issue_date and an empty allocation_number. VAT is not deductible. amount = Σ vat_amount."
+    },
+    {
+      "finding_id": "F-1021",
+      "rule_id": "UTILITY_SPIKE",
+      "kind": "recurring",
+      "expected_amount_ils": 18000,
+      "files": {
+        "utilities.csv": [
+          "2026-09",
+          "2026-10",
+          "2025-09",
+          "2025-10"
+        ]
+      },
+      "how": "Sep–Oct 2026 11,900 kWh/month vs 8,400 a year earlier (+41%). amount = excess kWh × 2026 kwh_rate × 6 (annualize 2 months)."
+    },
+    {
+      "finding_id": "F-1022",
+      "rule_id": "DUP_CARD_AND_AP",
+      "kind": "recovery",
+      "expected_amount_ils": 14200,
+      "files": {
+        "card_transactions.csv": [
+          "NOTION LABS, INC. 2026-05-12 voucher 23864425"
+        ],
+        "invoices.csv": [
+          "AP-26-000074"
+        ]
+      },
+      "how": "annual Notion renewal charged on card 12/05/2026 and the same invoice paid by bank transfer 20/05/2026. amount = card charged_ils."
+    },
+    {
+      "finding_id": "F-1023",
+      "rule_id": "CAR_LEASE_DEPARTED",
+      "kind": "recovery",
+      "expected_amount_ils": 11800,
+      "files": {
+        "car_leases.csv": [
+          "EMP-1019|2026-08",
+          "EMP-1019|2026-09"
+        ],
+        "employees.csv": [
+          "EMP-1019"
+        ]
+      },
+      "how": "car returned 2026-07-31 (returned_date) yet lease charged for 08 and 09/2026, km=0. amount = Σ monthly_fee after returned_date."
+    },
+    {
+      "finding_id": "F-1024",
+      "rule_id": "PHONE_LINE_DEPARTED",
+      "kind": "recurring",
+      "expected_amount_ils": 9600,
+      "files": {
+        "telecom.csv": [
+          "050-XXX-9751",
+          "054-XXX-6529",
+          "054-XXX-5558",
+          "050-XXX-4978",
+          "054-XXX-4995",
+          "054-XXX-7658",
+          "052-XXX-4138",
+          "053-XXX-8933",
+          "050-XXX-1745"
+        ],
+        "employees.csv": [
+          "EMP-1015",
+          "EMP-1023",
+          "EMP-1024",
+          "EMP-1042",
+          "EMP-1059",
+          "EMP-1069",
+          "EMP-1084",
+          "EMP-1085",
+          "EMP-1092"
+        ]
+      },
+      "how": "9 lines whose owner is terminated in HiBob, 0 minutes / 0 GB for 60+ days, still billed ₪89. amount = 9 × 89 × 12."
+    },
+    {
+      "finding_id": "F-1025",
+      "rule_id": "PHONE_ROAMING",
+      "kind": "recurring",
+      "expected_amount_ils": 6300,
+      "files": {
+        "telecom.csv": [
+          "054-XXX-9728",
+          "052-XXX-8532",
+          "052-XXX-9464",
+          "054-XXX-9041"
+        ]
+      },
+      "how": "4 lines on plan 'עסקי 89' (no abroad package) with per-use roaming_charges. amount = last-12m roaming_charges. (DEMO status: reviewed_ok)"
+    },
+    {
+      "finding_id": "F-1026",
+      "rule_id": "INVOICE_SPLITTING",
+      "kind": "review",
+      "expected_amount_ils": 74000,
+      "files": {
+        "invoices.csv": [
+          "AP-26-000102",
+          "AP-26-000103",
+          "AP-26-000104",
+          "AP-26-000105"
+        ]
+      },
+      "how": "4 invoices of ₪18,500 pre-VAT from one vendor within 25 days, each just under the ₪20,000 VP-approval threshold, no PO. amount = sum pre-VAT."
+    }
+  ],
+  "noise_traps": [
+    {
+      "trap": "cancelled_and_reissued_invoice",
+      "rows": {
+        "invoices.csv": [
+          "AP-25-000114",
+          "AP-25-000115"
+        ]
+      },
+      "why": "2025-1187 status=cancelled, reissued as 2025-1188 with a corrected amount; only one payment. Not a duplicate."
+    },
+    {
+      "trap": "card_refund",
+      "rows": {
+        "card_transactions.csv": [
+          "31286034",
+          "48159195"
+        ]
+      },
+      "why": "Zoom Webinar add-on charged by mistake and refunded 4 days later (transaction_type=זיכוי). Net zero, not a duplicate."
+    },
+    {
+      "trap": "recurring_identical_saas_charges",
+      "rows": {
+        "card_transactions.csv": [
+          "FIGMA, MONDAY.COM, CURSOR, 1PASSWORD, ZOOM … same amount every month"
+        ]
+      },
+      "why": "fixed-seat subscriptions bill the same amount every month on the same day — different months, not duplicates."
+    },
+    {
+      "trap": "departed_lines_disconnected",
+      "rows": {
+        "telecom.csv": [
+          "lines of the other 14 departed employees end at their end_date"
+        ]
+      },
+      "why": "properly offboarded lines stop billing — must not be flagged."
+    },
+    {
+      "trap": "seasonal_august_electricity",
+      "rows": {
+        "utilities.csv": [
+          "2025-08",
+          "2026-08"
+        ]
+      },
+      "why": "August is the yearly peak (AC); Aug-2026 is +4% YoY like the rest of the year — seasonal, not a spike."
+    },
+    {
+      "trap": "car_returned_properly",
+      "rows": {
+        "car_leases.csv": [
+          "EMP-1029"
+        ]
+      },
+      "why": "EMP-1029 left 2025-05-31; car returned and charges stopped the same month."
+    },
+    {
+      "trap": "departed_seats_released",
+      "rows": {
+        "saas_seats.csv": [
+          "EMP-1092"
+        ]
+      },
+      "why": "EMP-1092 left 2026-06-30; every seat disappears from the next snapshot (and 15 more departed employees behave the same)."
+    },
+    {
+      "trap": "prorated_final_payslip",
+      "rows": {
+        "payroll.csv": [
+          "EMP-1055|2026-10"
+        ]
+      },
+      "why": "EMP-1055 left 2026-10-15; the October payslip is prorated to 15 days — legitimate final pay."
+    },
+    {
+      "trap": "revoked_personal_api_keys",
+      "rows": {
+        "ai_usage.csv": [
+          "dev-or-1029",
+          "dev-alon-1059"
+        ]
+      },
+      "why": "personal dev keys of departed engineers stop on their end_date — revoked correctly."
+    },
+    {
+      "trap": "vendor_refund_credit",
+      "rows": {
+        "bank_transactions.csv": [
+          "ILS credit 'זיכוי מספק - גובה הפקדות אירועים'"
+        ]
+      },
+      "why": "event-production vendor refunded a cancelled date — a credit, not a payment."
+    }
+  ],
+  "row_counts": {
+    "employees.csv": 135,
+    "payroll.csv": 2587,
+    "vendors.csv": 140,
+    "invoices.csv": 1608,
+    "invoice_lines.csv": 5950,
+    "bank_transactions.csv": 2226,
+    "card_transactions.csv": 6125,
+    "aws_cur.csv": 59926,
+    "ai_usage.csv": 47341,
+    "saas_seats.csv": 26298,
+    "telecom.csv": 2657,
+    "utilities.csv": 24,
+    "car_leases.csv": 246
+  }
+}

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI וטוקנים · איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  .topbar svg { width:18px; height:18px; flex:none; }
+  .topbar .search { min-width:0; }
+  .content > * { min-width:0; }
+  .topbar .search > span:first-of-type { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  @media (max-width:600px){ .topbar .kbd, .topbar .small { display:none; } }
+
+  .kpis { display:grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--r-lg); overflow:hidden; }
+  .kpis > div { background:var(--surface); padding:18px 20px; }
+  .kpis .v { font-size:1.6rem; font-weight:800; letter-spacing:-.02em; }
+  .kpis .hero-v { font-size:2.4rem; font-weight:900; color:var(--violet); letter-spacing:-.03em; line-height:1.1; }
+  .r2 { display:grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap:16px; }
+  .chart-wrap { position:relative; }
+  .tip { position:absolute; pointer-events:none; background:var(--surface-3); border:1px solid var(--line-2); border-radius:10px; padding:6px 10px; font-size:.78rem; white-space:nowrap; opacity:0; transition:opacity .12s; z-index:2; }
+  .mbar { display:grid; grid-template-columns: minmax(0,170px) minmax(0,1fr) 92px; gap:10px; align-items:center; padding:8px 0; font-size:.86rem; }
+  .mbar .track { height:12px; border-radius:4px; background:var(--surface-3); overflow:hidden; }
+  .mbar .track i { display:block; height:100%; border-radius:4px; }
+  .flag { display:inline-flex; align-items:center; gap:5px; font-size:.74rem; font-weight:700; padding:2px 8px; border-radius:99px; }
+  .flag.amber { background:var(--amber-bg); color:var(--amber); }
+  .cache { display:flex; align-items:center; gap:8px; }
+  .cache .t { width:60px; height:6px; border-radius:99px; background:var(--surface-3); overflow:hidden; }
+  .cache .t i { display:block; height:100%; background:var(--violet); }
+  #projects td { white-space:nowrap; }
+  .ue { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px; }
+  .ue .card .v { font-size:1.7rem; font-weight:800; margin-top:4px; }
+  .est { font-size:.68rem; font-weight:700; color:var(--muted); border:1px dashed var(--line-2); border-radius:6px; padding:1px 6px; }
+  .rec { display:grid; grid-template-columns: 36px minmax(0,1fr) auto; gap:14px; align-items:center; padding:14px 0; border-top:1px solid var(--line); }
+  .rec:first-child { border-top:0; }
+  .rec .ic { width:36px; height:36px; border-radius:10px; display:grid; place-items:center; background:var(--violet-bg); color:var(--violet); }
+  .rec .ic svg { width:18px; height:18px; }
+  .rec a.t:hover { color:var(--violet); }
+  .sim { background:linear-gradient(160deg, rgba(167,139,250,.10), var(--surface) 55%); }
+  .sim input[type=range] { width:100%; accent-color:var(--violet); height:28px; }
+  .sim .out { font-size:2.6rem; font-weight:900; color:var(--brand); letter-spacing:-.03em; line-height:1; }
+  .split { display:flex; height:14px; border-radius:6px; overflow:hidden; gap:2px; margin-top:10px; }
+  .split i { display:block; height:100%; transition:flex .15s; }
+  @media (max-width:1100px){ .r2 { grid-template-columns:1fr; } .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media (max-width:700px){ .ue { grid-template-columns:1fr; } .mbar { grid-template-columns: minmax(0,120px) minmax(0,1fr) 76px; } .c-team { display:none; } }
+  @media (max-width:480px){ .kpis { grid-template-columns:1fr; } .rec { grid-template-columns: minmax(0,1fr) auto; } .rec .ic { display:none; } }
+</style>
+</head>
+<body data-page="ai">
+<main data-shell>
+  <div class="page-head">
+    <div><div class="eyebrow">OpenAI · Anthropic · Cursor · Copilot · מתעדכן כל שעה</div><h1 class="h1">AI וטוקנים</h1></div>
+    <div class="row wrap"><span class="chip ai">מקורות: OpenAI Usage API, Anthropic Admin API</span></div>
+  </div>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="r2">
+    <section class="card">
+      <div class="row between wrap"><div><h2 class="h2">הוצאת AI חודשית</h2><div class="xs muted">₪ · 24 חודשים · ריחוף מציג גם $</div></div><span class="chip ai xs" id="growthChip"></span></div>
+      <div class="chart-wrap" id="growth" style="margin-top:12px"></div>
+    </section>
+    <section class="card">
+      <h2 class="h2">לפי מודל</h2>
+      <div class="xs muted" style="margin-bottom:8px">החודש · $ · חלק מסך ההוצאה</div>
+      <div id="models"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="row between wrap" style="margin-bottom:12px"><div><h2 class="h2">לפי פרויקט וצוות</h2><div class="xs muted">כל מפתח API ממופה לפרויקט ולבעלים</div></div></div>
+    <div class="table-wrap"><table class="table" id="projects"></table></div>
+  </section>
+
+  <div class="ue" id="ue"></div>
+
+  <div class="r2">
+    <section class="card">
+      <div class="row between"><h2 class="h2">המלצות</h2><b class="money" style="color:var(--brand)" id="recTotal"></b></div>
+      <div id="recs" style="margin-top:6px"></div>
+    </section>
+    <section class="card sim" aria-labelledby="simT">
+      <div class="row between"><h2 class="h2" id="simT">סימולטור ניתוב מודלים</h2><span class="chip ai xs">ticket-classifier</span></div>
+      <p class="small ink2" style="margin:8px 0 16px">כמה מהתעבורה של <span class="mono">ticket-classifier</span> להעביר למודל הקטן? הסוכן ימדוד דיוק על 500 דוגמאות לפני כל שלב.</p>
+      <label class="label" for="simR">אחוז תעבורה למודל קטן: <b class="num" id="simP"></b></label>
+      <input type="range" id="simR" min="0" max="100" step="5" value="60">
+      <div class="split" aria-hidden="true"><i id="sBig" style="background:var(--violet)"></i><i id="sSmall" style="background:var(--brand-2)"></i></div>
+      <div class="row between xs muted" style="margin-top:4px"><span>מודל דגל</span><span>מודל קטן</span></div>
+      <hr class="divider">
+      <div class="row wrap" style="align-items:flex-end; gap:18px">
+        <div><div class="eyebrow">חיסכון חודשי</div><div class="out money" id="simM"></div></div>
+        <div><div class="eyebrow">לשנה</div><div class="money" style="font-size:1.3rem; font-weight:800" id="simY"></div></div>
+        <div><div class="eyebrow">בדולר לחודש</div><div class="money ink2" style="font-size:1.1rem; font-weight:700" id="simU"></div></div>
+      </div>
+      <div class="xs muted" style="margin-top:10px">הנחה: חיסכון לינארי, מקסימום = <a href="app-finding.html?id=F-1001" style="text-decoration:underline">F-1001</a> חלקי 12. בפועל חלק מהטיקטים הקשים יישארו במודל הדגל.</div>
+    </section>
+  </div>
+</main>
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(() => {
+  const D = DEMO, A = D.ai, R = D.company.usdIls, $ = (s) => document.querySelector(s);
+  const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  const ai = D.spend.monthlyAi, last = ai[ai.length - 1];
+  const months = ai.map((_, i) => { const m = (10 + i) % 12 + 1, y = 2024 + Math.floor((10 + i) / 12); return String(m).padStart(2, '0') + '/' + String(y).slice(2); });
+  const aiF = D.findings.filter(f => f.cat === 'ai');
+  const aiSave = aiF.filter(f => f.kind === 'recurring').reduce((a, f) => a + f.amount, 0);
+  const nonPayroll = D.spend.monthlyNonPayroll[ai.length - 1];
+
+  $('#kpis').innerHTML = `
+    <div><div class="eyebrow">הוצאה החודש</div><div class="hero-v money">${usd(A.monthlyUsd)}</div><div class="small ink2">≈ <span class="money">${ils(A.monthlyUsd * R)}</span> לפי ${R.toFixed(2)} ₪ לדולר</div></div>
+    <div><div class="eyebrow">צמיחה ב-24 חודשים</div><div class="v num" style="color:var(--violet)">×${(last / ai[0]).toFixed(1)}</div><div class="xs muted">מ-<span class="money">${ilsK(ai[0])}</span> ל-<span class="money">${ilsK(last)}</span> בחודש</div></div>
+    <div><div class="eyebrow">חלק מהוצאה שאינה שכר</div><div class="v num">${(last / nonPayroll * 100).toFixed(1)}%</div><div class="xs muted">לפני שנתיים: <span class="num">${(ai[0] / D.spend.monthlyNonPayroll[0] * 100).toFixed(1)}%</span></div></div>
+    <div><div class="eyebrow">חיסכון שנמצא ב-AI</div><div class="v money" style="color:var(--brand)">${ils(aiSave)}</div><div class="xs muted">לשנה · ${aiF.length} ממצאים</div></div>`;
+
+  // growth chart (₪, one axis)
+  (function () {
+    const box = $('#growth'), W = Math.max(340, box.clientWidth), H = 220, L = 20, Rr = 60, T = 22, B = 24, n = ai.length, max = 200000;
+    const x = (i) => L + i * (W - L - Rr) / (n - 1), y = (v) => T + (H - T - B) * (1 - v / max);
+    const bw = (W - L - Rr) / n * .62;
+    box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="direction:ltr; display:block" role="img" aria-label="הוצאת AI חודשית עלתה מ-${ilsK(ai[0])} ל-${ilsK(last)}">
+      ${[0, 100000, 200000].map(v => `<line x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${W - Rr + 8}" y="${y(v) + 4}" font-size="11" fill="var(--faint)">${ilsK(v)}</text>`).join('')}
+      ${ai.map((v, i) => `<rect data-i="${i}" x="${x(i) - bw / 2}" y="${y(v)}" width="${bw}" height="${y(0) - y(v)}" rx="3" fill="var(--violet)" opacity="${i === n - 1 ? 1 : .45 + .4 * i / n}"/>`).join('')}
+      <text x="${x(n - 1)}" y="${y(last) - 8}" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="end">${ilsK(last)}</text>
+      <text x="${x(0)}" y="${y(ai[0]) - 8}" font-size="11" fill="var(--muted)" text-anchor="start">${ilsK(ai[0])}</text>
+      ${months.map((m, i) => i % (W < 520 ? 8 : 4) === 0 || i === n - 1 ? `<text x="${x(i)}" y="${H - 6}" font-size="11" fill="var(--muted)" text-anchor="middle">${m}</text>` : '').join('')}
+    </svg><div class="tip" id="gtip"></div>`;
+    const s = box.querySelector('svg'), tip = $('#gtip');
+    s.addEventListener('mousemove', (e) => { const r = e.target.closest('rect'); if (!r) { tip.style.opacity = 0; return; } const i = +r.dataset.i, b = s.getBoundingClientRect(); tip.innerHTML = `${months[i]} · <b class="money">${ils(ai[i])}</b> · <span class="money muted">${usd(ai[i] / R)}</span>`; tip.style.left = Math.min(b.width - 190, Math.max(0, x(i) / W * b.width - 90)) + 'px'; tip.style.top = '-8px'; tip.style.opacity = 1; });
+    s.addEventListener('mouseleave', () => tip.style.opacity = 0);
+  })();
+  $('#growthChip').textContent = `+${Math.round((last / ai[ai.length - 13] - 1) * 100)}% בשנה האחרונה`;
+
+  // models
+  const mmax = Math.max(...A.models.map(m => m.share));
+  const mcol = (n) => /claude/.test(n) ? 'var(--violet)' : /gpt|embedding/.test(n) ? 'var(--blue)' : 'var(--ok-gray)';
+  $('#models').innerHTML = [...A.models].sort((a, b) => (a.name === 'אחר') - (b.name === 'אחר') || b.share - a.share).map(m => `<div class="mbar" title="${m.name}: ${Math.round(m.share * 100)}%">
+      <span class="mono" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right">${m.name}</span>
+      <span class="track"><i style="width:${m.share / mmax * 100}%; background:${mcol(m.name)}"></i></span>
+      <span style="text-align:end"><b class="money">${usd(A.monthlyUsd * m.share)}</b> <span class="xs muted num">${Math.round(m.share * 100)}%</span></span></div>`).join('') +
+    `<div class="row xs muted" style="gap:14px; margin-top:8px"><span><i class="dot" style="color:var(--violet)"></i> Anthropic</span><span><i class="dot" style="color:var(--blue)"></i> OpenAI</span></div>`;
+
+  // projects
+  const P = [...A.projects].sort((a, b) => b.usd - a.usd), ptot = P.reduce((a, p) => a + p.usd, 0);
+  const flag = (p) => p.name === 'dan-experiments' ? `<a class="flag amber" href="app-finding.html?id=F-1005">מפתח יתום · F-1005</a>` : p.cachedPct === 0 ? `<a class="flag amber" href="app-finding.html?id=F-1007">0% cache · F-1007</a>` : p.name === 'ticket-classifier' ? `<a class="flag amber" href="app-finding.html?id=F-1001">מודל גדול מדי · F-1001</a>` : '';
+  $('#projects').innerHTML = `<thead><tr><th>פרויקט</th><th class="c-team">צוות</th><th class="end">$ / חודש</th><th class="end">₪ / חודש</th><th>cached tokens</th><th>סימון</th></tr></thead><tbody>` +
+    P.map(p => `<tr><td><span class="mono" style="font-weight:600">${p.name}</span></td><td class="c-team ${p.team.startsWith('—') ? '' : 'ink2'}" style="${p.team.startsWith('—') ? 'color:var(--amber)' : ''}">${p.team}</td>
+      <td class="end"><b class="money">${usd(p.usd)}</b> <span class="xs muted num">${Math.round(p.usd / ptot * 100)}%</span></td><td class="end"><span class="money ink2">${ils(p.usd * R)}</span></td>
+      <td><span class="cache"><span class="t"><i style="width:${p.cachedPct}%"></i></span><span class="num small" style="${p.cachedPct === 0 ? 'color:var(--amber); font-weight:700' : ''}">${p.cachedPct}%</span></span></td><td>${flag(p)}</td></tr>`).join('') +
+    `</tbody><tfoot><tr><td class="muted small">סה״כ</td><td class="c-team"></td><td class="end"><b class="money">${usd(ptot)}</b></td><td class="end"><b class="money">${ils(ptot * R)}</b></td><td colspan="2"></td></tr></tfoot>`;
+
+  // unit economics (estimates)
+  const tc = A.projects.find(p => p.name === 'ticket-classifier');
+  const CUSTOMERS = 340; // ponytail: estimate until CRM integration provides active customers
+  $('#ue').innerHTML = `
+    <div class="card"><div class="row between"><span class="eyebrow">עלות ל-1,000 בקשות</span><span class="est">הערכה</span></div><div class="v money">$${(tc.usd / 2100).toFixed(2)}</div><div class="xs muted">ticket-classifier · ${usd(tc.usd)} / 2.1M קריאות בחודש</div></div>
+    <div class="card"><div class="row between"><span class="eyebrow">עלות AI ללקוח פעיל</span><span class="est">הערכה</span></div><div class="v money">${usd(A.monthlyUsd / CUSTOMERS)}</div><div class="xs muted">לחודש · לפי ~${CUSTOMERS} לקוחות פעילים (CRM לא מחובר)</div></div>
+    <div class="card"><div class="row between"><span class="eyebrow">עלות AI לעובד</span><span class="est">הערכה</span></div><div class="v money">${ils(A.monthlyUsd * R / D.company.active)}</div><div class="xs muted">לחודש · ${D.company.active} עובדים פעילים, כולל כלי פיתוח</div></div>`;
+
+  // recommendations
+  const recIds = ['F-1001', 'F-1005', 'F-1007', 'F-1018'], recs = recIds.map(id => D.findings.find(f => f.id === id));
+  const ic = { 'F-1001': icon('ai'), 'F-1005': icon('plug'), 'F-1007': icon('doc'), 'F-1018': icon('mcp') };
+  $('#recTotal').textContent = ils(recs.reduce((a, f) => a + f.amount, 0)) + ' / שנה';
+  $('#recs').innerHTML = recs.map(f => `<div class="rec"><span class="ic">${ic[f.id]}</span><div style="min-width:0"><a class="t" href="app-finding.html?id=${f.id}" style="font-weight:600">${f.action}</a><div class="xs muted"><span class="mono">${f.id}</span> · ${f.vendor} · ${f.owner} · ביטחון <span class="num">${Math.round(f.conf * 100)}%</span></div></div><div style="text-align:end"><b class="money">${ils(f.amount)}</b><div class="xs muted">לשנה</div></div></div>`).join('');
+
+  // routing simulator: linear, max = F-1001 / 12
+  const maxM = D.findings.find(f => f.id === 'F-1001').amount / 12;
+  const sim = () => { const p = +$('#simR').value; $('#simP').textContent = p + '%'; const m = maxM * p / 100; $('#simM').textContent = ils(m); $('#simY').textContent = ils(m * 12); $('#simU').textContent = usd(m / R); $('#sBig').style.flex = 100 - p; $('#sSmall').style.flex = p; $('#simR').setAttribute('aria-valuetext', `${p}% · חיסכון ${ils(m)} לחודש`); };
+  $('#simR').oninput = sim; sim();
+})();
+</script>
+</body>
+</html>

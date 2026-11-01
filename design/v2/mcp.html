@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCP וסוכנים — איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  .guards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .guard { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); }
+  .guard svg { width: 20px; height: 20px; color: var(--brand); flex: none; margin-top: 2px; }
+  .guard b { display: block; font-size: .92rem; } .guard span { font-size: .82rem; color: var(--muted); }
+  .part { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .part-h { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding-top: 12px; }
+  .part-h h2 { font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: -.01em; }
+  .part-h p { margin: 4px 0 0; color: var(--ink-2); font-size: .92rem; max-width: 680px; }
+  .two > *, .part > .card { min-width: 0; grid-template-columns: minmax(0, 1fr); align-content: start; }
+  #addCard[hidden] { display: none; }
+  .kv dd { min-width: 0; overflow-wrap: anywhere; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  .endpoint { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 6px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line-2); direction: ltr; }
+  .endpoint code { flex: 1; font-family: var(--mono); font-size: .92rem; padding: 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--brand); }
+  .kv { display: grid; grid-template-columns: 120px 1fr; gap: 8px 12px; font-size: .88rem; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; }
+  .scopes { display: grid; gap: 8px; }
+  .sc { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-2); cursor: pointer; }
+  .sc input { width: 18px; height: 18px; accent-color: var(--brand); flex: none; }
+  .sc .mono { color: var(--ink); }
+  .sc .d { font-size: .8rem; color: var(--muted); }
+  .sc.w { border-color: rgba(91,157,255,.25); }
+  .tok { display: none; gap: 10px; padding: 14px; border-radius: 12px; background: var(--brand-glow); }
+  .tok.on { display: grid; }
+  .tools td:first-child { white-space: nowrap; }
+  .params { display: flex; flex-wrap: wrap; gap: 4px; }
+  .params span { font-family: var(--mono); font-size: .74rem; padding: 2px 7px; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--line); direction: ltr; color: var(--ink-2); }
+  .params span i { font-style: normal; color: var(--muted); }
+  .rw { font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .rw.r { background: var(--brand-glow); color: var(--brand); } .rw.w { background: var(--blue-bg); color: var(--blue); }
+  .code { padding: 0; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; }
+  .tabs { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--line); background: var(--bg-2); overflow-x: auto; }
+  .tabs button { border: 0; background: transparent; color: var(--muted); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: .84rem; font-weight: 600; min-height: 36px; white-space: nowrap; }
+  .tabs button[aria-selected="true"] { background: var(--surface-3); color: var(--ink); }
+  pre { margin: 0; padding: 18px; font-family: var(--mono); font-size: .8rem; line-height: 1.7; color: var(--ink-2); direction: ltr; text-align: left; overflow: auto; min-height: 250px; }
+  pre .k { color: var(--blue); } pre .s { color: var(--brand); } pre .c { color: var(--muted); }
+  .code .cf { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: .8rem; color: var(--muted); flex-wrap: wrap; }
+  .client { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .client:last-child { border-bottom: 0; }
+  .lt { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-weight: 800; font-size: .78rem; background: var(--surface-3); border: 1px solid var(--line-2); direction: ltr; }
+  .client .m { font-size: .8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 2px; }
+  .calls td { font-size: .85rem; }
+  .ext { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .ext .card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-content: start; min-width: 0; }
+  .allow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .allow span { font-family: var(--mono); font-size: .74rem; padding: 3px 8px; border-radius: 6px; direction: ltr; background: var(--bg-2); border: 1px solid var(--line); }
+  .allow span.off { text-decoration: line-through; color: var(--muted); }
+  .perm { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 3px; border-radius: 10px; background: var(--bg-2); border: 1px solid var(--line); }
+  .perm button { border: 0; background: transparent; color: var(--muted); padding: 5px 10px; border-radius: 7px; font-size: .78rem; cursor: pointer; min-height: 30px; }
+  .perm button[aria-pressed="true"] { background: var(--surface-3); color: var(--ink); font-weight: 600; }
+  .add { border-style: dashed; background: transparent; }
+  @media (max-width: 1100px) { .ext { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 900px) { .two, .guards { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 640px) { .ext { grid-template-columns: minmax(0, 1fr); } .kv { grid-template-columns: 100px 1fr; } .tools-wrap .table { min-width: 620px; } .calls { min-width: 640px; } }
+</style>
+</head>
+<body data-page="mcp">
+<main data-shell>
+  <div class="page-head">
+    <div>
+      <h1 class="h1">MCP וסוכנים</h1>
+      <p class="ink2" style="margin:6px 0 0">חברו את הסוכן שלכם לממצאים, או חברו את איפה הכסף למקורות נתונים דרך שרתי MCP.</p>
+    </div>
+    <a class="btn" href="#audit">יומן ביקורת</a>
+  </div>
+
+  <div class="guards">
+    <div class="guard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><div><b>קריאה בלבד כברירת מחדל</b><span>טוקן חדש מקבל רק הרשאות קריאה. כתיבה מוסיפים במפורש.</span></div></div>
+    <div class="guard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><div><b>כל כתיבה דורשת אישור אדם</b><span>שינוי סטטוס או פעולה ב-Slack/Jira ממתינים לאישור באפליקציה.</span></div></div>
+    <div class="guard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l5 5v13H6z"/><path d="M9 13h7M9 17h7"/></svg><div><b>כל קריאה נרשמת</b><span>מי, איזה כלי, אילו פרמטרים ומה הוחזר. נשמר 24 חודשים.</span></div></div>
+  </div>
+
+  <!-- A -->
+  <section class="part" aria-labelledby="pa">
+    <div class="part-h"><div><h2 id="pa">השרת שלנו</h2><p>איפה הכסף חושף שרת MCP. כל סוכן שתומך ב-MCP יכול לשאול על ממצאים, ראיות והוצאות, תמיד בתוך ההרשאות של הטוקן.</p></div></div>
+
+    <div class="two">
+      <div class="card stack lg">
+        <div class="row between wrap"><div class="h2">כתובת השרת</div><div class="row"><span class="chip fixed xs"><span class="dot"></span>פעיל</span><span class="chip xs">כתובת להמחשה</span></div></div>
+        <div class="endpoint"><code id="ep">https://mcp.ayefokesef.app/v1</code><button class="btn sm" type="button" data-copy="#ep">העתק</button></div>
+        <dl class="kv">
+          <dt>פרוטוקול</dt><dd><span class="mono">MCP 2025-06 · Streamable HTTP</span></dd>
+          <dt>אימות</dt><dd>Bearer token לכל לקוח, או OAuth 2.1 עם SSO הארגוני</dd>
+          <dt>היקף</dt><dd>רק סביבת העבודה של <span id="co"></span>. שמות עובדים מוסתרים גם כאן.</dd>
+          <dt>מגבלת קצב</dt><dd>60 קריאות לדקה לטוקן</dd>
+        </dl>
+      </div>
+      <form class="card stack" id="tokForm">
+        <div class="h2">טוקן חדש</div>
+        <div class="grid g2">
+          <div class="field"><label class="label" for="tn">שם</label><input class="input" id="tn" value="watsonx — סוכן Finance"></div>
+          <div class="field"><label class="label" for="te">תוקף</label><select class="input" id="te"><option>30 יום</option><option selected>90 יום</option><option>שנה</option></select></div>
+        </div>
+        <div class="scopes">
+          <label class="sc"><input type="checkbox" checked><div class="grow"><span class="mono">findings:read</span><div class="d">רשימת ממצאים, סכומים וסטטוס</div></div><span class="rw r">קריאה</span></label>
+          <label class="sc"><input type="checkbox" checked><div class="grow"><span class="mono">evidence:read</span><div class="d">שורות המקור של כל ממצא</div></div><span class="rw r">קריאה</span></label>
+          <label class="sc"><input type="checkbox" checked><div class="grow"><span class="mono">spend:read</span><div class="d">הוצאות לפי ספק, קטגוריה וחודש</div></div><span class="rw r">קריאה</span></label>
+          <label class="sc w"><input type="checkbox"><div class="grow"><span class="mono">findings:write_status</span><div class="d">שינוי סטטוס. כל קריאה ממתינה לאישור אדם</div></div><span class="rw w">כתיבה</span></label>
+          <label class="sc w"><input type="checkbox"><div class="grow"><span class="mono">actions:create</span><div class="d">משימה ב-Jira או הודעה ב-Slack. ממתין לאישור</div></div><span class="rw w">כתיבה</span></label>
+        </div>
+        <button class="btn primary" type="submit">יצירת טוקן</button>
+        <div class="tok" id="tok" role="status"><div class="small"><b>הטוקן מוצג פעם אחת בלבד.</b> שמרו אותו במנהל סיסמאות או כ-env var.</div><div class="endpoint"><code id="tokV">ayf_live_7Qm2…</code><button class="btn sm" type="button" data-copy="#tokV">העתק</button></div></div>
+      </form>
+    </div>
+
+    <div class="card stack" style="padding:0;overflow:hidden">
+      <div class="row between wrap" style="padding:18px 20px 0"><div class="h2">הכלים שהשרת חושף</div><span class="xs muted"><span id="toolCount"></span> כלים · אין SQL חופשי, רק פילטרים מוגדרים</span></div>
+      <div class="tools-wrap" style="overflow:auto"><table class="table tools" id="tools"><thead><tr><th>כלי</th><th>מה הוא עושה</th><th>פרמטרים</th><th>סוג</th><th class="end">קריאות 30 יום</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="two">
+      <div class="card code">
+        <div class="tabs" role="tablist" aria-label="לקוח">
+          <button role="tab" data-tab="desktop" aria-selected="true">Claude Desktop</button>
+          <button role="tab" data-tab="code" aria-selected="false">Claude Code</button>
+          <button role="tab" data-tab="bob" aria-selected="false">IBM Bob</button>
+          <button role="tab" data-tab="wx" aria-selected="false">watsonx Orchestrate</button>
+        </div>
+        <pre id="cfg"></pre>
+        <div class="cf"><span id="cfgHint"></span><button class="btn sm" type="button" data-copy="#cfg">העתק</button></div>
+      </div>
+      <div class="card">
+        <div class="row between"><div class="h2">לקוחות מחוברים</div><span class="xs muted">30 ימים</span></div>
+        <div id="clients"></div>
+      </div>
+    </div>
+
+    <div class="card stack" id="audit" style="padding:0;overflow:hidden">
+      <div class="row between wrap" style="padding:18px 20px 0"><div class="h2">קריאות אחרונות</div><div class="row"><span class="chip progress xs" id="pend"></span><a class="btn sm" href="#">ייצוא CSV</a></div></div>
+      <div style="overflow:auto"><table class="table calls" id="calls"><thead><tr><th>זמן</th><th>לקוח</th><th>כלי</th><th>פרמטרים</th><th>תוצאה</th><th>סטטוס</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="part" aria-labelledby="pb">
+    <div class="part-h"><div><h2 id="pb">שרתי MCP חיצוניים</h2><p>איפה הכסף כלקוח MCP: מקורות שאין להם חיבור מובנה מתחברים דרך שרת MCP. רק כלים ברשימה המותרת רצים, ותמיד בקריאה בלבד אלא אם אישרתם אחרת.</p></div><button class="btn primary" type="button" id="addExt">הוספת שרת</button></div>
+    <div class="ext" id="ext"></div>
+  </section>
+</main>
+
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(function () {
+  const D = window.DEMO, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  $('#co').textContent = D.company.name;
+
+
+  const TOOLS = [
+    ['list_findings', 'רשימת ממצאים, ממוינת לפי ₪. אפשר לסנן לפי קטגוריה, סטטוס, בעלים וסכום מינימלי', ['status?', 'category?', 'owner?', 'min_amount?', 'limit?'], 'r', 1284],
+    ['get_finding', 'ממצא אחד: הכלל, ההסבר, הסכום, הביטחון והפעולה המומלצת', ['finding_id'], 'r', 611],
+    ['get_evidence', 'שורות המקור שעליהן נשען הממצא, עם שם המקור ותאריך', ['finding_id', 'limit?'], 'r', 402],
+    ['query_spend', 'הוצאה מצטברת לפי ספק, קטגוריה וטווח תאריכים. בלי SQL', ['vendor?', 'category?', 'from', 'to', 'group_by?'], 'r', 538],
+    ['explain_finding', 'הסבר בעברית פשוטה, רק מתוך הנתונים של הממצא', ['finding_id', 'audience?'], 'r', 297],
+    ['get_savings_summary', 'חיסכון שנמצא, בטיפול ומאומת, לתקופה', ['period?'], 'r', 188],
+    ['update_finding_status', 'שינוי סטטוס ממצא. נכנס לתור אישור, לא מתבצע מיד', ['finding_id', 'status', 'note'], 'w', 41],
+    ['create_action', 'פתיחת משימה ב-Jira או הודעה ב-Slack לבעלים. נכנס לתור אישור', ['finding_id', 'target: slack|jira', 'assignee?'], 'w', 23],
+  ];
+  $('#toolCount').textContent = TOOLS.length;
+  $('#tools tbody').innerHTML = TOOLS.map(([n, d, p, t, c]) => `<tr><td><span class="mono" style="color:var(--ink)">${n}</span></td><td>${d}</td><td><div class="params">${p.map(x => `<span>${x.replace('?', '<i>?</i>')}</span>`).join('')}</div></td><td><span class="rw ${t}">${t === 'r' ? 'קריאה' : 'כתיבה + אישור'}</span></td><td class="end num">${c.toLocaleString('en-US')}</td></tr>`).join('');
+
+  const URL = 'https://mcp.ayefokesef.app/v1';
+  const CFG = {
+    desktop: [`<span class="c">// claude_desktop_config.json</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"ayefokesef"</span>: {
+      <span class="k">"command"</span>: <span class="s">"npx"</span>,
+      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"mcp-remote"</span>, <span class="s">"${URL}"</span>,
+               <span class="s">"--header"</span>, <span class="s">"Authorization: Bearer \${AYEFO_TOKEN}"</span>]
+    }
+  }
+}`, 'Settings → Developer → Edit Config, ואז הפעלה מחדש'],
+    code: [`<span class="c"># Claude Code</span>
+claude mcp add --transport http ayefokesef \\
+  <span class="s">${URL}</span> \\
+  --header <span class="s">"Authorization: Bearer $AYEFO_TOKEN"</span>
+
+<span class="c"># ואז, בתוך הסשן:</span>
+<span class="c"># &gt; מה חמשת הממצאים הגדולים ב-AI ומה הראיה לכל אחד?</span>`, 'רץ מהטרמינל, נשמר בהגדרות הפרויקט או המשתמש'],
+    bob: [`<span class="c">// .bob/mcp.json</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"ayefokesef"</span>: {
+      <span class="k">"type"</span>: <span class="s">"streamable-http"</span>,
+      <span class="k">"url"</span>: <span class="s">"${URL}"</span>,
+      <span class="k">"headers"</span>: { <span class="k">"Authorization"</span>: <span class="s">"Bearer \${env:AYEFO_TOKEN}"</span> },
+      <span class="k">"alwaysAllow"</span>: [<span class="s">"list_findings"</span>, <span class="s">"get_evidence"</span>, <span class="s">"query_spend"</span>],
+      <span class="k">"disabled"</span>: false
+    }
+  }
+}`, 'קובץ ברמת הפרויקט ב-IBM Bob. כלי כתיבה לא ב-alwaysAllow'],
+    wx: [`<span class="c"># watsonx Orchestrate ADK</span>
+orchestrate connections add -a ayefo_token
+orchestrate connections set-credentials -a ayefo_token \\
+  --env draft --api-key <span class="s">"$AYEFO_TOKEN"</span>
+
+orchestrate toolkits import --kind mcp \\
+  --name ayefokesef \\
+  --url <span class="s">"${URL}"</span> --transport streamable_http \\
+  --app-id ayefo_token \\
+  --tools <span class="s">"list_findings,get_finding,get_evidence,explain_finding"</span>`, 'מוסיף את הכלים לסוכן Finance ב-Orchestrate'],
+  };
+  const setTab = k => { $('#cfg').innerHTML = CFG[k][0]; $('#cfgHint').textContent = CFG[k][1]; $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === k)); };
+  $$('[data-tab]').forEach(b => b.onclick = () => setTab(b.dataset.tab)); setTab('desktop');
+
+  const CL = [
+    ['CD', 'Claude Desktop', 'מיכל (CFO)', 'לפני 4 דק׳', 1912, 'findings:read · evidence:read · spend:read'],
+    ['Bob', 'IBM Bob', 'רון (DevOps)', 'לפני שעה', 1077, 'findings:read · evidence:read'],
+    ['wx', 'watsonx Orchestrate', 'סוכן Finance', 'היום 07:30', 1395, 'קריאה + findings:write_status'],
+  ];
+  $('#clients').innerHTML = CL.map(([t, n, who, last, c, sc]) => `<div class="client"><span class="lt">${t}</span><div style="min-width:0"><div class="h3">${n} <span class="muted" style="font-weight:400">· ${who}</span></div><div class="m"><span>קריאה אחרונה: ${last}</span><span class="num">${c.toLocaleString('en-US')} קריאות</span></div><div class="m"><span class="mono">${sc}</span></div></div><button class="btn sm ghost" type="button" style="color:var(--coral)">ביטול</button></div>`).join('');
+
+  const f = id => D.findings.find(x => x.id === id);
+  const CALLS = [
+    ['08:41:12', 'watsonx Orchestrate', 'update_finding_status', 'F-1005 → in_progress', 'ממתין לאישור', 'pend'],
+    ['08:40:55', 'watsonx Orchestrate', 'get_evidence', 'F-1005, limit=20', '20 שורות', 'ok'],
+    ['08:37:02', 'Claude Desktop', 'query_spend', 'category=ai, from=11/2024, to=10/2026, group_by=month', '24 שורות', 'ok'],
+    ['08:36:40', 'Claude Desktop', 'list_findings', 'category=ai, status=open', `${D.findings.filter(x => x.cat === 'ai' && x.status === 'open').length} ממצאים · ${ils(D.findings.filter(x => x.cat === 'ai' && x.status === 'open').reduce((a, x) => a + x.amount, 0))}`, 'ok'],
+    ['07:52:18', 'IBM Bob', 'get_finding', 'F-1003', ils(f('F-1003').amount) + ' · ' + f('F-1003').vendor, 'ok'],
+    ['07:51:44', 'IBM Bob', 'create_action', 'F-1003 → jira, assignee=רון', 'נדחה: אין הרשאת actions:create', 'deny'],
+    ['07:30:00', 'watsonx Orchestrate', 'get_savings_summary', 'period=2026-Q4', 'מאומת ' + ils(D.kpi.verifiedSaved), 'ok'],
+  ];
+  const STC = { ok: ['הצליח', 'fixed'], pend: ['ממתין לאישור', 'progress'], deny: ['נדחה', 'ok'] };
+  $('#calls tbody').innerHTML = CALLS.map(([t, c, tool, a, r, s]) => `<tr><td class="num muted">${t}</td><td>${c}</td><td><span class="mono">${tool}</span></td><td><span class="mono xs ink2">${a}</span></td><td>${r}</td><td><span class="chip ${STC[s][1]} xs">${STC[s][0]}</span>${s === 'pend' ? ' <button class="btn sm primary" type="button" style="margin-inline-start:6px">אשר</button>' : ''}</td></tr>`).join('');
+  $('#pend').textContent = CALLS.filter(c => c[5] === 'pend').length + ' ממתין לאישור';
+
+  const EXT = [
+    ['AWS', 'AWS Cost Explorer MCP', 'awslabs.cost-explorer-mcp-server', 'קריאה', ['get_cost_and_usage', 'get_cost_forecast', 'get_dimension_values'], ['create_anomaly_monitor'], 'ענן · משלים את CUR עם תחזית', 'לפני 40 דק׳'],
+    ['GD', 'Google Drive', 'drive-mcp · תיקייה: חוזים/ספקים', 'קריאה', ['search_files', 'read_file'], ['share_file', 'delete_file'], 'חוזי ספקים לבדיקת תנאי חידוש', 'לפני 3 שעות'],
+    ['FS', 'Filesystem (סוכן מקומי)', 'filesystem · /exports/finance', 'קריאה', ['list_directory', 'read_text_file'], ['write_file', 'move_file'], 'ייצואי Excel ממערכת השכר', 'אתמול'],
+  ];
+  $('#ext').innerHTML = EXT.map(([t, n, src, perm, on, off, use, last]) => `<div class="card">
+      <div class="row"><span class="lt">${t}</span><div class="grow" style="min-width:0"><div class="h3">${n}</div><div class="mono xs muted" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${src}</div></div><span class="chip fixed xs"><span class="dot"></span>פעיל</span></div>
+      <div class="small ink2">${use}</div>
+      <div class="row between wrap"><span class="xs muted">הרשאה</span><div class="perm" role="group" aria-label="רמת הרשאה"><button type="button" aria-pressed="true">קריאה בלבד</button><button type="button" aria-pressed="false">קריאה + כתיבה באישור</button></div></div>
+      <div class="stack" style="gap:6px"><span class="xs muted">כלים מותרים</span><div class="allow">${on.map(x => `<span>${x}</span>`).join('')}${off.map(x => `<span class="off" title="חסום">${x}</span>`).join('')}</div></div>
+      <div class="row between xs muted"><span>קריאה אחרונה: ${last}</span><a href="#audit" style="color:var(--blue)">ביומן</a></div>
+    </div>`).join('') + `<button type="button" class="card add stack" id="addCard" hidden style="cursor:pointer;justify-items:center;text-align:center;color:var(--ink-2);min-height:220px;align-content:center">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="h3">חיבור שרת MCP</span><span class="xs muted">כתובת HTTP או פקודת stdio דרך הסוכן המקומי. נגלה את הכלים, ואתם בוחרים אילו מותרים.</span></button>`;
+  $('#ext').onclick = e => { const b = e.target.closest('.perm button'); if (b) [...b.parentElement.children].forEach(x => x.setAttribute('aria-pressed', x === b)); };
+  $("#addExt").onclick = () => { const c = $("#addCard"); c.hidden = false; c.focus(); };
+
+  $('#tokForm').onsubmit = e => { e.preventDefault(); $('#tokV').textContent = 'ayf_live_7Qm2c9XkT4vR8pLw3f9c'; $('#tok').classList.add('on'); };
+  document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (!b) return; navigator.clipboard?.writeText($(b.dataset.copy).textContent); const o = b.textContent; b.textContent = 'הועתק'; setTimeout(() => b.textContent = o, 1400); });
+})();
+</script>
+</body>
+</html>

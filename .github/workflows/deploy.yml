@@ -1,0 +1,43 @@
+name: Deploy design site
+
+# CD: after CI passes on main, publish design/v2 (+ sample receipts) to GitHub Pages.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}design/v2/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Build site
+        run: |
+          mkdir -p _site/design _site/data/startup
+          cp -r design/v2 _site/design/v2
+          cp -r data/startup/receipts _site/data/startup/receipts
+          cp 08-spec-v2.md _site/
+          echo '<meta http-equiv="refresh" content="0; url=design/v2/index.html">' > _site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: pages
+        uses: actions/deploy-pages@v4

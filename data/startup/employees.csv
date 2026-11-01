@@ -1,0 +1,136 @@
+﻿employee_id,first_name,department,title,start_date,end_date,employment_status,manager_id,location,bank_account_hash,car_lease,phone_line_id
+EMP-1000,שי,R&D,CTO,2018-03-01,,active,EMP-1007,תל אביב,2d88e0ab960b0707,True,053-XXX-7678
+EMP-1001,מיכל,G&A,CFO,2020-06-01,,active,EMP-1007,תל אביב,bdaa243e546f49e5,True,054-XXX-9890
+EMP-1002,רון,R&D,DevOps Lead,2019-02-03,,active,EMP-1007,תל אביב,776e0e3832ef8db2,False,050-XXX-7812
+EMP-1003,אורי,R&D,Head of Data,2019-09-01,,active,EMP-1007,תל אביב,7120209c2a12eb1b,False,054-XXX-4388
+EMP-1004,נועה,G&A,Operations Manager,2021-01-10,,active,EMP-1007,תל אביב,73a6ab531a3d31f6,False,050-XXX-7381
+EMP-1005,יעל,G&A,Finance Manager,2021-04-01,,active,EMP-1007,תל אביב,4872aba3c2466187,False,054-XXX-7232
+EMP-1006,דנה,Sales,VP Sales,2020-11-01,,active,EMP-1007,תל אביב,c69150151b19328e,True,053-XXX-1096
+EMP-1007,אבי,G&A,CEO,2018-01-01,,active,,תל אביב,079e05c0e10ce601,True,054-XXX-5892
+EMP-1008,תמר,Product,VP Product,2019-05-01,,active,EMP-1007,תל אביב,fa5eb32692a6ba58,True,052-XXX-7865
+EMP-1009,ליאת,Marketing,VP Marketing,2021-07-01,,active,EMP-1007,תל אביב,ee1bb4aef25553d4,False,052-XXX-8999
+EMP-1010,עומר,Customer Success,VP Customer Success,2021-03-01,,active,EMP-1007,תל אביב,e8b4d8bbbda4c3aa,True,054-XXX-5471
+EMP-1011,גיא,Marketing,Content Manager,2018-10-10,,active,EMP-1009,תל אביב,3f0d18de6f5904b8,False,050-XXX-8956
+EMP-1012,אליה,R&D,QA Engineer,2017-04-18,,active,EMP-1000,תל אביב,f4efdc2496375209,False,053-XXX-7371
+EMP-1013,עדי,Product,Product Designer,2019-04-13,,active,EMP-1008,תל אביב,5cd52e99f610dcf8,False,052-XXX-7624
+EMP-1014,גל,Marketing,Growth Marketer,2023-04-17,2025-01-31,terminated,EMP-1009,תל אביב,02f83a36fb9ea5e6,False,052-XXX-8657
+EMP-1015,אור,R&D,Frontend Engineer,2020-04-03,2025-12-31,terminated,EMP-1000,תל אביב,85e37c564b6ac2dd,False,050-XXX-9751
+EMP-1016,הילה,R&D,Backend Engineer,2020-04-25,,active,EMP-1000,תל אביב,004cf668dd3d1180,False,050-XXX-7455
+EMP-1017,אייל,Sales,SDR,2018-07-07,,active,EMP-1006,תל אביב,1556b9c15617c599,True,054-XXX-2375
+EMP-1018,שחר,Sales,Sales Engineer,2019-02-27,,active,EMP-1006,ניו יורק,fcaf31df3e42b89b,True,054-XXX-3223
+EMP-1019,אדם,Sales,Sales Director,2023-10-30,2026-07-31,terminated,EMP-1006,תל אביב,bc20832a868becdb,True,050-XXX-3977
+EMP-1020,רז,R&D,Frontend Engineer,2016-12-18,,active,EMP-1000,תל אביב,676a1833680a625d,False,054-XXX-5262
+EMP-1021,דור,R&D,Frontend Engineer,2023-04-14,,active,EMP-1000,תל אביב,deb0a6fb467a777b,False,052-XXX-6363
+EMP-1022,הילה,R&D,Data Engineer,2022-02-25,,active,EMP-1000,תל אביב,4709fb3d5d946aff,False,053-XXX-8449
+EMP-1023,זיו,Customer Success,Onboarding Specialist,2018-11-28,2025-09-30,terminated,EMP-1010,תל אביב,d6b6b369c50de54d,False,054-XXX-6529
+EMP-1024,הילה,R&D,QA Engineer,2021-05-07,2026-08-14,terminated,EMP-1000,תל אביב,41909df452e1586f,False,054-XXX-5558
+EMP-1025,עדי,Customer Success,CSM,2019-03-11,2025-06-30,terminated,EMP-1010,תל אביב,e67c06490d36a511,False,050-XXX-5133
+EMP-1026,אופיר,Sales,SDR,2023-11-18,2024-12-31,terminated,EMP-1006,תל אביב,37efa0412b295080,False,050-XXX-8705
+EMP-1027,סהר,Marketing,Content Manager,2018-08-17,,leave,EMP-1009,תל אביב,fa2c623da17b3985,False,050-XXX-9837
+EMP-1028,יובל,Product,Product Manager,2019-10-20,,active,EMP-1008,תל אביב,c8d96f6488f8aac6,False,052-XXX-6733
+EMP-1029,אור,R&D,DevOps Engineer,2016-10-16,2025-05-31,terminated,EMP-1000,תל אביב,3cebef3db2dc6ff9,True,050-XXX-2124
+EMP-1030,אסף,R&D,QA Engineer,2016-07-10,,active,EMP-1000,תל אביב,434e0f36fe40c61f,False,052-XXX-1508
+EMP-1031,נמרוד,R&D,Full Stack Engineer,2019-09-14,,active,EMP-1000,תל אביב,c91d153a0dec243c,False,050-XXX-4266
+EMP-1032,נדב,R&D,Team Lead,2019-03-02,,active,EMP-1000,תל אביב,6f00b09c6c134b26,False,052-XXX-3496
+EMP-1033,שירה,R&D,QA Engineer,2018-07-13,,active,EMP-1000,תל אביב,fbb572ba97e282ec,False,054-XXX-3068
+EMP-1034,חן,R&D,Backend Engineer,2024-03-19,,active,EMP-1000,תל אביב,6fd76498c0e962a8,False,052-XXX-2874
+EMP-1035,רועי,R&D,QA Engineer,2018-07-19,,active,EMP-1000,תל אביב,4cddf3b865153017,False,053-XXX-8619
+EMP-1036,רז,R&D,Frontend Engineer,2021-10-05,,active,EMP-1000,תל אביב,9debd272141ad093,False,052-XXX-7043
+EMP-1037,נדב,R&D,Full Stack Engineer,2023-05-17,,active,EMP-1000,תל אביב,3acd71e414e9b861,False,052-XXX-2876
+EMP-1038,גל,Customer Success,Support Engineer,2017-10-07,,active,EMP-1010,תל אביב,3d5cc2fba18c77ce,False,050-XXX-6096
+EMP-1039,יואב,Sales,Account Executive,2017-09-23,,active,EMP-1006,ניו יורק,1a1e16a9e948a94d,True,053-XXX-1420
+EMP-1040,ענבל,R&D,Frontend Engineer,2024-07-08,2026-03-31,terminated,EMP-1000,תל אביב,65382282324d8e19,False,054-XXX-7149
+EMP-1041,סהר,G&A,Recruiter,2022-03-17,2025-04-30,terminated,EMP-1007,תל אביב,41f047ef886acd5c,False,050-XXX-4249
+EMP-1042,יואב,R&D,Full Stack Engineer,2024-07-16,2026-04-30,terminated,EMP-1000,תל אביב,c0872a72b161ad40,False,050-XXX-4978
+EMP-1043,אלה,R&D,QA Engineer,2020-12-19,,leave,EMP-1000,תל אביב,29212bb7d94cea80,False,050-XXX-5941
+EMP-1044,אלה,Sales,SDR,2020-08-22,2025-03-31,terminated,EMP-1006,תל אביב,cb52cfa96d81613b,False,053-XXX-1672
+EMP-1045,מורן,Sales,Sales Engineer,2018-08-16,,active,EMP-1006,תל אביב,e66015a6fab532e1,False,054-XXX-9728
+EMP-1046,רוני,R&D,Data Engineer,2021-11-17,,active,EMP-1000,תל אביב,104f92e0cb0f1aef,False,050-XXX-7071
+EMP-1047,עינב,R&D,QA Engineer,2017-03-08,2026-09-30,terminated,EMP-1000,תל אביב,c75fb6112c41ffca,False,053-XXX-9289
+EMP-1048,אלעד,R&D,Data Engineer,2016-09-09,,active,EMP-1000,תל אביב,443ca07674adc9ec,False,054-XXX-1207
+EMP-1049,אליה,G&A,Office Manager,2017-05-24,2025-02-28,terminated,EMP-1007,תל אביב,6592c9c611d85efa,False,050-XXX-9031
+EMP-1050,יונתן,R&D,Team Lead,2023-03-15,,active,EMP-1000,תל אביב,f48d9e299c7c056f,False,053-XXX-8102
+EMP-1051,הילה,Sales,SDR,2023-10-18,,active,EMP-1006,תל אביב,3d58b46f8497a75a,False,052-XXX-8532
+EMP-1052,אביטל,R&D,Backend Engineer,2022-11-07,,active,EMP-1000,תל אביב,11ad2be4f9b69eba,False,052-XXX-8135
+EMP-1053,שירה,Customer Success,CSM,2020-06-24,,active,EMP-1010,תל אביב,ede0df847fc7e785,False,053-XXX-9548
+EMP-1054,עדי,R&D,ML Engineer,2022-11-05,,leave,EMP-1000,תל אביב,3f2d7564e95b5489,False,054-XXX-9817
+EMP-1055,גל,Sales,SDR,2022-02-05,2026-10-15,terminated,EMP-1006,תל אביב,397672e8b72f8f7c,False,054-XXX-8616
+EMP-1056,יואב,R&D,Backend Engineer,2022-05-15,,active,EMP-1000,תל אביב,0df446c6f947a25b,False,053-XXX-5397
+EMP-1057,אליה,G&A,Accountant,2016-04-17,,leave,EMP-1007,תל אביב,9c333406036b1cdc,False,050-XXX-5022
+EMP-1058,יובל,Product,Product Designer,2024-03-31,,active,EMP-1008,תל אביב,11bfda9a13ee6064,False,054-XXX-5569
+EMP-1059,אלון,R&D,Full Stack Engineer,2023-10-23,2026-08-31,terminated,EMP-1000,תל אביב,e7b5d5224627c924,False,054-XXX-4995
+EMP-1060,ורד,R&D,QA Engineer,2022-03-09,,active,EMP-1000,חיפה,ade84216074a7b3d,False,053-XXX-7209
+EMP-1061,דן,R&D,Data Scientist,2024-08-01,2026-07-14,terminated,EMP-1000,תל אביב,d9fcae48ddcaec0f,False,054-XXX-1470
+EMP-1062,קרן,G&A,Legal Counsel,2023-05-09,,active,EMP-1007,תל אביב,c1eda5a258dd2a7b,False,052-XXX-6325
+EMP-1063,שני,R&D,ML Engineer,2017-05-31,,active,EMP-1000,חיפה,471296df169ce916,False,052-XXX-8988
+EMP-1064,ניר,R&D,Backend Engineer,2021-01-14,,active,EMP-1000,תל אביב,0306857a5e939c8d,False,053-XXX-6813
+EMP-1065,הילה,R&D,Frontend Engineer,2021-04-02,,active,EMP-1000,תל אביב,063e8556c9cec6fe,False,053-XXX-6576
+EMP-1066,עומר,R&D,Frontend Engineer,2024-04-05,,active,EMP-1000,תל אביב,f909de60a683771c,False,050-XXX-5526
+EMP-1067,ורד,Sales,Sales Engineer,2024-03-26,,active,EMP-1006,תל אביב,a6d7d94d200dc5a5,False,052-XXX-9464
+EMP-1068,יואב,Product,Product Manager,2021-10-11,,active,EMP-1008,תל אביב,3b0d1e15416fdf7a,False,052-XXX-2402
+EMP-1069,אלעד,R&D,Backend Engineer,2018-03-02,2025-10-31,terminated,EMP-1000,תל אביב,b8c899f23a810741,False,054-XXX-7658
+EMP-1070,אריאל,R&D,DevOps Engineer,2017-05-10,,active,EMP-1000,תל אביב,303247c9721035d5,False,054-XXX-4937
+EMP-1071,אליה,Sales,Sales Engineer,2023-03-06,,active,EMP-1006,תל אביב,be35136c15555c02,False,054-XXX-9041
+EMP-1072,אורית,Sales,Sales Engineer,2023-05-01,,active,EMP-1006,תל אביב,8ad70ab12ec8f095,False,050-XXX-1282
+EMP-1073,אריאל,Product,Product Manager,2022-12-29,,active,EMP-1008,תל אביב,b74cf67e8ee54ba0,False,052-XXX-5820
+EMP-1074,ליאור,R&D,ML Engineer,2017-11-17,,active,EMP-1000,תל אביב,88278f5cf0b4b9a5,False,052-XXX-7625
+EMP-1075,מורן,Sales,Account Executive,2017-12-22,,active,EMP-1006,תל אביב,3dac906eddb477a0,False,053-XXX-6016
+EMP-1076,מתן,R&D,Backend Engineer,2022-02-10,,active,EMP-1000,תל אביב,27c0774f0217999b,False,053-XXX-8753
+EMP-1077,עומר,R&D,QA Engineer,2022-11-18,,active,EMP-1000,תל אביב,0e1c4cf3be239687,False,053-XXX-7971
+EMP-1078,רועי,R&D,DevOps Engineer,2021-08-23,,active,EMP-1000,תל אביב,89493fa85d0546c6,False,054-XXX-6764
+EMP-1079,איתי,R&D,Backend Engineer,2017-06-02,,active,EMP-1000,תל אביב,c3485acb296effec,False,053-XXX-5438
+EMP-1080,מורן,R&D,DevOps Engineer,2019-08-12,,leave,EMP-1000,תל אביב,0811272925138dcf,False,052-XXX-5118
+EMP-1081,ענבל,R&D,Data Engineer,2016-10-24,,active,EMP-1000,תל אביב,fcf122b5cdbbbaf8,False,052-XXX-2976
+EMP-1082,ענבל,R&D,Data Engineer,2022-07-11,2026-05-31,terminated,EMP-1000,תל אביב,2932ae4fab532516,False,050-XXX-6169
+EMP-1083,גיא,Marketing,Product Marketing Manager,2017-02-14,,active,EMP-1009,תל אביב,96391804c88225db,False,052-XXX-9779
+EMP-1084,זיו,R&D,Frontend Engineer,2021-08-12,2025-08-31,terminated,EMP-1000,תל אביב,a7061549e251124b,False,052-XXX-4138
+EMP-1085,מיה,R&D,DevOps Engineer,2016-12-09,2026-02-28,terminated,EMP-1000,תל אביב,e490a10c40284dac,False,053-XXX-8933
+EMP-1086,אלעד,R&D,ML Engineer,2022-02-19,,active,EMP-1000,תל אביב,644ea1b254c5459f,False,053-XXX-9595
+EMP-1087,ספיר,Marketing,Product Marketing Manager,2017-07-29,,leave,EMP-1009,תל אביב,04a126a2891195e5,False,052-XXX-2647
+EMP-1088,רוני,R&D,Full Stack Engineer,2023-07-25,,active,EMP-1000,חיפה,fbb572ba97e282ec,False,052-XXX-5853
+EMP-1089,ירדן,R&D,Data Engineer,2022-04-30,,active,EMP-1000,תל אביב,ec6755089abcac52,False,052-XXX-6912
+EMP-1090,הילה,R&D,Full Stack Engineer,2019-02-19,,active,EMP-1000,תל אביב,cd87978bf863e9fc,False,050-XXX-5952
+EMP-1091,לירון,Marketing,Content Manager,2022-12-19,,active,EMP-1009,תל אביב,6a7c41b05382251c,False,053-XXX-3073
+EMP-1092,אביטל,Marketing,Growth Marketer,2018-07-16,2026-06-30,terminated,EMP-1009,תל אביב,6c9e37c3c5019995,False,050-XXX-1745
+EMP-1093,מתן,R&D,Backend Engineer,2024-08-19,2026-01-31,terminated,EMP-1000,תל אביב,1855320905581cad,False,052-XXX-5786
+EMP-1094,זיו,R&D,Full Stack Engineer,2023-11-25,,active,EMP-1000,תל אביב,3ad1003b42af50c5,False,050-XXX-9042
+EMP-1095,ליאור,G&A,Office Manager,2024-11-16,,active,EMP-1007,תל אביב,359f8a5d9ad603f9,False,053-XXX-1200
+EMP-1096,רעות,Customer Success,Support Engineer,2024-12-24,,active,EMP-1010,תל אביב,8342c2d54d6a74a9,False,054-XXX-8690
+EMP-1097,אורית,Sales,Sales Engineer,2024-12-26,,active,EMP-1006,תל אביב,1178cf555ba2aa5b,False,053-XXX-8216
+EMP-1098,נדב,Sales,Sales Engineer,2025-01-20,,active,EMP-1006,תל אביב,d5446152234e7b3f,False,050-XXX-4020
+EMP-1099,שחר,G&A,HR Business Partner,2025-01-29,,active,EMP-1007,תל אביב,9b1b7102b8db8e6a,False,054-XXX-5136
+EMP-1100,רז,R&D,QA Engineer,2025-02-12,,active,EMP-1000,תל אביב,c4e6239c7090c027,False,050-XXX-2869
+EMP-1101,מורן,R&D,Full Stack Engineer,2025-02-17,,active,EMP-1000,תל אביב,c42cfb44d8daaf8b,False,054-XXX-7565
+EMP-1102,בן,R&D,Frontend Engineer,2025-02-22,,active,EMP-1000,תל אביב,26c21adfb906e594,False,050-XXX-2213
+EMP-1103,לירון,R&D,ML Engineer,2025-03-17,,active,EMP-1000,תל אביב,8d47cfc919e50863,False,052-XXX-3485
+EMP-1104,בן,G&A,Accountant,2025-04-18,,active,EMP-1007,תל אביב,28d68f205e15345c,False,050-XXX-5978
+EMP-1105,אלון,Customer Success,Support Engineer,2025-04-22,,active,EMP-1010,תל אביב,fdd8b4e4663ea255,False,050-XXX-5066
+EMP-1106,ענבל,Sales,Account Executive,2025-05-25,,active,EMP-1006,תל אביב,afcc6724d74da249,False,052-XXX-7818
+EMP-1107,אסף,Product,Product Manager,2025-06-18,,active,EMP-1008,תל אביב,595d9d1b373b2ac2,False,054-XXX-9561
+EMP-1108,שירה,R&D,Team Lead,2025-06-23,,active,EMP-1000,תל אביב,450c3f030b842208,False,054-XXX-8381
+EMP-1109,שני,Customer Success,Support Engineer,2025-07-01,,active,EMP-1010,תל אביב,0e6b43132b1671d3,False,054-XXX-5871
+EMP-1110,איתי,G&A,Office Manager,2025-08-07,,active,EMP-1007,תל אביב,c36852fd65f63d94,False,050-XXX-6003
+EMP-1111,אלה,R&D,Data Engineer,2025-08-21,,active,EMP-1000,תל אביב,785343680d22abdf,False,052-XXX-2625
+EMP-1112,סהר,R&D,Data Engineer,2025-08-21,,active,EMP-1000,תל אביב,0d042d6d614e7fa4,False,053-XXX-4457
+EMP-1113,אסף,G&A,Accountant,2025-09-02,,active,EMP-1007,תל אביב,63a0b1b0a7dcc97f,False,052-XXX-2330
+EMP-1114,אלה,R&D,Data Engineer,2025-09-06,,active,EMP-1000,תל אביב,299d6c358b5dc1b3,False,052-XXX-4929
+EMP-1115,אסף,Product,Product Designer,2025-10-20,,active,EMP-1008,תל אביב,93774f5ea26bbcee,False,052-XXX-2229
+EMP-1116,עומר,Sales,SDR,2025-10-24,,active,EMP-1006,תל אביב,d712a234cd2661c6,False,054-XXX-1043
+EMP-1117,שירה,Customer Success,Support Engineer,2025-10-28,,active,EMP-1010,תל אביב,8a9f6da6797073c2,False,053-XXX-8699
+EMP-1118,רעות,R&D,Frontend Engineer,2025-11-12,,active,EMP-1000,תל אביב,195e5e11962f5864,False,052-XXX-1534
+EMP-1119,אופיר,R&D,QA Engineer,2025-11-15,,active,EMP-1000,תל אביב,5ec4d19f0c7d0c71,False,053-XXX-5720
+EMP-1120,עידו,R&D,DevOps Engineer,2025-12-02,,active,EMP-1000,תל אביב,afa1e6a6d7672dca,False,050-XXX-8438
+EMP-1121,אסף,R&D,ML Engineer,2025-12-04,,active,EMP-1000,תל אביב,ee9022b93dcb020c,False,053-XXX-4824
+EMP-1122,שירה,R&D,DevOps Engineer,2026-01-13,,active,EMP-1000,תל אביב,045d334c6fa3cb04,False,054-XXX-4241
+EMP-1123,נוי,R&D,Backend Engineer,2026-01-16,,active,EMP-1000,תל אביב,283b3446071446b2,False,052-XXX-2880
+EMP-1124,אליה,R&D,Frontend Engineer,2026-02-12,,active,EMP-1000,תל אביב,8bf6d18450d7416d,False,053-XXX-3441
+EMP-1125,שני,Marketing,Growth Marketer,2026-02-23,,leave,EMP-1009,תל אביב,53b40e8a727c5844,False,050-XXX-3330
+EMP-1126,שירה,Customer Success,CSM,2026-05-13,,active,EMP-1010,תל אביב,6e2e10937d5a92f7,False,052-XXX-1977
+EMP-1127,אריאל,Customer Success,Onboarding Specialist,2026-05-22,,leave,EMP-1010,תל אביב,0ad6fcb8ca4569ad,False,053-XXX-6039
+EMP-1128,ענבל,R&D,QA Engineer,2026-05-29,,active,EMP-1000,תל אביב,50d0ca37fbcfeb27,False,050-XXX-8195
+EMP-1129,קרן,G&A,Accountant,2026-06-24,,active,EMP-1007,תל אביב,8c1f7dbde1486e07,False,053-XXX-8679
+EMP-1130,שחר,Product,Product Manager,2026-07-06,,active,EMP-1008,תל אביב,f14828d8dfa80555,False,053-XXX-7594
+EMP-1131,עינב,R&D,ML Engineer,2026-07-21,,active,EMP-1000,תל אביב,28b00227356a9292,False,054-XXX-9199
+EMP-1132,טל,R&D,DevOps Engineer,2026-08-05,,active,EMP-1000,תל אביב,284e8ea9dcef7ff8,False,050-XXX-8172
+EMP-1133,מתן,R&D,DevOps Engineer,2026-08-15,,active,EMP-1000,תל אביב,8cbe5e7a4547cc64,False,054-XXX-1653
+EMP-1134,רוני,R&D,ML Engineer,2026-09-18,,active,EMP-1000,חיפה,6acdc89607847e1e,False,053-XXX-6280

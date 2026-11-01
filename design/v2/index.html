@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>איפה הכסף · עיצוב מערכת v2</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  body { background: radial-gradient(1000px 500px at 85% -10%, rgba(46,230,168,.08), transparent 70%), var(--bg); }
+  .hub-head { padding: 56px 0 28px; display: grid; gap: 14px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .group { display: grid; gap: 16px; padding: 28px 0; border-top: 1px solid var(--line); }
+  .group-h { display: flex; align-items: baseline; gap: 12px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .sc { display: grid; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); transition: border-color .15s, transform .2s cubic-bezier(.2,.8,.2,1); }
+  .sc:hover { border-color: var(--line-2); transform: translateY(-2px); }
+  .thumb { aspect-ratio: 16 / 10; position: relative; overflow: hidden; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, var(--surface-3), var(--bg-2)); }
+  .thumb::before { content: attr(data-name); position: absolute; inset: auto 14px 12px auto; font-family: var(--mono); font-size: .74rem; color: var(--faint); direction: ltr; }
+  .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .sc .b { padding: 14px 16px 16px; display: grid; gap: 4px; }
+  .sc .t { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-weight: 700; }
+  .sc .f { font-family: var(--mono); font-size: .72rem; color: var(--muted); direction: ltr; }
+  .sc p { margin: 0; font-size: .86rem; color: var(--ink-2); }
+  .docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .doc { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 16px; border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); }
+  .doc:hover { border-color: var(--line-2); }
+  .doc svg { width: 22px; height: 22px; color: var(--brand); flex: none; }
+  .tokens { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tokens i { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--line); }
+  footer { padding: 32px 0 64px; color: var(--muted); font-size: .8rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="hub-head">
+    <div class="brand" id="brand"></div>
+    <h1 class="h-display" style="font-size:clamp(2.1rem,4.6vw,3.6rem)">איפה הכסף · עיצוב מערכת v2</h1>
+    <p class="ink2" style="margin:0;max-width:64ch">כל המסכים של המוצר במקום אחד: שיווק וכניסה, האפליקציה, חיבורים ומובייל. כל המספרים מגיעים מקובץ נתוני הדמו האחד (<span class="mono">assets/demo-data.js</span>), כך שהם עקביים בין המסכים.</p>
+    <div class="meta">
+      <span class="chip">RTL · עברית</span><span class="chip">Heebo + JetBrains Mono</span><span class="chip">vanilla JS · SVG ידני</span><span class="chip ai">watsonx Orchestrate · MCP</span>
+      <span class="tokens" aria-label="צבעי מערכת"><i style="background:var(--brand)"></i><i style="background:var(--amber)"></i><i style="background:var(--blue)"></i><i style="background:var(--violet)"></i><i style="background:var(--ok-gray)"></i><i style="background:var(--coral)"></i></span>
+    </div>
+  </header>
+  <div id="groups"></div>
+  <section class="group">
+    <div class="group-h"><h2 class="h2">מסמכים</h2></div>
+    <div class="docs">
+      <a class="doc" href="../../08-spec-v2.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6M9 13h7M9 17h7"/></svg><div><div style="font-weight:700">אפיון מוצר v2</div><div class="xs muted mono">08-spec-v2.md</div></div></a>
+      <a class="doc" href="../../data/startup/README.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><div><div style="font-weight:700">נתוני הסטארטאפ הסינתטיים</div><div class="xs muted mono">data/startup/README.md</div></div></a>
+      <a class="doc" href="BRIEF.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg><div><div style="font-weight:700">כללי עיצוב למסכים</div><div class="xs muted mono">design/v2/BRIEF.md</div></div></a>
+    </div>
+  </section>
+  <footer>טכנוסיס בע״מ היא חברה בדויה. כל נתוני החברה סינתטיים; שמות הספקים הם שירותים אמיתיים, הסכומים מומצאים.</footer>
+</div>
+<script>
+(function () {
+  document.getElementById('brand').innerHTML = `<svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2EE6A8"/><stop offset="1" stop-color="#5B9DFF"/></linearGradient></defs><circle cx="14" cy="14" r="10" fill="none" stroke="url(#lg)" stroke-width="3.2"/><path d="M21.5 21.5L28 28" stroke="url(#lg)" stroke-width="3.6" stroke-linecap="round"/><path d="M10 10v6.5a2 2 0 0 0 2 2h3.5M18 18V11.5a2 2 0 0 0-2-2h-3.5" fill="none" stroke="#EAF0F6" stroke-width="1.9" stroke-linecap="round"/></svg><span>איפה הכסף</span>`;
+  const G = [
+    ['שיווק וכניסה', 'מהביקור הראשון עד הסריקה הראשונה', [
+      ['landing', 'דף נחיתה', 'המספר הגדול, איך זה עובד, מקורות נתונים ומחיר'],
+      ['login', 'כניסה', 'SSO עם Google ו-Microsoft, וכניסה במייל'],
+      ['signup', 'הרשמה', 'חשבון חדש לחברה בפחות מדקה'],
+      ['onboarding-connect', 'חיבור מקורות', 'בחירת מערכות לחיבור בהרשאות קריאה בלבד'],
+      ['scanning', 'סריקה ראשונה', 'התקדמות חיה וממצאים ראשונים שמופיעים'],
+    ]],
+    ['אפליקציה', 'העבודה היומיומית של ה-CFO והצוות', [
+      ['app-dashboard', 'לוח בקרה', 'חיסכון חוזר, החזרים, לבדיקה ומה כבר נחסך'],
+      ['app-findings', 'ממצאים', 'רשימה ממוינת לפי ₪ עם סינון לפי סוג וסטטוס'],
+      ['app-finding', 'ממצא בודד', 'למה, ראיה משורות המקור, פעולה אחת ובעלים'],
+      ['app-spend', 'הוצאות וספקים', 'לאן הולך הכסף, לפי קטגוריה וספק'],
+      ['app-ai-spend', 'AI וטוקנים', 'עלות לפי מודל ופרויקט, caching ומפתחות יתומים'],
+      ['app-renewals', 'חידושים', 'מה מתחדש, כמה מושבים בשימוש ומתי לפעול'],
+      ['app-agent', 'הסוכן', 'שיחה מבוססת נתונים עם ציטוטים, קריאות כלים ואישור פעולות'],
+      ['app-report', 'דוחות', 'דוח חודשי ל-CFO, רבעוני לדירקטוריון וועדת ביקורת'],
+      ['app-settings', 'הגדרות', 'תפקידים, כללים וספים, התראות, פרטיות, יומן וחיוב'],
+    ]],
+    ['חיבורים', 'מאיפה מגיעים הנתונים ומי עוד מדבר עם המערכת', [
+      ['integrations', 'אינטגרציות', 'ERP, ענן, AI, בנק ואשראי, HR ותיבת חשבוניות'],
+      ['mcp', 'MCP וסוכנים', 'שרת MCP, טוקנים והרשאות לסוכנים חיצוניים'],
+    ]],
+    ['מובייל', 'האפליקציה בכיס', [
+      ['mobile', 'שישה מסכי מובייל', 'בית, Push, החלקת ממצא, אישורים, סוכן וצילום קבלה'],
+    ]],
+  ];
+  document.getElementById('groups').innerHTML = G.map(([g, sub, items]) => `<section class="group"><div class="group-h"><h2 class="h2">${g}</h2><span class="small muted">${sub} · <span class="num">${items.length}</span> מסכים</span></div>
+    <div class="cards">${items.map(([id, t, d]) => `<a class="sc" href="${id}.html"><div class="thumb" data-name="${id}"><img src="shots/${id}-desktop.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div><div class="b"><div class="t"><span>${t}</span><span class="f">${id}.html</span></div><p>${d}</p></div></a>`).join('')}</div></section>`).join('');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+﻿vendor_id,name,category,country,billing_currency,payment_method,owner,hp_number,card_descriptor,contract_end,auto_renew
+V-001,Amazon Web Services EMEA SARL,cloud,LU,USD,bank_transfer,רון,,,,True
+V-002,Datadog Inc,cloud,US,USD,bank_transfer,רון,,,2027-02-28,True
+V-003,MongoDB Atlas,cloud,US,USD,card,רון,,MONGODB CLOUD,,True
+V-004,Cloudflare,cloud,US,USD,card,רון,,CLOUDFLARE,,True
+V-005,Sentry,cloud,US,USD,card,רון,,SENTRY.IO,,True
+V-006,PagerDuty,cloud,US,USD,card,רון,,PAGERDUTY INC,,True
+V-007,Vercel,cloud,US,USD,card,רון,,VERCEL INC.,,True
+V-008,Grafana Labs,cloud,US,USD,card,רון,,GRAFANA LABS,,True
+V-009,Snowflake,cloud,US,USD,bank_transfer,רון,,,,True
+V-010,JFrog,cloud,US,USD,bank_transfer,רון,,,,True
+V-011,Docker Inc,cloud,US,USD,card,רון,,DOCKER INC,,True
+V-012,Logz.io,cloud,IL,USD,bank_transfer,רון,510871098,,,True
+V-013,Google Cloud,cloud,IE,USD,bank_transfer,רון,,,,True
+V-014,OpenAI LLC,ai,US,USD,bank_transfer,אורי,,,,True
+V-015,Anthropic PBC,ai,US,USD,bank_transfer,אורי,,,,True
+V-016,Cursor (Anysphere),ai,US,USD,card,שי,,"CURSOR, AI POWERED IDE",2026-11-30,True
+V-017,GitHub Copilot,ai,US,USD,card,שי,,GITHUB COPILOT,,True
+V-018,ChatGPT Team,ai,US,USD,card,אורי,,OPENAI *CHATGPT TEAM,,True
+V-019,Claude Team,ai,US,USD,card,אורי,,ANTHROPIC CLAUDE TEAM,,True
+V-020,Pinecone,ai,US,USD,card,אורי,,PINECONE SYSTEMS,,True
+V-021,Hugging Face,ai,US,USD,card,אורי,,HUGGINGFACE,,True
+V-022,Otter.ai,ai,US,USD,card,אורי,,OTTER.AI,,True
+V-023,Perplexity,ai,US,USD,card,אורי,,PERPLEXITY AI,,True
+V-024,Midjourney,ai,US,USD,card,אורי,,MIDJOURNEY INC,,True
+V-025,ElevenLabs,ai,US,USD,card,אורי,,ELEVENLABS.IO,,True
+V-026,Salesforce,saas,US,USD,bank_transfer,דנה,,,2027-01-31,False
+V-027,Google Workspace,saas,IE,USD,bank_transfer,נועה,,,2027-06-30,True
+V-028,HubSpot,saas,IE,ILS,bank_transfer,דנה,,,2027-09-30,True
+V-029,GitHub Enterprise,saas,US,USD,bank_transfer,שי,,,2027-01-09,True
+V-030,Atlassian,saas,AU,USD,bank_transfer,שי,,,2027-03-31,True
+V-031,Slack,saas,US,USD,bank_transfer,נועה,,,2026-11-14,True
+V-032,Figma,saas,US,USD,card,נועה,,FIGMA,2027-04-30,True
+V-033,monday.com,saas,IL,USD,card,דנה,512534082,MONDAY.COM,2027-02-28,True
+V-034,Notion Labs,saas,US,USD,card,נועה,,"NOTION LABS, INC.",,True
+V-035,Zoom,saas,US,USD,card,נועה,,ZOOM.US 888-799-9666,,True
+V-036,1Password,saas,CA,USD,card,נועה,,1PASSWORD,,True
+V-037,Miro,saas,US,USD,card,נועה,,MIRO.COM,,True
+V-038,Loom,saas,US,USD,card,נועה,,LOOM SUBSCRIPTION,,True
+V-039,Canva,saas,AU,USD,card,ליאת,,CANVA* PRO,,True
+V-040,DocuSign,saas,US,USD,card,נועה,,DOCUSIGN INC,,True
+V-041,Intercom,saas,IE,USD,bank_transfer,עומר,,,,True
+V-042,Gong,saas,US,USD,bank_transfer,דנה,,,,True
+V-043,LinkedIn Sales Navigator,saas,IE,USD,card,דנה,,LINKEDIN SALES NAV,,True
+V-044,ZoomInfo,saas,US,USD,bank_transfer,דנה,,,,True
+V-045,HiBob,saas,GB,USD,bank_transfer,נועה,,,,True
+V-046,פריוריטי תוכנה,saas,IL,ILS,direct_debit,יעל,513563551,,,True
+V-047,Vanta,saas,US,USD,bank_transfer,נועה,,,,True
+V-048,JetBrains,saas,CZ,USD,card,נועה,,JETBRAINS AMERICAS,,True
+V-049,Postman,saas,US,USD,card,נועה,,POSTMAN INC,,True
+V-050,Mixpanel,saas,US,USD,bank_transfer,נועה,,,,True
+V-051,Twilio Segment,saas,US,USD,bank_transfer,נועה,,,,True
+V-052,Lucid,saas,US,USD,card,נועה,,LUCID SOFTWARE,,True
+V-053,Grammarly,saas,US,USD,card,נועה,,GRAMMARLY,,True
+V-054,Calendly,saas,US,USD,card,נועה,,CALENDLY,,True
+V-055,Webflow,saas,US,USD,card,ליאת,,WEBFLOW.COM,,True
+V-056,Semrush,saas,US,USD,card,ליאת,,SEMRUSH,,True
+V-057,Hotjar,saas,MT,USD,card,ליאת,,HOTJAR,,True
+V-058,Adobe,saas,IE,USD,card,ליאת,,ADOBE *CREATIVE CLD,,True
+V-059,Zapier,saas,US,USD,card,נועה,,ZAPIER.COM,,True
+V-060,Typeform,saas,ES,USD,card,נועה,,TYPEFORM,,True
+V-061,Greenhouse,saas,US,USD,bank_transfer,נועה,,,,True
+V-062,Snyk,saas,GB,USD,bank_transfer,נועה,,,,True
+V-063,SonarCloud,saas,CH,USD,card,נועה,,SONARSOURCE,,True
+V-064,Wiz,saas,US,USD,bank_transfer,נועה,,,,True
+V-065,CrowdStrike,saas,US,USD,bank_transfer,נועה,,,,True
+V-066,Cato Networks,saas,IL,USD,bank_transfer,נועה,515147353,,,True
+V-067,LaunchDarkly,saas,US,USD,bank_transfer,נועה,,,,True
+V-068,Retool,saas,US,USD,bank_transfer,נועה,,,,True
+V-069,Fivetran,saas,US,USD,bank_transfer,נועה,,,,True
+V-070,dbt Cloud,saas,US,USD,card,נועה,,DBT LABS,,True
+V-071,Auth0 (Okta),saas,US,USD,bank_transfer,נועה,,,,True
+V-072,Pendo,saas,US,USD,bank_transfer,נועה,,,,True
+V-073,Productboard,saas,US,USD,card,נועה,,PRODUCTBOARD,,True
+V-074,Lattice,saas,US,USD,bank_transfer,נועה,,,,True
+V-075,Clari,saas,US,USD,bank_transfer,דנה,,,,True
+V-076,Outreach,saas,US,USD,bank_transfer,דנה,,,,True
+V-077,KnowBe4,saas,US,USD,card,נועה,,KNOWBE4,,True
+V-078,Wix,saas,IL,USD,card,ליאת,516097631,WIX.COM,,True
+V-079,Mailchimp,saas,US,USD,card,ליאת,,MAILCHIMP,,True
+V-080,Vimeo,saas,US,USD,card,ליאת,,VIMEO.COM,,True
+V-081,Dropbox,saas,US,USD,card,נועה,,DROPBOX,,True
+V-082,Airtable,saas,US,USD,card,נועה,,AIRTABLE.COM,,True
+V-083,Whimsical,saas,US,USD,card,נועה,,WHIMSICAL,,True
+V-084,TeamViewer,saas,DE,USD,card,נועה,,TEAMVIEWER,,True
+V-085,Descript,saas,US,USD,card,ליאת,,DESCRIPT,,True
+V-086,Lusha,saas,IL,USD,bank_transfer,דנה,516731155,,,True
+V-087,Similarweb,saas,IL,USD,bank_transfer,ליאת,516810348,,,True
+V-088,Microsoft 365,saas,IE,USD,card,נועה,,MSFT *M365 BUSINESS,,True
+V-089,Apple Developer,saas,IE,USD,card,נועה,,APPLE.COM/BILL,,True
+V-090,Cloudinary,saas,US,USD,card,נועה,,CLOUDINARY,,True
+V-091,מגדלי הים — ניהול ושכירות,office,IL,ILS,bank_transfer,מיכל,517127106,,2028-12-31,False
+V-092,אלבר ציי רכב,office,IL,ILS,direct_debit,נועה,517206298,,,True
+V-093,פז חברת נפט,office,IL,ILS,direct_debit,נועה,517285482,,,True
+V-094,חברת החשמל לישראל,office,IL,ILS,direct_debit,נועה,517364675,,,True
+V-095,ברק-אור שירותי ניקיון,office,IL,ILS,bank_transfer,נועה,517443867,,,True
+V-096,נספרסו ישראל,office,IL,ILS,bank_transfer,נועה,517523056,,,True
+V-097,שופרסל,office,IL,ILS,card,נועה,517602249,שופרסל דיל,,True
+V-098,Wolt,office,IL,ILS,card,נועה,517681433,WOLT,,True
+V-099,פנגו,office,IL,ILS,card,נועה,517760625,פנגו חניה,,True
+V-100,Gett Business,office,IL,ILS,bank_transfer,נועה,517839817,,,True
+V-101,אופיס דיפו,office,IL,ILS,card,נועה,517919007,אופיס דיפו,,True
+V-102,איקאה,office,IL,ILS,card,נועה,517998191,איקאה נתניה,,True
+V-103,Amazon,office,US,USD,card,נועה,,AMAZON MKTPL*,,True
+V-104,AliExpress,office,CN,USD,card,נועה,,ALIEXPRESS,,True
+V-105,מי אביבים,office,IL,ILS,direct_debit,נועה,518235767,,,True
+V-106,ירוק בעיר צמחייה,office,IL,ILS,bank_transfer,נועה,518314950,,,True
+V-107,Uber,office,US,USD,card,נועה,,UBER *TRIP,,True
+V-108,Booking.com,office,NL,USD,card,נועה,,BOOKING.COM,,True
+V-109,דואר ישראל,office,IL,ILS,card,נועה,518552526,דואר ישראל,,True
+V-110,סופר-פארם,office,IL,ILS,card,נועה,518631718,סופר-פארם,,True
+V-111,אל על,office,IL,ILS,card,נועה,518710900,אל על נתיבי אויר,,True
+V-112,ש.ל. שליחויות,office,IL,ILS,bank_transfer,נועה,518790092,,,True
+V-113,מאפיית השכונה,office,IL,ILS,card,נועה,518869284,מאפיית השכונה,,True
+V-114,גובה הפקות אירועים,office,IL,ILS,bank_transfer,נועה,518948476,,,True
+V-115,מעדני גורמה קייטרינג,office,IL,ILS,bank_transfer,נועה,519027668,,,True
+V-116,שגריר שירותי רכב,office,IL,ILS,bank_transfer,נועה,519106850,,,True
+V-117,קרביץ,office,IL,ILS,bank_transfer,נועה,519186043,,,True
+V-118,שמיר-כהן עורכי דין,ap,IL,ILS,bank_transfer,מיכל,519265235,,,True
+V-119,ברגר-אלון ושות׳ רואי חשבון,ap,IL,ILS,bank_transfer,יעל,519344428,,,True
+V-120,קוד-פלוס ייעוץ,ap,IL,ILS,bank_transfer,מיכל,519423610,,,True
+V-121,טאלנט-ברידג׳ השמה,ap,IL,ILS,bank_transfer,יעל,519502801,,,True
+V-122,מגפון יחסי ציבור,ap,IL,ILS,bank_transfer,ליאת,519581995,,,True
+V-123,לינגו-תרגומים,ap,IL,ILS,bank_transfer,יעל,519661185,,,True
+V-124,סטודיו נגה עיצוב,ap,IL,ILS,bank_transfer,ליאת,519740377,,,True
+V-125,אופק ייעוץ מס,ap,IL,ILS,bank_transfer,יעל,519819569,,,True
+V-126,Harlow & Pierce LLP,ap,US,USD,bank_transfer,יעל,,,,True
+V-127,פנינה ייעוץ ארגוני,ap,IL,ILS,bank_transfer,יעל,519977946,,,True
+V-128,סייבר-שילד ייעוץ אבטחה,ap,IL,ILS,bank_transfer,יעל,510057144,,,True
+V-129,עיריית תל אביב-יפו — ארנונה,finance,IL,ILS,direct_debit,מיכל,510136336,,,True
+V-130,מגן-על סוכנות לביטוח,finance,IL,ILS,bank_transfer,מיכל,510215528,,,False
+V-131,Stripe,finance,IE,USD,bank_transfer,מיכל,,,,True
+V-132,רשם החברות,finance,IL,ILS,bank_transfer,מיכל,510373905,,,True
+V-133,כאל — דמי כרטיס,finance,IL,ILS,card,מיכל,510453095,כאל דמי כרטיס,,True
+V-134,פרטנר תקשורת,telecom,IL,ILS,direct_debit,נועה,510532286,,2027-08-31,True
+V-135,בזק,telecom,IL,ILS,direct_debit,נועה,510611478,,,True
+V-136,Twilio,telecom,US,USD,bank_transfer,רון,,,,True
+V-137,בזק בינלאומי,telecom,IL,ILS,direct_debit,נועה,510769854,,,True
+V-138,חילן,payroll,IL,ILS,direct_debit,יעל,510849045,,,True
+V-139,Papaya Global,payroll,US,USD,bank_transfer,יעל,,,,True
+V-140,Deel,payroll,US,USD,bank_transfer,יעל,,,,True

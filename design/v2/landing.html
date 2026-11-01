@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>איפה הכסף — מוצאים את הכסף שדולף בחברה</title>
+<meta name="description" content="מתחברים בקריאה בלבד להנהלת החשבונות, לבנק, לענן, ל-AI ול-SaaS, ומוצאים בזבוז, כפילויות וחידושים יקרים. כל ממצא עם ראיה ופעולה אחת.">
+<meta property="og:image" content="img/og.png">
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  html { scroll-padding-top: 80px; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  html, body { overflow-x: clip; }
+  section { position: relative; }
+  .sec { padding: 120px 0; }
+  .sec-head { max-width: 640px; display: grid; gap: 14px; margin-bottom: 48px; }
+  .sec-head p { margin: 0; font-size: 1.1rem; color: var(--ink-2); }
+  .h-sec { font-size: clamp(1.9rem, 3.6vw, 3rem); font-weight: 900; letter-spacing: -.03em; line-height: 1.08; margin: 0; }
+
+  /* header */
+  .hdr { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .hdr .container { height: 68px; display: flex; align-items: center; gap: 28px; }
+  .brandmark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; }
+  .hdr nav { display: flex; gap: 4px; }
+  .hdr nav a { padding: 8px 12px; border-radius: 10px; color: var(--ink-2); font-size: .93rem; font-weight: 500; }
+  .hdr nav a:hover { color: var(--ink); background: rgba(255,255,255,.04); }
+  .hdr .acts { margin-inline-start: auto; display: flex; gap: 8px; align-items: center; }
+  @media (max-width: 960px) { .hdr nav { display: none; } }
+  @media (max-width: 480px) { .hdr .login { display: none; } }
+
+  /* hero */
+  .hero { display: grid; grid-template-columns: max(16px, calc((100vw - 1200px) / 2)) minmax(0, 560px) minmax(0, 1fr); column-gap: 56px; align-items: center; padding: 72px 0 140px; }
+  .hero::before { content: ""; position: absolute; inset: -120px 40% auto -10%; height: 700px; background: radial-gradient(closest-side, rgba(46,230,168,.10), transparent 70%); pointer-events: none; }
+  .hero-copy { grid-column: 2; display: grid; gap: 26px; position: relative; z-index: 2; }
+  .hero h1 { font-size: clamp(2.6rem, 5.4vw, 4.9rem); font-weight: 900; line-height: 1.0; letter-spacing: -.04em; margin: 0; }
+  .hero h1 span { display: block; color: var(--brand); }
+  .hero .sub { font-size: 1.2rem; line-height: 1.6; color: var(--ink-2); margin: 0; max-width: 500px; }
+  .hero .trust { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: .86rem; }
+  .hero .trust span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero .trust svg { width: 16px; height: 16px; color: var(--brand); }
+  .hero-media { grid-column: 3; position: relative; }
+  .hero-img { aspect-ratio: 3 / 2; border-radius: var(--r-xl) 0 0 var(--r-xl); overflow: hidden; background: radial-gradient(120% 90% at 70% 30%, #12403A 0%, #0D1B2A 45%, var(--bg-2) 100%); box-shadow: 0 0 120px -20px var(--brand-glow); border: 1px solid var(--line); border-inline-end: 0; }
+  .hero-img img { width: 100%; height: 100%; object-fit: cover; }
+  .result { position: absolute; inset-inline-start: -64px; bottom: -72px; width: min(400px, 92%); padding: 20px; border-radius: var(--r-lg); box-shadow: 0 30px 80px -20px rgba(0,0,0,.85), 0 0 0 1px rgba(46,230,168,.14); }
+  .result .big-money { font-size: clamp(2.3rem, 3.6vw, 3.1rem); }
+  .result .rows { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; margin-top: 14px; }
+  .result .r { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: .86rem; }
+  .result .r .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
+  .cat-dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+  @media (max-width: 980px) {
+    .hero { grid-template-columns: 16px minmax(0, 1fr) 16px; column-gap: 0; padding: 40px 0 120px; row-gap: 40px; }
+    .hero-copy, .hero-media { grid-column: 2; }
+    .hero-img { border-radius: var(--r-lg); border-inline-end: 1px solid var(--line); }
+    .result { inset-inline-start: auto; inset-inline-end: 12px; bottom: -88px; }
+  }
+  @media (max-width: 560px) {
+    .result { position: relative; inset: auto; width: auto; margin: -48px 12px 0; }
+    .hero { padding-bottom: 64px; }
+  }
+
+  /* logos */
+  .logos { padding: 8px 0 40px; }
+  .logos p { text-align: center; margin: 0 0 22px; color: var(--muted); font-size: .9rem; }
+  .marq { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .marq-track { display: flex; gap: 52px; width: max-content; animation: marq 48s linear infinite; }
+  .marq-track span { font-weight: 800; font-size: 1.25rem; color: var(--faint); letter-spacing: -.01em; white-space: nowrap; }
+  .marq-track span.en { font-family: var(--font); direction: ltr; }
+  @keyframes marq { to { transform: translateX(50%); } }
+
+  /* leaks bento */
+  .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+  .leak { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-xl); overflow: hidden; display: grid; position: relative; }
+  .leak .art { background: radial-gradient(90% 90% at 50% 40%, var(--tint, #163246), var(--bg-2)); overflow: hidden; }
+  .leak .art img { width: 100%; height: 100%; object-fit: cover; }
+  .leak .body { padding: 26px; display: grid; gap: 14px; align-content: start; }
+  .leak h3 { font-size: 1.45rem; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+  .leak .lede { margin: 0; color: var(--ink-2); }
+  .leak-a { grid-column: span 4; grid-template-columns: 1fr 1fr; }
+  .leak-b { grid-column: span 2; grid-template-rows: 220px 1fr; }
+  .leak-c { grid-column: span 2; grid-template-rows: 220px 1fr; }
+  .leak-d { grid-column: span 4; grid-template-columns: 1fr 1fr; }
+  .leak-a .art, .leak-d .art { min-height: 340px; }
+  .fnd { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 8px; }
+  .fnd .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .fnd .t { font-weight: 600; font-size: .92rem; line-height: 1.4; }
+  .fnd .w { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+  .fnd .amt { font-weight: 800; color: var(--amber); }
+  .also { margin-top: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 32px; padding: 24px 28px; border-radius: var(--r-xl); background: var(--bg-2); border: 1px solid var(--line); }
+  .also .it { display: flex; gap: 12px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: .92rem; }
+  .also .it .grow { color: var(--ink-2); }
+  .also .money { font-weight: 700; }
+  @media (max-width: 980px) {
+    .leak-a, .leak-b, .leak-c, .leak-d { grid-column: span 6; grid-template-columns: 1fr; grid-template-rows: auto; }
+    .leak-a .art, .leak-d .art, .leak-b .art, .leak-c .art { min-height: 0; aspect-ratio: 16 / 9; }
+    .also { grid-template-columns: 1fr; }
+  }
+
+  /* how */
+  .how { background: var(--bg-2); border-block: 1px solid var(--line); }
+  .steps { list-style: none; margin: 0 0 40px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; counter-reset: s; }
+  .steps li { display: grid; gap: 10px; align-content: start; counter-increment: s; }
+  .steps li::before { content: counter(s); width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--surface-3); color: var(--brand); border: 1px solid var(--line-2); }
+  .steps h3 { font-size: 1.2rem; font-weight: 800; margin: 0; }
+  .steps p { margin: 0; color: var(--ink-2); }
+  .ui { border-radius: var(--r-xl); background: var(--surface); border: 1px solid var(--line-2); box-shadow: 0 40px 100px -40px rgba(0,0,0,.9); overflow: hidden; }
+  .ui-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg-2); font-size: .8rem; color: var(--muted); }
+  .ui-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-2); }
+  .ui .table { min-width: 540px; }
+  .ui-body { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+  .ui-main { padding: 26px; display: grid; gap: 18px; }
+  .ui-side { padding: 26px; border-inline-start: 1px solid var(--line); background: var(--bg-2); display: grid; gap: 16px; align-content: start; }
+  .pipe { display: grid; gap: 0; }
+  .pipe .p { display: flex; gap: 12px; align-items: flex-start; padding-bottom: 16px; position: relative; }
+  .pipe .p::after { content: ""; position: absolute; top: 22px; bottom: 0; inset-inline-start: 10px; width: 2px; background: var(--line-2); }
+  .pipe .p:last-child::after { display: none; }
+  .pipe .b { width: 22px; height: 22px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--surface-3); border: 2px solid var(--line-2); }
+  .pipe .p.done .b { background: var(--brand); border-color: var(--brand); }
+  .pipe .p.now .b { border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-bg); }
+  .pipe .p .xs { color: var(--muted); }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr; gap: 28px; } .ui-body { grid-template-columns: minmax(0, 1fr); } .ui-side { border-inline-start: 0; border-top: 1px solid var(--line); } }
+
+  /* ai */
+  .ai-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.3fr); gap: 56px; align-items: center; }
+  .mult { font-size: clamp(5rem, 11vw, 9rem); font-weight: 900; line-height: .9; letter-spacing: -.05em; color: var(--violet); }
+  .chart-card { padding: 28px; }
+  .chart-card svg { width: 100%; height: auto; overflow: visible; }
+  .mix { display: grid; gap: 10px; margin-top: 24px; }
+  .mix .m { display: grid; grid-template-columns: 210px 1fr 44px; gap: 12px; align-items: center; font-size: .85rem; }
+  .mix .bar { height: 8px; border-radius: 4px; background: var(--surface-3); overflow: hidden; }
+  .mix .bar i { display: block; height: 100%; background: var(--violet); border-radius: 4px; }
+  @media (max-width: 900px) { .ai-grid { grid-template-columns: 1fr; gap: 32px; } .mix .m { grid-template-columns: 130px 1fr 40px; } }
+
+  /* agent */
+  .agent-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+  .chat { padding: 24px; display: grid; gap: 14px; align-content: start; }
+  .msg { max-width: 88%; padding: 12px 16px; border-radius: 16px; font-size: .93rem; line-height: 1.6; }
+  .msg.me { justify-self: start; background: var(--surface-3); border-end-start-radius: 4px; }
+  .msg.bot { justify-self: end; background: var(--violet-bg); border: 1px solid rgba(167,139,250,.25); border-end-end-radius: 4px; }
+  .msg.bot ul { margin: 8px 0; padding-inline-start: 18px; }
+  .msg .src { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .code { padding: 0; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+  .code .tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid var(--line); background: var(--bg-2); flex-wrap: wrap; }
+  .code .tabs button { border: 0; background: transparent; color: var(--muted); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: .85rem; font-weight: 600; min-height: 36px; }
+  .code .tabs button[aria-selected="true"] { background: var(--surface-3); color: var(--ink); }
+  pre { margin: 0; padding: 22px; font-family: var(--mono); font-size: .82rem; line-height: 1.75; color: var(--ink-2); direction: ltr; text-align: left; overflow: auto; }
+  pre .k { color: var(--blue); } pre .s { color: var(--brand); } pre .c { color: var(--faint); }
+  .guard { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  @media (max-width: 900px) { .agent-grid { grid-template-columns: 1fr; } }
+
+  /* trust */
+  .trust-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 64px; }
+  .tlist { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  .tlist div { padding: 20px 0; border-top: 1px solid var(--line); }
+  .tlist h3 { font-size: 1.02rem; font-weight: 700; margin: 0 0 6px; }
+  .tlist p { margin: 0; color: var(--ink-2); font-size: .92rem; }
+  @media (max-width: 900px) { .trust-grid { grid-template-columns: 1fr; gap: 24px; } .tlist { grid-template-columns: 1fr; } }
+
+  /* pricing */
+  .tiers { display: grid; grid-template-columns: 1fr 1.08fr 1fr; gap: 16px; align-items: stretch; }
+  .tier { padding: 30px; border-radius: var(--r-xl); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 18px; align-content: start; }
+  .tier.hot { background: linear-gradient(180deg, #0F2A24, var(--surface)); border-color: rgba(46,230,168,.35); box-shadow: 0 0 80px -30px var(--brand-glow); }
+  .tier .price { font-size: 2.6rem; font-weight: 900; letter-spacing: -.03em; line-height: 1; }
+  .tier ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: .93rem; color: var(--ink-2); }
+  .tier li { display: flex; gap: 10px; }
+  .tier li svg { width: 18px; height: 18px; color: var(--brand); flex: none; margin-top: 3px; }
+  .fee { margin-top: 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 28px; align-items: center; padding: 26px 30px; border-radius: var(--r-xl); border: 1px dashed var(--line-2); }
+  .fee .pct { font-size: 3.2rem; font-weight: 900; color: var(--brand); letter-spacing: -.04em; line-height: 1; }
+  @media (max-width: 900px) { .tiers { grid-template-columns: 1fr; } .fee { grid-template-columns: 1fr; gap: 12px; } }
+
+  /* faq */
+  .faq-grid { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: 64px; }
+  details { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; list-style: none; padding: 20px 0; font-weight: 700; font-size: 1.05rem; display: flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 44px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-size: 1.5rem; color: var(--muted); font-weight: 300; transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { margin: 0 0 22px; color: var(--ink-2); max-width: 680px; }
+  @media (max-width: 900px) { .faq-grid { grid-template-columns: 1fr; gap: 16px; } }
+
+  /* final cta */
+  .final { margin: 0 auto 80px; border-radius: 36px; background: radial-gradient(80% 120% at 85% 0%, #103C33 0%, var(--surface) 55%); border: 1px solid var(--line-2); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); align-items: end; overflow: hidden; }
+  .final .copy { padding: 64px; display: grid; gap: 22px; align-self: center; }
+  .final .ph { height: 420px; background: radial-gradient(60% 60% at 50% 60%, rgba(46,230,168,.18), transparent); display: flex; align-items: flex-end; justify-content: center; }
+  .final .ph img { height: 100%; width: auto; object-fit: contain; object-position: bottom; mix-blend-mode: screen; }
+  @media (max-width: 860px) { .final { grid-template-columns: 1fr; } .final .copy { padding: 36px 24px 0; } .final .ph { height: 320px; } }
+
+  footer { border-top: 1px solid var(--line); padding: 56px 0 40px; color: var(--muted); font-size: .9rem; }
+  .foot { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; }
+  footer .brandmark { color: var(--ink); }
+  .foot h4 { color: var(--ink); font-size: .9rem; margin: 0 0 12px; }
+  .foot a { display: block; padding: 4px 0; } .foot a:hover { color: var(--ink); }
+  @media (max-width: 760px) { .foot { grid-template-columns: 1fr 1fr; } .foot > div:first-child { grid-column: 1 / -1; } }
+
+  /* reveal */
+  .js .rv { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); transition-delay: var(--d, 0ms); }
+  .js .rv.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .js .rv { opacity: 1; transform: none; } .marq-track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; gap: 16px 36px; } .marq { mask-image: none; } .marq-track [aria-hidden] { display: none; } }
+  @media (max-width: 700px) { .sec { padding: 80px 0; } .sec-head { margin-bottom: 32px; } }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<header class="hdr glass">
+  <div class="container">
+    <a class="brandmark" href="landing.html" aria-label="איפה הכסף — דף הבית"><span data-logo></span><span>איפה הכסף</span></a>
+    <nav aria-label="ראשי">
+      <a href="#leaks">איפה דולף</a><a href="#how">איך זה עובד</a><a href="#agent">סוכן ו-MCP</a><a href="#trust">אבטחה</a><a href="#pricing">מחירים</a><a href="#faq">שאלות</a>
+    </nav>
+    <div class="acts">
+      <a class="btn ghost login" href="login.html">כניסה</a>
+      <a class="btn primary" href="signup.html">סריקה חינם</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero" aria-labelledby="h1">
+  <div class="hero-copy">
+    <h1 id="h1" class="rise">הכסף שלכם דולף. <span>אנחנו יודעים איפה.</span></h1>
+    <p class="sub rise" style="animation-delay:.08s">מתחברים בקריאה בלבד להנהלת החשבונות, לבנק, לענן, ל-AI ולכלי ה-SaaS, ומוצאים בזבוז, כפילויות וחידושים יקרים. כל ממצא מגיע עם השורות המקוריות ופעולה אחת.</p>
+    <div class="row wrap rise" style="animation-delay:.16s">
+      <a class="btn primary lg" href="signup.html">התחילו סריקה חינם</a>
+      <a class="btn lg" href="scanning.html">לראות סריקה לדוגמה</a>
+    </div>
+    <div class="trust rise" style="animation-delay:.24s">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>הרשאות קריאה בלבד</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>תואם תיקון 13 לחוק הגנת הפרטיות</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ממצאים ראשונים תוך שעה</span>
+    </div>
+  </div>
+  <div class="hero-media rise" style="animation-delay:.1s">
+    <div class="hero-img"><img src="img/hero.png" alt="" onerror="this.style.visibility='hidden'"></div>
+    <div class="result glass" aria-label="תוצאה לדוגמה">
+      <div class="row between wrap" style="gap:6px"><span class="small ink2">נמצא בסריקה הראשונה</span><span class="chip xs">דוגמה · נתונים סינתטיים</span></div>
+      <div style="margin-top:10px" class="row" ><span class="big-money money" id="countup">₪0</span></div>
+      <div class="small muted" style="margin-top:6px">חיסכון שנתי חוזר · ועוד <span class="money" data-k="oneTimeRecovery"></span> החזר חד-פעמי</div>
+      <div class="rows" id="heroRows"></div>
+    </div>
+  </div>
+</section>
+
+<section class="logos" aria-label="מקורות נתונים נתמכים">
+  <p>מתחבר למקורות שכבר יש לכם, בלי לשנות תהליך</p>
+  <div class="marq"><div class="marq-track" id="marq"></div></div>
+</section>
+
+<section class="sec" id="leaks" aria-labelledby="leaks-h">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-sec" id="leaks-h">ארבעה מקומות שבהם הכסף בורח, כל חודש</h2>
+      <p>33 כללים דטרמיניסטיים רצים על כל שורה. אלה ממצאים אמיתיים מסריקת הדגמה של חברת Series B עם <span class="num" data-c="employees"></span> עובדים.</p>
+    </div>
+    <div class="bento">
+      <article class="leak leak-a rv" style="--tint:#2A1F4A">
+        <div class="body">
+          <span class="chip ai" style="justify-self:start">AI וטוקנים</span>
+          <h3>מודל הדגל עושה עבודה של מודל קטן</h3>
+          <p class="lede">משימות סיווג על המודל היקר, prompt שנשלח מיליוני פעמים בלי caching, מפתחות API של עובדים שעזבו.</p>
+          <div data-f="F-1001"></div><div data-f="F-1005"></div>
+        </div>
+        <div class="art"><img src="img/feat-ai.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>
+      </article>
+      <article class="leak leak-b rv" style="--d:80ms;--tint:#12304F">
+        <div class="art"><img src="img/feat-cloud.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>
+        <div class="body">
+          <h3>ענן שאף אחד לא משתמש בו</h3>
+          <div data-f="F-1003"></div>
+        </div>
+      </article>
+      <article class="leak leak-c rv" style="--tint:#0F3A2E">
+        <div class="art"><img src="img/feat-saas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>
+        <div class="body">
+          <h3>מושבים של מי שכבר לא כאן</h3>
+          <div data-f="F-1015"></div>
+        </div>
+      </article>
+      <article class="leak leak-d rv" style="--d:80ms;--tint:#3A2A10">
+        <div class="body">
+          <h3>חשבוניות כפולות ומע״מ שלא יקוזז</h3>
+          <p class="lede">אותה חשבונית בדולר בכרטיס ובשקל בהעברה. חשבוניות בלי מספר הקצאה, שהמע״מ שלהן לא יוכר.</p>
+          <div data-f="F-1012"></div><div data-f="F-1020"></div>
+        </div>
+        <div class="art"><img src="img/feat-receipts.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>
+      </article>
+    </div>
+    <div class="also rv" id="also" aria-label="ממצאים נוספים"></div>
+  </div>
+</section>
+
+<section class="sec how" id="how" aria-labelledby="how-h">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-sec" id="how-h">מחיבור לחיסכון מאומת, בלי גיליון אחד</h2>
+    </div>
+    <ol class="steps">
+      <li class="rv"><h3>מתחברים בקריאה בלבד</h3><p>Google Workspace, HiBob, Priority, כרטיס האשראי, AWS, OpenAI ו-Anthropic. OAuth עם הרשאות צפייה, בלי סיסמאות ובלי גישת כתיבה.</p></li>
+      <li class="rv" style="--d:80ms"><h3>המנוע סורק כל שורה</h3><p><span class="num" data-k="rowsScanned"></span> שורות מ-<span class="num" data-k="sources"></span> מקורות עוברות 33 כללים. אותו קלט, אותה תוצאה, בלי ניחושים של מודל.</p></li>
+      <li class="rv" style="--d:160ms"><h3>פעולה אחת, וחיסכון שנמדד</h3><p>כל ממצא נשלח ל-Slack או ל-Jira לבעלים הנכון. אחרי התיקון, החיוב הבא נבדק ורק אז החיסכון נספר כמאומת.</p></li>
+    </ol>
+    <div class="ui rv" data-ui>
+      <div class="ui-bar"><i></i><i></i><i></i><span style="margin-inline-start:10px">ממצאים / <span class="mono">F-1012</span></span></div>
+      <div class="ui-body">
+        <div class="ui-main">
+          <div class="row wrap between">
+            <div class="row wrap"><span class="chip open"><span class="dot"></span>פתוח</span><span class="chip mono">DUP_CROSS_CURRENCY</span></div>
+            <div class="row small muted">ביטחון <span class="conf" id="conf"></span> <span class="num">97%</span></div>
+          </div>
+          <div>
+            <div class="h1" id="exTitle"></div>
+            <p class="ink2" style="margin:8px 0 0" id="exWhy"></p>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>מקור</th><th>תאריך</th><th>אסמכתא</th><th class="end">סכום</th></tr></thead>
+              <tbody>
+                <tr><td>כרטיס Cal Business</td><td class="num">03/08/2026</td><td class="mono">INV-ATL-88213</td><td class="end"><span class="money">$10,450</span></td></tr>
+                <tr><td>בנק לאומי · העברה</td><td class="num">11/08/2026</td><td class="mono">INV-ATL-88213</td><td class="end"><span class="money">₪38,900</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row wrap between" style="padding:14px 16px;border-radius:12px;background:var(--blue-bg)">
+            <div class="small"><b style="color:var(--blue)">פעולה:</b> <span id="exAction"></span></div>
+            <div class="row"><button class="btn sm" type="button">Slack</button><button class="btn sm primary" type="button">פתח ב-Jira</button></div>
+          </div>
+        </div>
+        <div class="ui-side">
+          <div class="xs muted">החזר צפוי</div>
+          <div class="big-money money" style="font-size:2.4rem" id="exAmt"></div>
+          <div class="pipe">
+            <div class="p done"><span class="b"></span><div><div class="small">זוהה ע״י המנוע</div><div class="xs">12/08/2026 · 06:02</div></div></div>
+            <div class="p done"><span class="b"></span><div><div class="small">נשלח ל-יעל (Finance)</div><div class="xs">Jira FIN-214</div></div></div>
+            <div class="p now"><span class="b"></span><div><div class="small">ממתין לזיכוי מהספק</div><div class="xs">תזכורת אוטומטית בעוד 7 ימים</div></div></div>
+            <div class="p"><span class="b"></span><div><div class="small">מאומת בחשבונית הבאה</div><div class="xs">החיסכון נספר רק כאן</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="ai" aria-labelledby="ai-h">
+  <div class="container ai-grid">
+    <div class="stack lg rv" style="align-content:start">
+      <div class="mult num" id="mult"></div>
+      <h2 class="h-sec" id="ai-h">ההוצאה על AI גדלה מהר יותר מכל שורה אחרת</h2>
+      <p class="ink2" style="margin:0;font-size:1.08rem">בחברת ההדגמה, חשבון הטוקנים החודשי עלה מ-<span class="money" id="aiFrom"></span> ל-<span class="money" id="aiTo"></span> בתוך 24 חודשים. אנחנו קוראים את ה-Usage API של OpenAI ו-Anthropic, מפרקים לפי פרויקט, מודל ומפתח, ומראים איפה אותה איכות זמינה בפחות.</p>
+      <div class="row wrap"><span class="chip ai">החלפת מודל</span><span class="chip ai">prompt caching</span><span class="chip ai">מפתחות יתומים</span><span class="chip ai">מושבים כפולים</span></div>
+    </div>
+    <div class="card chart-card rv" style="--d:80ms" data-ui>
+      <div class="row between"><div><div class="h3">הוצאה חודשית על AI</div><div class="xs muted">₪ · <span class="num">11/2024–10/2026</span></div></div><span class="chip ai" id="aiSave"></span></div>
+      <svg id="aiChart" viewBox="0 0 600 240" role="img" aria-label="גרף הוצאה חודשית על AI"></svg>
+      <div class="mix" id="mix"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="agent" aria-labelledby="agent-h" style="padding-top:40px">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-sec" id="agent-h">שואלים בעברית. התשובה רק מהנתונים.</h2>
+      <p>הסוכן מסביר כל ממצא, עונה על שאלות ומכין פעולות. הוא לא ממציא מספרים: כל משפט מצביע על ממצא או על שורת מקור. ואם אתם עובדים כבר עם סוכן, חברו אותו לשרת ה-MCP שלנו.</p>
+    </div>
+    <div class="agent-grid">
+      <div class="card chat rv" data-ui>
+        <div class="msg me">כמה אפשר לחסוך ב-AI בלי לפגוע באיכות?</div>
+        <div class="msg bot" id="botMsg"></div>
+        <div class="msg me">תפתח למיכל משימה על המפתח של dan-experiments</div>
+        <div class="msg bot">הכנתי משימה ב-Jira ל-שי (CTO): ביטול המפתח אחרי בדיקה שאין תלות בפרודקשן. <b>היא תיווצר רק אחרי שתאשרו.</b><div class="row" style="margin-top:10px"><button class="btn sm primary" type="button">אשר ופתח</button><button class="btn sm ghost" type="button">ערוך</button></div></div>
+      </div>
+      <div class="card code rv" style="--d:80ms">
+        <div class="tabs" role="tablist" aria-label="לקוח MCP">
+          <button role="tab" aria-selected="true" data-tab="claude">Claude</button>
+          <button role="tab" aria-selected="false" data-tab="bob">IBM Bob</button>
+          <button role="tab" aria-selected="false" data-tab="wx">watsonx Orchestrate</button>
+        </div>
+        <pre id="cfg"></pre>
+      </div>
+    </div>
+    <div class="guard rv"><span class="chip">קריאה בלבד כברירת מחדל</span><span class="chip">כל כתיבה דורשת אישור אדם</span><span class="chip">כל קריאה נרשמת ביומן ביקורת</span><span class="chip">טוקן מוגבל לפי הרשאה</span></div>
+  </div>
+</section>
+
+<section class="sec how" id="trust" aria-labelledby="trust-h">
+  <div class="container trust-grid">
+    <div class="stack lg rv" style="align-content:start">
+      <h2 class="h-sec" id="trust-h">אנחנו רואים הכל. ולא יכולים לשנות כלום.</h2>
+      <p class="ink2" style="margin:0;font-size:1.08rem">מערכת שקוראת את השכר, הבנק והחשבוניות חייבת להיות משעממת מבחינת אבטחה. זה מה שבנינו.</p>
+      <a class="btn" href="#faq" style="justify-self:start">שאלות של ממונה הגנת פרטיות</a>
+    </div>
+    <div class="tlist rv" style="--d:80ms">
+      <div><h3>קריאה בלבד, בכל מקור</h3><p>OAuth עם scopes של צפייה. אין לנו יכולת להעביר כסף, לבטל מנוי או למחוק משתמש.</p></div>
+      <div><h3>תיקון 13 לחוק הגנת הפרטיות</h3><p>מאגר רשום, ממונה הגנת פרטיות, הסכם עיבוד נתונים וזכויות עיון ומחיקה.</p></div>
+      <div><h3>עובדים כמזהה, לא כשם</h3><p>נתוני עובדים מוצגים כ-EMP-xxxx. שמות ושכר לא נשמרים יחד, ואנחנו מסמנים חריגה בתהליך, לא אדם.</p></div>
+      <div><h3>קבצים גולמיים נמחקים אחרי 24 שעות</h3><p>נשמרות רק השורות שמשמשות ראיה לממצא, ובמשך תקופה שאתם בוחרים.</p></div>
+      <div><h3>הרשאות, SSO ויומן ביקורת</h3><p>Admin, Finance, Viewer ו-DPO. SAML מול Okta או Entra ID. כל צפייה וכל פעולה נרשמות.</p></div>
+      <div><h3>הנתונים נשארים באזור</h3><p>אחסון באזור שבחרתם, הצפנה במנוחה ובתעבורה. SOC 2 Type II בתהליך.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="pricing" aria-labelledby="price-h">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-sec" id="price-h">משלמים פחות ממה שאנחנו מוצאים</h2>
+      <p>בחברת ההדגמה, המנוי השנתי הוא פחות מ-4% מהחיסכון השנתי שנמצא.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier rv">
+        <div class="h2">סריקה חינם</div>
+        <div><span class="price money">₪0</span><div class="small muted">פעם אחת, בלי כרטיס אשראי</div></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>עד 6 מקורות נתונים</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>דוח PDF עם 10 הממצאים הגדולים</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>כל הנתונים נמחקים אחרי 14 יום</li>
+        </ul>
+        <a class="btn block" href="signup.html" style="margin-top:auto">התחילו סריקה</a>
+      </div>
+      <div class="tier hot rv" style="--d:80ms">
+        <div class="row between"><div class="h2">Growth</div><span class="chip fixed">הכי נפוץ</span></div>
+        <div><span class="price money">₪2,900</span> <span class="muted">לחודש</span><div class="small muted">עד 150 עובדים · חיוב שנתי</div></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>כל המקורות, סריקה יומית</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>הסוכן בעברית ושרת MCP</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>Slack, Jira ומעקב חיסכון מאומת</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>התראות לפני כל חידוש</li>
+        </ul>
+        <a class="btn primary block" href="signup.html" style="margin-top:auto">התחילו עם Growth</a>
+      </div>
+      <div class="tier rv" style="--d:160ms">
+        <div class="h2">Scale</div>
+        <div><span class="price">בהתאמה</span><div class="small muted">מעל 150 עובדים או כמה ישויות</div></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>SSO/SAML ו-SCIM</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>כללים מותאמים ואזור נתונים ייעודי</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>DPA מותאם ומלווה ייעודי</li>
+        </ul>
+        <a class="btn block" href="mailto:sales@example.com?subject=Scale" style="margin-top:auto">דברו איתנו</a>
+      </div>
+    </div>
+    <div class="fee rv">
+      <div class="pct num">15%</div>
+      <div><div class="h2">או: משלמים רק על מה שנחסך</div><div class="ink2 small" style="margin-top:4px">15% מהחיסכון המאומת בשנה הראשונה, במקום מנוי. נספר רק מה שהחיוב הבא הוכיח, לא הערכה.</div></div>
+      <a class="btn" href="signup.html">לבחור מודל הצלחה</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec how" id="faq" aria-labelledby="faq-h">
+  <div class="container faq-grid">
+    <h2 class="h-sec rv" id="faq-h">שאלות שכל CFO שואל</h2>
+    <div class="rv">
+      <details open><summary>אתם יכולים לשנות משהו אצלנו?</summary><p>לא. כל חיבור הוא קריאה בלבד. פעולות כמו פתיחת משימה ב-Jira או הודעה ב-Slack יוצאות רק אחרי אישור של משתמש, ונרשמות ביומן.</p></details>
+      <details><summary>זה עוד מודל שפה שממציא מספרים?</summary><p>לא. הממצאים מגיעים ממנוע כללים דטרמיניסטי: אותו קלט נותן אותה תוצאה. הסוכן רק מסביר ועונה, ומצטט את הממצא ואת שורות המקור.</p></details>
+      <details><summary>מה עם נתוני העובדים?</summary><p>הם מוצגים כמזהה (EMP-xxxx), שם ושכר לא מופיעים יחד, והקבצים הגולמיים נמחקים אחרי 24 שעות. אנחנו מזהים חריגה בתהליך, למשל שכר אחרי תאריך סיום, ולא שופטים אנשים.</p></details>
+      <details><summary>כמה זמן לוקח החיבור?</summary><p>שישה מקורות מומלצים לוקחים כ-20 דקות. הסריקה הראשונה רצה בזמן שאתם ממשיכים לעבוד, וממצאים ראשונים מגיעים בדרך כלל תוך שעה.</p></details>
+      <details><summary>אנחנו עובדים בחשבשבת ולא ב-Priority.</summary><p>שתיהן נתמכות. אין חיבור? מעלים קובץ Excel או CSV, ומודל עוזר למפות את העמודות. אתם מאשרים כל מיפוי.</p></details>
+      <details><summary>איך נספר "חיסכון מאומת"?</summary><p>רק אחרי שהחיוב הבא אצל הספק ירד, או שהזיכוי נכנס לבנק. עד אז זה "צפוי". על המספר הזה מחושבת עמלת ההצלחה.</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="container" style="padding-top:120px">
+  <section class="final rv" aria-labelledby="final-h">
+    <div class="copy">
+      <h2 class="h-sec" id="final-h">חברו שישה מקורות. קבלו את הרשימה עד הצהריים.</h2>
+      <p class="ink2" style="margin:0;font-size:1.08rem">הסריקה הראשונה חינם, והדוח נשאר אצלכם גם אם לא תמשיכו.</p>
+      <div class="row wrap"><a class="btn primary lg" href="signup.html">התחילו סריקה חינם</a><a class="btn lg ghost" href="login.html">כבר יש לי חשבון</a></div>
+    </div>
+    <div class="ph"><img src="img/mobile-hero.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div class="stack"><a class="brandmark" href="landing.html"><span data-logo></span><span>איפה הכסף</span></a><p style="margin:0;max-width:300px">מוצאים את הכסף שדולף בחברה, עם ראיה לכל שקל.</p></div>
+      <div><h4>מוצר</h4><a href="#leaks">איפה דולף</a><a href="#how">איך זה עובד</a><a href="integrations.html">אינטגרציות</a><a href="mcp.html">MCP</a></div>
+      <div><h4>אמון</h4><a href="#trust">אבטחה ופרטיות</a><a href="#trust">הסכם עיבוד נתונים</a><a href="#trust">יומן ביקורת</a></div>
+      <div><h4>חברה</h4><a href="#pricing">מחירים</a><a href="login.html">כניסה</a><a href="signup.html">הרשמה</a></div>
+    </div>
+    <div class="row between wrap" style="margin-top:48px;padding-top:20px;border-top:1px solid var(--line)"><span>© 2026 איפה הכסף · אב-טיפוס להאקתון IBM Bob</span><span>כל נתוני החברה באתר סינתטיים</span></div>
+  </div>
+</footer>
+
+<script src="assets/demo-data.js"></script>
+<script>
+(function () {
+  const D = window.DEMO, K = D.kpi, $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const LOGO = `<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2EE6A8"/><stop offset="1" stop-color="#5B9DFF"/></linearGradient></defs><circle cx="14" cy="14" r="10" fill="none" stroke="url(#lgL)" stroke-width="3.2"/><path d="M21.5 21.5L28 28" stroke="url(#lgL)" stroke-width="3.6" stroke-linecap="round"/><path d="M10 10v6.5a2 2 0 0 0 2 2h3.5M18 18V11.5a2 2 0 0 0-2-2h-3.5" fill="none" stroke="#EAF0F6" stroke-width="1.9" stroke-linecap="round"/></svg>`;
+  $$('[data-logo]').forEach(e => e.innerHTML = LOGO);
+  const fmt = n => n.toLocaleString('en-US');
+  $$('[data-k]').forEach(e => { const v = K[e.dataset.k]; e.textContent = e.classList.contains('money') ? ils(v) : fmt(v); });
+  $$('[data-c]').forEach(e => e.textContent = D.company[e.dataset.c]);
+  const F = id => D.findings.find(f => f.id === id);
+  const catColor = c => `var(--cat-${c})`;
+  const per = f => f.kind === 'recurring' ? 'בשנה' : f.kind === 'recovery' ? 'החזר' : 'לבדיקה';
+
+  // hero rows + count-up
+  $('#heroRows').innerHTML = ['F-1001', 'F-1002', 'F-1003'].map(F).map(f =>
+    `<div class="r"><span class="cat-dot" style="background:${catColor(f.cat)}"></span><span class="t">${f.title}</span><span class="money" style="font-weight:700">${ilsK(f.amount)}</span></div>`).join('');
+  const cu = $('#countup'), target = K.recurringSavings;
+  if (reduce) cu.textContent = ils(target);
+  else { const t0 = performance.now() + 400, dur = 2200; (function tick(t) { const p = Math.min(1, Math.max(0, (t - t0) / dur)); cu.textContent = ils(target * (1 - Math.pow(1 - p, 4))); if (p < 1) requestAnimationFrame(tick); })(t0); }
+
+  // marquee
+  const marks = ['Priority', 'חשבשבת', 'AWS', 'Google Cloud', 'OpenAI', 'Anthropic', 'HiBob', 'Google Workspace', 'Cal', 'בנק לאומי', 'Slack', 'Jira', 'GitHub', 'Okta', 'Datadog', 'Gmail'];
+  $('#marq').innerHTML = [...marks, ...marks].map((m, i) => `<span ${i >= marks.length ? 'aria-hidden="true"' : ''}>${m}</span>`).join('');
+
+  // finding cards
+  $$('[data-f]').forEach(el => { const f = F(el.dataset.f); el.className = 'fnd'; el.innerHTML =
+    `<div class="top"><span class="chip open xs"><span class="dot"></span>${f.vendor}</span><span><span class="amt money">${ils(f.amount)}</span> <span class="xs muted">${per(f)}</span></span></div>
+     <div class="t">${f.title}</div><div class="w">${f.why}</div>`; });
+  $('#also').innerHTML = ['F-1014', 'F-1009', 'F-1023', 'F-1024', 'F-1021', 'F-1016'].map(F).map(f =>
+    `<div class="it"><span class="cat-dot" style="background:${catColor(f.cat)}"></span><span class="grow">${f.title}</span><span class="money">${ilsK(f.amount)}</span></div>`).join('');
+
+  // example finding
+  const ex = F('F-1012');
+  $('#exTitle').textContent = ex.title; $('#exWhy').textContent = ex.why; $('#exAction').textContent = ex.action; $('#exAmt').textContent = ils(ex.amount);
+  $('#conf').innerHTML = [1, 2, 3, 4, 5].map(i => `<i class="${i <= Math.round(ex.conf * 5) ? 'on' : ''}"></i>`).join('');
+
+  // AI chart
+  const A = D.spend.monthlyAi, W = 600, H = 200, max = 200000;
+  const xl = i => (i / (A.length - 1)) * W, y = v => H - (v / max) * (H - 20);
+  const pts = A.map((v, i) => `${xl(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  $('#aiChart').innerHTML = `
+    <defs><linearGradient id="aiA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A78BFA" stop-opacity=".35"/><stop offset="1" stop-color="#A78BFA" stop-opacity="0"/></linearGradient></defs>
+    ${[50000, 100000, 150000].map(v => `<line x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="#22303F" stroke-dasharray="3 5"/><text x="${W}" y="${y(v) - 6}" fill="#7D8B9C" font-size="11" text-anchor="end">₪${v / 1000}K</text>`).join('')}
+    <polygon points="0,${H} ${pts} ${W},${H}" fill="url(#aiA)"/>
+    <polyline points="${pts}" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle cx="${W}" cy="${y(A[A.length - 1])}" r="5" fill="#A78BFA"/>
+    <circle cx="0" cy="${y(A[0])}" r="4" fill="#7D8B9C"/>
+    <text x="4" y="${y(A[0]) - 12}" fill="#B7C3D0" font-size="12" font-weight="600">₪${A[0] / 1000}K</text>
+    <text x="${W - 4}" y="${y(A[A.length - 1]) - 14}" fill="#EAF0F6" font-size="13" font-weight="700" text-anchor="end">₪${A[A.length - 1] / 1000}K</text>
+    <text x="0" y="${H + 22}" fill="#7D8B9C" font-size="11">11/2024</text><text x="${W}" y="${H + 22}" fill="#7D8B9C" font-size="11" text-anchor="end">10/2026</text>`;
+  $('#aiChart').setAttribute('direction', 'ltr');
+  $('#mult').textContent = '×' + (A[A.length - 1] / A[0]).toFixed(1);
+  $('#aiFrom').textContent = ils(A[0]); $('#aiTo').textContent = ils(A[A.length - 1]);
+  const aiF = D.findings.filter(f => f.cat === 'ai' && f.kind === 'recurring'), aiSum = aiF.reduce((s, f) => s + f.amount, 0);
+  $('#aiSave').textContent = 'נמצא: ' + ils(aiSum) + ' בשנה';
+  $('#mix').innerHTML = D.ai.models.map(m => `<div class="m"><span class="mono" style="font-size:.78rem;color:var(--ink-2)">${m.name}</span><span class="bar"><i style="width:${m.share * 100 / .34}%"></i></span><span class="num small muted">${Math.round(m.share * 100)}%</span></div>`).join('');
+
+  // agent message
+  $('#botMsg').innerHTML = `מצאתי ${aiF.length} ממצאים פתוחים בקטגוריית AI, בסך <b class="money">${ils(aiSum)}</b> בשנה:<ul>${aiF.map(f => `<li>${f.title} · <span class="money">${ilsK(f.amount)}</span></li>`).join('')}</ul>הגדול הוא החלפת המודל ב-ticket-classifier. ממליץ לבדוק דיוק על 500 דוגמאות לפני המעבר.<div class="src">${aiF.map(f => `<span class="chip ai xs mono">${f.id}</span>`).join('')}</div>`;
+
+  // MCP config tabs
+  const CFG = {
+    claude: `<span class="c">// claude_desktop_config.json  ·  או: claude mcp add</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"ayefokesef"</span>: {
+      <span class="k">"type"</span>: <span class="s">"http"</span>,
+      <span class="k">"url"</span>: <span class="s">"https://mcp.ayefokesef.app/v1"</span>,
+      <span class="k">"headers"</span>: { <span class="k">"Authorization"</span>: <span class="s">"Bearer \${AYEFO_TOKEN}"</span> }
+    }
+  }
+}`,
+    bob: `<span class="c">// .bob/mcp.json</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"ayefokesef"</span>: {
+      <span class="k">"url"</span>: <span class="s">"https://mcp.ayefokesef.app/v1"</span>,
+      <span class="k">"headers"</span>: { <span class="k">"Authorization"</span>: <span class="s">"Bearer \${env:AYEFO_TOKEN}"</span> },
+      <span class="k">"alwaysAllow"</span>: [<span class="s">"list_findings"</span>, <span class="s">"get_evidence"</span>]
+    }
+  }
+}`,
+    wx: `<span class="c"># watsonx Orchestrate ADK</span>
+orchestrate toolkits import \\
+  --kind mcp \\
+  --name ayefokesef \\
+  --url <span class="s">https://mcp.ayefokesef.app/v1</span> \\
+  --app-id ayefo_token \\
+  --tools <span class="s">"list_findings,get_finding,explain_finding"</span>`,
+  };
+  const setTab = k => { $('#cfg').innerHTML = CFG[k]; $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === k)); };
+  $$('[data-tab]').forEach(b => b.onclick = () => setTab(b.dataset.tab)); setTab('claude');
+
+  // reveal
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    $$('.rv').forEach(e => io.observe(e));
+  } else $$('.rv').forEach(e => e.classList.add('in'));
+})();
+</script>
+</body>
+</html>

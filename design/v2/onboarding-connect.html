@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>חיבור מקורות — איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  body { min-height: 100vh; background: radial-gradient(50% 40% at 85% 0%, rgba(46,230,168,.07), transparent), var(--bg); }
+  .top { height: 68px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--line); }
+  .brandmark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; }
+  .head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; padding: 48px 0 32px; }
+  .head h1 { font-size: clamp(2rem, 3.6vw, 2.8rem); font-weight: 900; letter-spacing: -.03em; margin: 0 0 10px; line-height: 1.08; }
+  .ring { position: relative; width: 132px; height: 132px; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .ring .c b { font-size: 2rem; font-weight: 900; line-height: 1; }
+  .ring circle.p { transition: stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1); }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; padding-bottom: 72px; }
+  .list { display: grid; gap: 12px; }
+  .src { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 18px; align-items: start; padding: 20px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); transition: border-color .2s; }
+  .src.done { border-color: rgba(46,230,168,.28); }
+  .logo-t { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-weight: 800; font-size: .95rem; background: var(--surface-3); color: var(--ink); border: 1px solid var(--line-2); }
+  .src .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: .8rem; color: var(--muted); margin-top: 4px; }
+  .src .reads { margin: 10px 0 0; font-size: .88rem; color: var(--ink-2); }
+  .scopes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .scope { font-family: var(--mono); font-size: .72rem; padding: 3px 8px; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--line); color: var(--ink-2); direction: ltr; }
+  .ro { display: inline-flex; align-items: center; gap: 5px; color: var(--brand); font-weight: 600; }
+  .ro svg { width: 13px; height: 13px; }
+  .st { display: grid; gap: 6px; justify-items: end; min-width: 132px; }
+  .st .btn { min-width: 112px; }
+  .spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-top-color: transparent; animation: sp .9s linear infinite; flex: none; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .rail { position: sticky; top: 24px; display: grid; gap: 16px; }
+  .rail .go { padding: 24px; display: grid; gap: 16px; }
+  .rules { display: grid; gap: 8px; font-size: .85rem; }
+  .rules div { display: flex; justify-content: space-between; gap: 10px; color: var(--ink-2); }
+  .rules b { font-weight: 700; color: var(--ink); }
+  .rules .off, .rules .off b { color: var(--muted); }
+  .upload { padding: 18px; display: flex; gap: 14px; align-items: center; border-style: dashed; }
+
+  dialog { border: 0; padding: 0; background: transparent; color: var(--ink); max-width: min(480px, calc(100% - 32px)); width: 100%; }
+  dialog::backdrop { background: rgba(3, 6, 10, .72); backdrop-filter: blur(4px); }
+  .consent { background: #F7F9FB; color: #1B2430; border-radius: 22px; overflow: hidden; box-shadow: 0 40px 100px -20px rgba(0,0,0,.8); }
+  .consent .ch { padding: 22px 26px 14px; border-bottom: 1px solid #E3E8EE; display: grid; gap: 14px; }
+  .consent .acct { display: flex; align-items: center; gap: 10px; font-size: .85rem; color: #4A5868; border: 1px solid #DCE2E9; border-radius: 999px; padding: 4px 12px 4px 4px; justify-self: start; }
+  .consent .acct .avatar { width: 26px; height: 26px; font-size: .7rem; }
+  .consent h2 { margin: 0; font-size: 1.25rem; font-weight: 700; line-height: 1.35; }
+  .consent .cb { padding: 16px 26px; display: grid; gap: 4px; max-height: 52vh; overflow: auto; }
+  .perm { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid #E8ECF1; }
+  .perm:last-child { border-bottom: 0; }
+  .perm .pi { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: #E6F8F1; color: #0A7A57; }
+  .perm .pi svg { width: 16px; height: 16px; }
+  .perm .pt { font-size: .92rem; font-weight: 600; }
+  .perm code { display: block; font-family: var(--mono); font-size: .76rem; color: #5B6878; margin-top: 3px; direction: ltr; text-align: right; }
+  .never { margin-top: 8px; padding: 12px 14px; border-radius: 12px; background: #FFF4E5; color: #7A4A00; font-size: .84rem; }
+  .consent .cf { padding: 16px 26px 22px; display: flex; gap: 10px; justify-content: flex-start; align-items: center; flex-wrap: wrap; }
+  .consent .cf .btn { min-height: 44px; }
+  .consent .btn.light { background: #fff; color: #1B2430; border-color: #CBD3DC; }
+  .consent .btn.dark { background: #0B6E50; color: #fff; border-color: transparent; }
+  .consent .small-print { font-size: .74rem; color: #5B6878; margin-inline-start: auto; }
+
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } .rail { position: static; } }
+  @media (max-width: 640px) {
+    .head { grid-template-columns: 1fr; padding-top: 28px; }
+    .ring { width: 104px; height: 104px; } .ring svg { width: 104px; height: 104px; }
+    .src { grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 16px; }
+    .logo-t { width: 44px; height: 44px; font-size: .85rem; }
+    .st { grid-column: 1 / -1; justify-items: stretch; }
+    .st .btn { width: 100%; }
+    .top .hide-m { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top"><div class="container row between">
+  <a class="brandmark" href="landing.html"><span data-logo></span><span>איפה הכסף</span></a>
+  <div class="row"><span class="small muted hide-m" id="ws"></span><a class="btn ghost sm" href="app-dashboard.html">דלגו לעכשיו</a></div>
+</div></header>
+
+<main class="container">
+  <section class="head" aria-labelledby="h1">
+    <div>
+      <h1 id="h1">חברו שישה מקורות, ואנחנו נמצא את השאר</h1>
+      <p class="ink2" style="margin:0;font-size:1.08rem;max-width:620px">אלה המקורות שמכסים כ-90% מהממצאים בחברות בגודל שלכם. כל חיבור הוא קריאה בלבד, ואפשר לנתק בכל רגע. סך הכל כ-<b id="mins"></b> דקות.</p>
+    </div>
+    <div class="ring" role="img" id="ringWrap">
+      <svg width="132" height="132" viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--line)" stroke-width="10"/><circle class="p" id="ring" cx="66" cy="66" r="56" fill="none" stroke="var(--brand)" stroke-width="10" stroke-linecap="round" stroke-dasharray="351.86" stroke-dashoffset="351.86"/></svg>
+      <div class="c"><b class="num" id="cnt">0/6</b><span class="xs muted">מחוברים</span></div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <div class="list" id="list"></div>
+    <aside class="rail">
+      <div class="card go glow">
+        <div class="h2">הסריקה הראשונה</div>
+        <p class="small ink2" style="margin:0">רצה ברקע כ-10 דקות. נשלח לכם מייל כשהיא מסתיימת, וממצאים מופיעים כבר תוך כדי.</p>
+        <div class="rules" id="rules"></div>
+        <a class="btn primary lg block" href="scanning.html" id="go">התחל סריקה ראשונה</a>
+        <div class="xs muted" id="goNote"></div>
+      </div>
+      <div class="card flat upload">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
+        <div class="grow"><div class="h3">אין חיבור למערכת שלכם?</div><div class="xs muted">העלו ייצוא Excel או CSV ונמפה את העמודות יחד</div></div>
+        <a class="btn sm" href="integrations.html#upload">העלאה</a>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<dialog id="consent" aria-labelledby="cTitle">
+  <div class="consent">
+    <div class="ch">
+      <div class="row" style="gap:8px;font-size:.85rem;color:#4A5868"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#3D7BE0" stroke-width="2.6"/><path d="M12 12h8" stroke="#0B6E50" stroke-width="2.6"/></svg>התחברות עם Google Workspace</div>
+      <h2 id="cTitle">איפה הכסף מבקש גישת קריאה לארגון <span class="mono" id="cDom"></span></h2>
+      <div class="acct"><span class="avatar" id="cAv"></span><span dir="ltr" id="cMail"></span></div>
+    </div>
+    <div class="cb">
+      <div class="small" style="color:#4A5868;margin-bottom:4px">האפליקציה תוכל:</div>
+      <div class="perm"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M17 11h4M19 9v4"/></svg></span><div><div class="pt">לראות את רשימת המשתמשים בארגון, ומתי כל משתמש הושעה או נמחק</div><code>admin.directory.user.readonly</code></div></div>
+      <div class="perm"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><div><div class="pt">לראות מתי כל משתמש השתמש לאחרונה בכל אפליקציה</div><code>admin.reports.usage.readonly</code></div></div>
+      <div class="perm"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></span><div><div class="pt">לראות לאילו אפליקציות צד שלישי ניתנה גישה דרך Google (לזיהוי מנויי SaaS)</div><code>admin.directory.user.security (tokens.list)</code></div></div>
+      <div class="perm"><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg></span><div><div class="pt">לקרוא הודעות רק בתיבה <span dir="ltr">invoices@</span>, ורק כאלה עם קובץ חשבונית מצורף</div><code>gmail.readonly · delegated to invoices@technosis.io</code></div></div>
+      <div class="never"><b>האפליקציה לא תוכל:</b> לקרוא מיילים של עובדים, לפתוח קבצים ב-Drive, לשנות סיסמאות, ליצור או למחוק משתמשים.</div>
+    </div>
+    <div class="cf">
+      <button class="btn dark" type="button" id="allow">אישור</button>
+      <button class="btn light" type="button" id="deny">ביטול</button>
+      <span class="small-print">אפשר לבטל בכל עת בקונסולת Admin</span>
+    </div>
+  </div>
+</dialog>
+
+<script src="assets/demo-data.js"></script>
+<script>
+(function () {
+  const D = window.DEMO, $ = s => document.querySelector(s);
+  const LOGO = `<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2EE6A8"/><stop offset="1" stop-color="#5B9DFF"/></linearGradient></defs><circle cx="14" cy="14" r="10" fill="none" stroke="url(#lgL)" stroke-width="3.2"/><path d="M21.5 21.5L28 28" stroke="url(#lgL)" stroke-width="3.6" stroke-linecap="round"/><path d="M10 10v6.5a2 2 0 0 0 2 2h3.5M18 18V11.5a2 2 0 0 0-2-2h-3.5" fill="none" stroke="#EAF0F6" stroke-width="1.9" stroke-linecap="round"/></svg>`;
+  document.querySelectorAll('[data-logo]').forEach(e => e.innerHTML = LOGO);
+  $('#ws').textContent = D.company.name + ' · ' + D.company.domain;
+  $('#cDom').textContent = D.company.domain; $('#cMail').textContent = D.user.email; $('#cAv').textContent = D.user.initials;
+  const RO = `<span class="ro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>קריאה בלבד</span>`;
+
+  const S = [
+    { id: 'people', t: 'GW', name: 'Google Workspace + HiBob', kind: 'אנשים ומושבים', min: 3, oauth: true, done: false,
+      reads: 'מי עובד כאן, מי עזב ומתי, ומי השתמש בכל כלי ב-90 הימים האחרונים. בלי שכר ובלי מסמכים.',
+      scopes: ['admin.directory.user.readonly', 'admin.reports.usage.readonly', 'HiBob People API: employment.read'], rules: 9 },
+    { id: 'ap', t: 'Pr', name: 'Priority ERP', alt: 'או חשבשבת', kind: 'ספקים וחשבוניות', min: 4, done: true,
+      reads: 'חשבוניות ספקים, תשלומים, מספרי הקצאה וכרטיסי ספק. 24 חודשים אחורה.',
+      scopes: ['REST API · user role: AP_READONLY', 'SUPINVOICES, PAYMENTS, SUPPLIERS'], rules: 8 },
+    { id: 'pay', t: 'Cal', name: 'כרטיס Cal Business + בנק', kind: 'תשלומים', min: 4, done: false,
+      reads: 'פירוט עסקאות בכרטיס ותנועות בחשבון, כדי להצליב מול חשבוניות ולזהות כפילויות ועמלות המרה.',
+      scopes: ['Open Banking consent: accounts, transactions', 'AIS consent · 90-day renewal'], rules: 6 },
+    { id: 'aws', t: 'AWS', name: 'AWS — Cost & Usage Report 2.0', kind: 'ענן', min: 5, done: false,
+      reads: 'דוח העלויות היומי ונתוני שימוש מ-CloudWatch. בלי גישה לשרתים, לקוד או לנתוני לקוחות.',
+      scopes: ['IAM role · ReadOnly', 'ce:GetCostAndUsage', 's3:GetObject (CUR bucket)', 'cloudwatch:GetMetricData'], rules: 7 },
+    { id: 'ai', t: 'AI', name: 'OpenAI + Anthropic', kind: 'AI וטוקנים', min: 2, done: false,
+      reads: 'שימוש ועלות לפי פרויקט, מודל ומפתח API. לא את הפרומפטים ולא את התשובות.',
+      scopes: ['OpenAI Admin key · usage.read, costs.read', 'Anthropic Admin API · usage_report'], rules: 5 },
+    { id: 'mail', t: 'Inv', name: 'Gmail — תיבת חשבוניות', kind: 'קבלות', min: 1, done: false,
+      reads: 'רק התיבה invoices@ ורק מיילים עם PDF מצורף. קבצים גולמיים נמחקים אחרי 24 שעות.',
+      scopes: ['gmail.readonly (delegated, invoices@ only)'], rules: 4 },
+  ];
+  const total = S.length, C = 351.86;
+
+  function render() {
+    $('#list').innerHTML = S.map(s => `
+      <article class="src ${s.done ? 'done' : ''}" data-id="${s.id}">
+        <div class="logo-t" aria-hidden="true">${s.t}</div>
+        <div style="min-width:0">
+          <div class="row wrap" style="gap:8px"><span class="h3">${s.name}</span>${s.alt ? `<span class="xs muted">${s.alt}</span>` : ''}</div>
+          <div class="meta"><span>${s.kind}</span><span>כ-${s.min} דק׳</span><span>${s.rules} כללים</span>${RO}</div>
+          <p class="reads">${s.reads}</p>
+          <div class="scopes">${s.scopes.map(x => `<span class="scope">${x}</span>`).join('')}</div>
+        </div>
+        <div class="st">${s.done
+          ? `<span class="chip fixed"><span class="dot"></span>מחובר</span><span class="xs muted">${s.id === 'ap' ? '1,608 חשבוניות נקראו' : 'מסנכרן לראשונה…'}</span>`
+          : s.busy ? `<button class="btn" disabled><span class="spin"></span>מתחבר…</button>`
+          : `<button class="btn ${s.id === 'people' ? 'primary' : ''}" data-connect="${s.id}">חיבור</button><span class="xs muted">לא מחובר</span>`}</div>
+      </article>`).join('');
+    const n = S.filter(s => s.done).length;
+    $('#cnt').textContent = n + '/' + total;
+    $('#ringWrap').setAttribute('aria-label', `${n} מתוך ${total} מקורות מחוברים`);
+    $('#ring').style.strokeDashoffset = C * (1 - n / total);
+    $('#mins').textContent = S.filter(s => !s.done).reduce((a, s) => a + s.min, 0) || 0;
+    $('#rules').innerHTML = S.map(s => `<div class="${s.done ? '' : 'off'}"><span>${s.kind}</span><b class="num">${s.done ? s.rules : 0} כללים</b></div>`).join('') +
+      `<hr class="divider" style="margin:6px 0"><div><span>כללים פעילים</span><b class="num">${S.filter(s => s.done).reduce((a, s) => a + s.rules, 0)} / 33</b></div>`;
+    $('#goNote').textContent = n === total ? 'הכל מחובר. אפשר להתחיל.' : `אפשר להתחיל עם ${n} מקורות ולהוסיף אחר כך. כללים שחסר להם מקור יחכו.`;
+  }
+  render();
+
+  const dlg = $('#consent');
+  const connect = id => { const s = S.find(x => x.id === id); s.busy = true; render(); setTimeout(() => { s.busy = false; s.done = true; render(); }, 1100); };
+  $('#list').onclick = e => { const b = e.target.closest('[data-connect]'); if (!b) return; const id = b.dataset.connect; if (S.find(s => s.id === id).oauth) dlg.showModal(); else connect(id); };
+  $('#allow').onclick = () => { dlg.close(); connect('people'); };
+  $('#deny').onclick = () => dlg.close();
+  if (location.hash === '#consent') dlg.showModal();
+  if (location.hash === '#done') { S.forEach(s => s.done = true); render(); }
+})();
+</script>
+</body>
+</html>

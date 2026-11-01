@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>חידושים · איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  .topbar svg { width:18px; height:18px; flex:none; }
+  .topbar .search { min-width:0; }
+  .content > * { min-width:0; }
+  .topbar .search > span:first-of-type { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  @media (max-width:600px){ .topbar .kbd, .topbar .small { display:none; } }
+
+  .tl-card { padding:22px 22px 18px; }
+  .tl-scroll { overflow-x:auto; padding-bottom:4px; }
+  .tl { position:relative; min-width:760px; height:150px; }
+  .tl .axis { position:absolute; inset-inline:0; top:96px; height:2px; background:var(--line); }
+  .tl .m { position:absolute; top:106px; font-size:.75rem; color:var(--muted); transform:translateX(50%); white-space:nowrap; }
+  .tl .tick { position:absolute; top:92px; width:1px; height:10px; background:var(--line-2); }
+  .tl .now { position:absolute; top:20px; bottom:26px; width:2px; background:var(--blue); border-radius:2px; }
+  .tl .now span { position:absolute; top:-18px; right:0; font-size:.7rem; color:var(--blue); font-weight:700; white-space:nowrap; }
+  .tl .win { position:absolute; top:30px; height:76px; background:linear-gradient(180deg, transparent, var(--amber-bg)); border-radius:8px; }
+  .pin { position:absolute; transform:translateX(50%); display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:0; cursor:pointer; padding:0; color:inherit; }
+  .pin .d { border-radius:50%; border:2px solid var(--bg); box-shadow:0 0 0 1px var(--line-2); }
+  .pin .lb { font-size:.72rem; font-weight:600; white-space:nowrap; color:var(--ink-2); }
+  .pin:hover .lb, .pin:focus-visible .lb { color:var(--ink); }
+  .pin:focus-visible { outline:2px solid var(--brand); outline-offset:3px; border-radius:6px; }
+  .sumrow { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px; }
+  .ren { display:grid; grid-template-columns: 96px minmax(0,1fr) minmax(0,1.05fr); gap:22px; padding:22px; align-items:start; }
+  .count { text-align:center; padding:12px 6px; border-radius:var(--r); background:var(--bg-2); border:1px solid var(--line); }
+  .count .n { font-size:2.2rem; font-weight:900; line-height:1; letter-spacing:-.03em; }
+  .count.hot { border-color:rgba(255,181,71,.4); background:var(--amber-bg); }
+  .count.hot .n { color:var(--amber); }
+  .seatbar { position:relative; height:10px; border-radius:99px; background:repeating-linear-gradient(-45deg, var(--amber-bg) 0 6px, transparent 6px 10px), var(--surface-3); overflow:hidden; margin-top:8px; }
+  .seatbar i { position:absolute; inset-block:0; inset-inline-start:0; background:var(--ink-2); border-radius:99px; }
+  .pb { border-radius:var(--r); border:1px solid var(--line); background:var(--bg-2); padding:14px 16px; }
+  .pb ol { margin:8px 0 0; padding-inline-start:20px; display:grid; gap:8px; font-size:.88rem; }
+  .pb li::marker { color:var(--brand); font-weight:800; }
+  .pb .save { color:var(--brand); font-weight:700; white-space:nowrap; }
+  .ar { display:flex; align-items:center; gap:10px; font-size:.85rem; }
+  .later { display:grid; grid-template-columns: 90px minmax(0,1fr) auto auto; gap:14px; align-items:center; padding:12px 0; border-top:1px solid var(--line); font-size:.9rem; }
+  .later:first-child { border-top:0; }
+  .btn.set { background:var(--blue-bg); color:var(--blue); border-color:transparent; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--surface-3); border:1px solid var(--line-2); padding:10px 16px; border-radius:12px; font-size:.9rem; opacity:0; transition:.2s; z-index:60; pointer-events:none; }
+  .toast.on { opacity:1; transform:translateX(-50%); }
+  .flash { animation: flash 1.2s ease; }
+  @keyframes flash { 0% { box-shadow:0 0 0 2px var(--brand); } 100% { box-shadow:var(--shadow); } }
+  @media (max-width:1000px){ .ren { grid-template-columns: 80px minmax(0,1fr); } .ren .pbcol { grid-column:1 / -1; } }
+  @media (max-width:700px){ .sumrow { grid-template-columns:1fr; } .ren { grid-template-columns:1fr; padding:18px; gap:14px; } .count { display:flex; align-items:baseline; gap:8px; text-align:start; } .later { grid-template-columns: 70px minmax(0,1fr) auto; } .later .c-own { display:none; } }
+</style>
+</head>
+<body data-page="renewals">
+<main data-shell>
+  <div class="page-head">
+    <div><div class="eyebrow">12 החודשים הקרובים · מחוזים, חשבוניות וכרטיס</div><h1 class="h1">חידושים</h1></div>
+    <button class="btn sm" id="allRem">הזכר לי 45 יום לפני כל חידוש</button>
+  </div>
+
+  <div class="sumrow" id="sum"></div>
+
+  <section class="card tl-card">
+    <div class="row between wrap"><h2 class="h2">ציר חידושים</h2><div class="row xs muted" style="gap:14px"><span><i class="dot" style="color:var(--amber)"></i> חידוש אוטומטי</span><span><i class="dot" style="color:var(--ink-2)"></i> ידני</span><span>גודל = ₪/שנה</span></div></div>
+    <div class="tl-scroll" style="margin-top:18px"><div class="tl" id="tl"></div></div>
+  </section>
+
+  <h2 class="h2">ב-120 הימים הקרובים</h2>
+  <div class="stack lg" id="list"></div>
+
+  <section class="card">
+    <h2 class="h2">בהמשך השנה</h2>
+    <div class="xs muted" style="margin-bottom:6px">לפי חודש החידוש בחשבונית האחרונה</div>
+    <div id="later"></div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(() => {
+  const D = DEMO, $ = (s) => document.querySelector(s);
+  const TODAY = new Date(2026, 10, 1);
+  const parse = (d) => { const p = d.split('/').map(Number); return p.length === 3 ? new Date(p[2], p[1] - 1, p[0]) : new Date(p[1], p[0] - 1, 1); };
+  const fmtD = (d) => [d.getDate(), d.getMonth() + 1].map(n => String(n).padStart(2, '0')).join('/') + '/' + d.getFullYear();
+  const days = (d) => Math.round((d - TODAY) / 864e5);
+  const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2400); };
+  const END = new Date(2027, 10, 1);
+
+  // detailed renewals from DEMO.renewals, plus month-level ones from DEMO.vendors not already listed
+  const det = D.renewals.map(r => ({ ...r, d: parse(r.date), v: D.vendors.find(v => r.vendor.startsWith(v.name)) }));
+  const extra = D.vendors.filter(v => v.renewal && !det.some(r => r.vendor.startsWith(v.name))).map(v => ({ vendor: v.name, amount: v.amount, d: parse(v.renewal), month: v.renewal, autoRenew: true, v }))
+    .filter(r => r.d < END);
+  const all = [...det, ...extra].sort((a, b) => a.d - b.d);
+
+  const rem = new Set();
+  const remDate = (r) => { const d = new Date(+r.d - 45 * 864e5); return d < TODAY ? 'היום' : fmtD(d); };
+
+  const soon = det.filter(r => days(r.d) <= 120);
+  const seatWaste = det.filter(r => r.seatsPaid).reduce((a, r) => a + (r.seatsPaid - r.seatsUsed) / r.seatsPaid * r.amount, 0);
+  $('#sum').innerHTML = `
+    <div class="card"><div class="eyebrow">מתחדש ב-12 חודשים</div><div class="money" style="font-size:1.7rem; font-weight:800">${ils(all.reduce((a, r) => a + r.amount, 0))}</div><div class="xs muted">${all.length} חוזים · ${all.filter(r => r.autoRenew).length} באוטומטי</div></div>
+    <div class="card"><div class="eyebrow">ב-90 יום</div><div class="money" style="font-size:1.7rem; font-weight:800; color:var(--amber)">${ils(det.filter(r => days(r.d) <= 90).reduce((a, r) => a + r.amount, 0))}</div><div class="xs muted">${det.filter(r => days(r.d) <= 90).length} חידושים · הראשון בעוד ${days(all[0].d)} ימים</div></div>
+    <div class="card"><div class="eyebrow">מושבים עודפים בחידושים הקרובים</div><div class="money" style="font-size:1.7rem; font-weight:800; color:var(--brand)">${ils(Math.round(seatWaste / 100) * 100)}</div><div class="xs muted">${det.filter(r => r.seatsPaid).reduce((a, r) => a + r.seatsPaid - r.seatsUsed, 0)} מושבים בלי שימוש · הערכה לפי מחיר ממוצע למושב</div></div>`;
+
+  // timeline
+  const span = END - TODAY, pos = (d) => (d - TODAY) / span * 100;
+  const maxA = Math.max(...all.map(r => r.amount));
+  let tl = `<div class="axis"></div><div class="win" style="right:0; width:${pos(new Date(+TODAY + 90 * 864e5))}%" title="90 הימים הקרובים"></div><div class="now" style="right:0"><span>היום</span></div>`;
+  for (let i = 0; i < 12; i++) { const d = new Date(2026, 10 + i, 1); tl += `<span class="tick" style="right:${pos(d)}%"></span><span class="m" style="right:${pos(d) + 100 / 24}%">${['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'][d.getMonth()]}${d.getMonth() === 0 ? ' 27' : ''}</span>`; }
+  const lanes = [];
+  all.forEach((r, i) => {
+    const p = pos(r.d); let lane = 0; while (lanes[lane] !== undefined && p - lanes[lane] < 9) lane++; lanes[lane] = p;
+    const sz = 10 + Math.sqrt(r.amount / maxA) * 16;
+    tl += `<button class="pin" style="right:${p}%; top:${60 - lane * 34 + (26 - sz) / 2}px" data-i="${i}" title="${r.vendor} · ${r.month || fmtD(r.d)} · ${ils(r.amount)}${r.autoRenew ? ' · חידוש אוטומטי' : ''}">
+      <span class="lb">${r.vendor.replace(' Enterprise', '')}</span><span class="d" style="width:${sz}px; height:${sz}px; background:${r.autoRenew ? 'var(--amber)' : 'var(--ink-2)'}"></span></button>`;
+  });
+  $('#tl').innerHTML = tl;
+  $('#tl').addEventListener('click', (e) => { const b = e.target.closest('.pin'); if (!b) return; const r = all[b.dataset.i], el = document.getElementById('r-' + r.vendor.replace(/\W/g, '')); if (el) { el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } });
+
+  // detailed list with playbooks
+  const playbook = (r) => {
+    const items = [];
+    if (r.v && r.v.trend > .05) items.push([`לבקש את המחיר של השנה שעברה: ההוצאה עלתה ב-<span class="num">${Math.round(r.v.trend * 100)}%</span> בשנה`, r.amount - r.amount / (1 + r.v.trend)]);
+    else items.push(['לבקש הקפאת מחיר לשנה נוספת', 0]);
+    if (r.seatsPaid) { const cut = r.seatsPaid - r.seatsUsed; items.push([`להוריד <span class="num">${cut}</span> מושבים לא פעילים (<span class="num">${r.seatsUsed}</span> בשימוש מתוך <span class="num">${r.seatsPaid}</span>)`, cut / r.seatsPaid * r.amount]); }
+    else items.push(['לבקש committed-use במקום on-demand: לפי הממוצע של 6 החודשים האחרונים', r.amount * .08]);
+    items.push(['להציע תשלום שנתי מראש תמורת הנחה של 8–12%', r.amount * .08]);
+    if (r.autoRenew) { const cut = new Date(+r.d - 30 * 864e5); items.push([cut > TODAY ? `לבטל חידוש אוטומטי לפני <span class="num">${fmtD(cut)}</span> כדי לשמור על כוח מיקוח` : 'חלון הביטול עבר: לבקש הארכה של 30 יום במחיר הנוכחי בזמן המו״מ', 0]); }
+    return items;
+  };
+  const drawList = () => $('#list').innerHTML = soon.map(r => {
+    const dl = days(r.d), pb = playbook(r), pot = Math.round(pb.reduce((a, [, s]) => a + s, 0) / 100) * 100, key = r.vendor.replace(/\W/g, ''), on = rem.has(key);
+    return `<section class="card ren" id="r-${key}">
+      <div class="count ${dl <= 30 ? 'hot' : ''}"><div class="n num">${dl}</div><div class="xs muted">ימים לחידוש</div></div>
+      <div class="stack" style="gap:10px; min-width:0">
+        <div class="row between wrap"><h3 class="h2">${r.vendor}</h3><b class="money" style="font-size:1.2rem">${ils(r.amount)}<span class="xs muted" style="font-weight:500"> / שנה</span></b></div>
+        <div class="small ink2">חידוש ב-<span class="num">${r.date}</span> · בעלים: ${r.v ? r.v.owner : '—'} · ${r.v ? r.v.source : ''}</div>
+        ${r.seatsPaid ? `<div><div class="row between small"><span><b class="num">${r.seatsUsed}</b> <span class="muted">בשימוש מתוך</span> <b class="num">${r.seatsPaid}</b> <span class="muted">משולמים</span></span><span style="color:var(--amber); font-weight:700"><span class="num">${r.seatsPaid - r.seatsUsed}</span> עודפים</span></div>
+          <div class="seatbar" role="img" aria-label="${r.seatsUsed} מתוך ${r.seatsPaid} מושבים בשימוש"><i style="width:${r.seatsUsed / r.seatsPaid * 100}%"></i></div></div>` : `<div class="small muted">תמחור לפי שימוש, אין מושבים · ראו <a href="app-finding.html?id=F-1004" style="text-decoration:underline">F-1004</a></div>`}
+        <div class="ar"><button class="toggle" role="switch" aria-checked="${r.autoRenew}" data-ar="${key}" aria-label="חידוש אוטומטי"></button><span>${r.autoRenew ? 'חידוש אוטומטי פעיל' : 'חידוש ידני, נדרש אישור'}</span></div>
+        <div><button class="btn sm ${on ? 'set' : ''}" data-rem="${key}">${on ? `✓ תזכורת ב-${remDate(r)}` : 'הזכר לי 45 יום לפני'}</button></div>
+      </div>
+      <div class="pb pbcol"><div class="row between"><b class="small">תסריט מו״מ</b><span class="xs">פוטנציאל <span class="save money">${ils(pot)}</span></span></div>
+        <ol>${pb.map(([t, s]) => `<li><div class="row between" style="align-items:flex-start; gap:10px"><span>${t}</span>${s ? `<span class="save money xs">${ilsK(s)}</span>` : ''}</div></li>`).join('')}</ol>
+        <div class="row wrap" style="margin-top:12px; gap:8px"><a class="btn sm" href="app-agent.html">הסוכן ינסח מייל לספק</a><button class="btn sm ghost" data-jira="${r.vendor}">משימה ב-Jira</button></div>
+      </div>
+    </section>`;
+  }).join('');
+  drawList();
+  $('#list').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-rem]'), a = e.target.closest('[data-ar]'), j = e.target.closest('[data-jira]');
+    if (b) { const r = soon.find(x => x.vendor.replace(/\W/g, '') === b.dataset.rem); rem.has(b.dataset.rem) ? rem.delete(b.dataset.rem) : (rem.add(b.dataset.rem), toast(`תזכורת ב-Slack וביומן ב-${remDate(r)}`)); drawList(); }
+    if (a) { const v = a.getAttribute('aria-checked') !== 'true'; a.setAttribute('aria-checked', v); a.nextElementSibling.textContent = v ? 'חידוש אוטומטי פעיל' : 'סומן לביטול חידוש אוטומטי'; }
+    if (j) toast(`נפתחה משימת מו״מ ל-${j.dataset.jira} ב-Jira`);
+  });
+  $('#allRem').onclick = () => { soon.forEach(r => rem.add(r.vendor.replace(/\W/g, ''))); drawList(); toast(`${all.length} תזכורות נקבעו, 45 יום לפני כל חידוש`); };
+
+  const later = all.filter(r => !soon.includes(r));
+  $('#later').innerHTML = later.map(r => `<div class="later"><span class="num muted">${r.month || r.date}</span><span style="font-weight:600">${r.vendor}${r.autoRenew ? ' <span class="chip xs open">אוטומטי</span>' : ''}</span><span class="c-own ink2 small">${r.v ? r.v.owner : ''}</span><b class="money">${ils(r.amount)}</b></div>`).join('');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הוצאות וספקים · איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  .topbar svg { width:18px; height:18px; flex:none; }
+  .topbar .search { min-width:0; }
+  .content > * { min-width:0; }
+  .topbar .search > span:first-of-type { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  @media (max-width:600px){ .topbar .kbd, .topbar .small { display:none; } }
+
+  .tm { position:relative; height:340px; border-radius:var(--r); overflow:hidden; }
+  .tile { position:absolute; padding:2px; }
+  .tile button { all:unset; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between; width:100%; height:100%; border-radius:10px; padding:12px; cursor:pointer; overflow:hidden; position:relative; background:color-mix(in srgb, var(--c) 16%, var(--surface)); border:1px solid color-mix(in srgb, var(--c) 30%, transparent); transition:background .15s; }
+  .tile button:hover, .tile button[aria-pressed="true"] { background:color-mix(in srgb, var(--c) 28%, var(--surface)); }
+  .tile button:focus-visible { outline:2px solid var(--brand); outline-offset:-2px; }
+  .tile .l { font-weight:700; font-size:.9rem; line-height:1.2; overflow:hidden; text-overflow:ellipsis; }
+  .tile.sm .l, .tile.xs .l { white-space:nowrap; }
+  .tile .a { font-weight:800; font-size:1.25rem; letter-spacing:-.02em; }
+  .tile .p { font-size:.75rem; color:var(--ink-2); }
+  .tile.sm .a { font-size:.85rem; } .tile.sm .l { font-size:.75rem; } .tile.sm .p { display:none; } .tile.xs .a, .tile.xs .p { display:none; }
+  .tile .bar { position:absolute; inset-inline-start:0; top:0; bottom:0; width:3px; background:var(--c); border-radius:3px; }
+  .top-grid { display:grid; grid-template-columns: minmax(0,1fr) 320px; gap:16px; align-items:start; }
+  .newv { display:grid; gap:2px; }
+  .newv .it { display:grid; grid-template-columns: 34px minmax(0,1fr) auto; gap:10px; align-items:center; padding:10px 0; border-top:1px solid var(--line); }
+  .newv .it:first-child { border-top:0; }
+  .logo-b { width:34px; height:34px; border-radius:10px; display:grid; place-items:center; font-weight:800; background:var(--surface-3); border:1px solid var(--line-2); font-size:.8rem; }
+  .filters { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .fchip { cursor:pointer; height:32px; }
+  .fchip[aria-pressed="true"] { background:var(--surface-2); color:var(--ink); border-color:var(--ink-2); }
+  .sel { height:38px; border-radius:10px; border:1px solid var(--line-2); background:var(--bg-2); padding:0 10px; font-size:.85rem; }
+  .vt tbody tr { cursor:pointer; }
+  .vt tbody tr:focus-visible td { background:var(--surface-2); }
+  .vt td { white-space:nowrap; }
+  .trend { font-weight:700; font-size:.82rem; }
+  .trend.up { color:var(--amber); } .trend.hot { color:var(--coral); } .trend.flat { color:var(--muted); }
+  .vname { display:flex; align-items:center; gap:10px; font-weight:600; }
+  .fcount { font-size:.72rem; background:var(--amber-bg); color:var(--amber); padding:1px 7px; border-radius:99px; font-weight:700; }
+  dialog.drawer { margin:0; margin-inline-start:auto; height:100vh; max-height:100vh; width:min(520px, 100vw); border:0; border-inline-start:1px solid var(--line); background:var(--bg-2); color:var(--ink); padding:0; inset-inline-end:auto; }
+  dialog.drawer[open] { animation: slide .28s cubic-bezier(.2,.8,.2,1); }
+  @keyframes slide { from { transform:translateX(-24px); opacity:0; } to { transform:none; opacity:1; } }
+  dialog.drawer::backdrop { background:rgba(3,6,10,.6); backdrop-filter:blur(2px); }
+  .dw-in { padding:22px; display:grid; gap:18px; }
+  .bars-wrap { position:relative; }
+  .tip { position:absolute; pointer-events:none; background:var(--surface-3); border:1px solid var(--line-2); border-radius:10px; padding:6px 10px; font-size:.78rem; white-space:nowrap; opacity:0; transition:opacity .12s; }
+  .flink { display:grid; grid-template-columns: minmax(0,1fr) auto; gap:10px; padding:12px; border-radius:12px; border:1px solid var(--line); background:var(--surface); }
+  .flink:hover { border-color:var(--line-2); background:var(--surface-2); }
+  @media (max-width:1100px){ .top-grid { grid-template-columns:1fr; } }
+  @media (max-width:700px){ .tm { height:420px; } .c-src, .c-owner { display:none; } }
+</style>
+</head>
+<body data-page="spend">
+<main data-shell>
+  <div class="page-head">
+    <div><div class="eyebrow">12 חודשים אחרונים · run-rate שנתי</div><h1 class="h1">הוצאות וספקים</h1></div>
+    <div class="row wrap"><span class="small muted" id="totLine"></span><button class="btn sm" id="payrollT" aria-pressed="false">כולל שכר</button></div>
+  </div>
+
+  <div class="top-grid">
+    <section class="card">
+      <div class="row between wrap" style="margin-bottom:12px"><div><h2 class="h2">לאן הולך הכסף</h2><div class="xs muted">גודל המשבצת לפי ₪/שנה · לחיצה מסננת את טבלת הספקים</div></div><span class="money big-money" style="font-size:1.8rem" id="tmTotal"></span></div>
+      <div class="tm" id="tm" role="group" aria-label="פילוח הוצאות לפי קטגוריה"></div>
+    </section>
+    <section class="card">
+      <div class="row between"><h2 class="h2">ספקים חדשים החודש</h2><span class="chip open xs" id="newCount"></span></div>
+      <div class="xs muted" style="margin:4px 0 8px">חיוב ראשון ב-10/2026 · בלי הזמנת רכש או בעלים</div>
+      <div class="newv" id="newv"></div>
+      <a class="btn sm block" href="app-findings.html" style="margin-top:10px">שייך בעלים לכולם</a>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="row between wrap" style="margin-bottom:14px">
+      <h2 class="h2">ספקים <span class="muted num" id="vCount" style="font-weight:500"></span></h2>
+      <div class="filters">
+        <input class="input" id="q" type="search" placeholder="חיפוש ספק…" aria-label="חיפוש ספק" style="height:38px; width:180px">
+        <select class="sel" id="src" aria-label="מקור נתונים"></select>
+        <select class="sel" id="sort" aria-label="מיון"><option value="amt">מיון: ₪/שנה</option><option value="trend">צמיחה שנתית</option><option value="name">שם</option></select>
+      </div>
+    </div>
+    <div class="filters" id="cats" style="margin-bottom:14px"></div>
+    <div class="table-wrap"><table class="table vt" id="vt"></table></div>
+  </section>
+</main>
+
+<dialog class="drawer" id="drawer" aria-labelledby="dwTitle"><div class="dw-in" id="dw"></div></dialog>
+
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(() => {
+  const D = DEMO, $ = (s) => document.querySelector(s);
+  const months = Array.from({ length: 24 }, (_, i) => { const m = (10 + i) % 12 + 1, y = 2024 + Math.floor((10 + i) / 12); return String(m).padStart(2, '0') + '/' + String(y).slice(2); });
+  const CATCOL = (c) => `var(--cat-${c === 'office' ? 'office' : c})`;
+  // ponytail: vendors new this month are display-only demo rows (not in DEMO.vendors / totals)
+  const NEW = [
+    { name: 'ElevenLabs', cat: 'ai', amount: 1480, by: 'כרטיס Cal · אורי', note: 'Creator plan, ייתכן ניסוי' },
+    { name: 'Vercel', cat: 'cloud', amount: 2960, by: 'כרטיס Cal · שי', note: 'Pro team, 4 מושבים' },
+    { name: 'Loom', cat: 'saas', amount: 890, by: 'כרטיס Cal · דנה', note: 'כבר כלול ב-Atlassian' },
+  ];
+  // deterministic 24-month series whose last 12 months sum to the vendor's annual amount
+  const series = (v) => {
+    const seed = [...v.name].reduce((a, c) => a + c.charCodeAt(0), 0);
+    const raw = months.map((_, i) => Math.pow(1 + v.trend, i / 12) * (1 + .04 * Math.sin(seed + i * .8) + .02 * Math.cos(seed * .3 + i * 2.3)));
+    const k = v.amount / raw.slice(12).reduce((a, b) => a + b, 0);
+    return raw.map(r => r * k);
+  };
+  const linked = (v) => { const vn = v.name.toLowerCase(), t = vn.split(/[ .—]/)[0]; return D.findings.filter(f => { const fv = f.vendor.toLowerCase(); return vn.includes(fv) || fv.includes(t); }); };
+  const st = { cat: '', q: '', src: '', sort: 'amt', payroll: false };
+
+  // treemap: binary split by sum along the longer side
+  function layout(items, x, y, w, h, out) {
+    if (items.length === 1) { out.push({ ...items[0], x, y, w, h }); return out; }
+    const tot = items.reduce((a, b) => a + b.amount, 0); let acc = 0, k = 0;
+    while (k < items.length - 1 && acc + items[k].amount <= tot / 2) acc += items[k++].amount;
+    if (k === 0) acc = items[k++].amount;
+    const a = items.slice(0, k), b = items.slice(k), r = acc / tot;
+    if (w >= h) { layout(a, x, y, w * r, h, out); layout(b, x + w * r, y, w * (1 - r), h, out); }
+    else { layout(a, x, y, w, h * r, out); layout(b, x, y + h * r, w, h * (1 - r), out); }
+    return out;
+  }
+  function drawTm() {
+    const el = $('#tm'), W = el.clientWidth, H = el.clientHeight;
+    const cats = D.spend.byCategory.filter(c => st.payroll || c.id !== 'payroll').sort((a, b) => b.amount - a.amount);
+    const tot = cats.reduce((a, c) => a + c.amount, 0);
+    $('#tmTotal').textContent = ils(tot);
+    el.innerHTML = layout(cats, 0, 0, W, H, []).map(t => {
+      const size = t.w < 90 || t.h < 70 ? (t.w < 64 || t.h < 44 ? 'xs' : 'sm') : '';
+      return `<div class="tile ${size}" style="right:${t.x}px; top:${t.y}px; width:${t.w}px; height:${t.h}px; --c:${CATCOL(t.id)}">
+        <button data-cat="${t.id}" aria-pressed="${st.cat === t.id}" title="${t.label}: ${ils(t.amount)} לשנה (${(t.amount / tot * 100).toFixed(1)}%)"><span class="bar"></span>
+          <span class="l">${t.label}</span><span><span class="a money">${ilsK(t.amount)}</span><div class="p"><span class="num">${(t.amount / tot * 100).toFixed(1)}%</span> מההוצאה</div></span></button></div>`;
+    }).join('');
+  }
+
+  function drawTable() {
+    const all = D.vendors;
+    const srcs = [...new Set(all.map(v => v.source))];
+    if (!$('#src').options.length) $('#src').innerHTML = '<option value="">כל המקורות</option>' + srcs.map(s => `<option>${s}</option>`).join('');
+    const cats = [...new Set(all.map(v => v.cat))];
+    $('#cats').innerHTML = `<button class="chip fchip" data-cat="" aria-pressed="${!st.cat}">הכל <span class="muted num">${all.length}</span></button>` + cats.map(c => `<button class="chip fchip" data-cat="${c}" aria-pressed="${st.cat === c}"><i class="dot" style="color:${CATCOL(c)}"></i>${D.categories[c]} <span class="muted num">${all.filter(v => v.cat === c).length}</span></button>`).join('');
+    let rows = all.filter(v => (!st.cat || v.cat === st.cat) && (!st.src || v.source === st.src) && (!st.q || v.name.toLowerCase().includes(st.q.toLowerCase())));
+    rows.sort({ amt: (a, b) => b.amount - a.amount, trend: (a, b) => b.trend - a.trend, name: (a, b) => a.name.localeCompare(b.name) }[st.sort]);
+    $('#vCount').textContent = `· ${rows.length} מתוך ${D.kpi.vendors}`;
+    const spark = (v) => { const s = series(v).slice(12), mx = Math.max(...s), mn = Math.min(...s); const pts = s.map((y, i) => `${(i * 72 / 11).toFixed(1)},${(20 - (y - mn) / (mx - mn || 1) * 16).toFixed(1)}`).join(' '); return `<svg width="76" height="24" viewBox="-2 0 76 24" style="direction:ltr" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${v.trend > .3 ? 'var(--amber)' : 'var(--ink-2)'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`; };
+    const tr = (t) => { const p = Math.round(t * 100); return `<span class="trend ${t >= .5 ? 'hot' : t > .15 ? 'up' : 'flat'}">${p ? (p > 0 ? '▲ ' : '▼ ') : '— '}<span class="num">${Math.abs(p)}%</span></span>`; };
+    $('#vt').innerHTML = `<thead><tr><th>ספק</th><th class="end">₪/שנה</th><th>שנה מול שנה</th><th>12 חודשים</th><th class="c-owner">בעלים</th><th>חידוש</th><th class="c-src">מקור נתונים</th></tr></thead><tbody>` +
+      rows.map(v => { const n = linked(v).filter(f => f.status === 'open' || f.status === 'in_progress').length; return `<tr tabindex="0" data-v="${v.name}">
+        <td><span class="vname"><i class="dot" style="color:${CATCOL(v.cat)}"></i>${v.name}${n ? `<span class="fcount" title="${n} ממצאים פתוחים">${n}</span>` : ''}</span></td>
+        <td class="end"><span class="money" style="font-weight:700">${ils(v.amount)}</span></td>
+        <td>${tr(v.trend)}</td><td>${spark(v)}</td>
+        <td class="c-owner ink2">${v.owner}</td>
+        <td>${v.renewal ? `<span class="num">${v.renewal}</span>` : '<span class="muted">לפי שימוש</span>'}</td>
+        <td class="c-src"><span class="chip xs">${v.source}</span></td></tr>`; }).join('') + '</tbody>' +
+      `<tfoot><tr><td class="muted small">סה״כ בתצוגה</td><td class="end"><b class="money">${ils(rows.reduce((a, v) => a + v.amount, 0))}</b></td><td colspan="5"></td></tr></tfoot>`;
+  }
+
+  function openDrawer(name) {
+    const v = D.vendors.find(x => x.name === name); if (!v) return;
+    const s = series(v), mx = Math.max(...s), W = 470, H = 170, bw = W / 24;
+    const fs = linked(v);
+    $('#dw').innerHTML = `
+      <div class="row between"><div class="row"><span class="logo-b" style="color:${CATCOL(v.cat)}">${v.name.slice(0, 2)}</span><div><h2 class="h2" id="dwTitle">${v.name}</h2><div class="xs muted">${D.categories[v.cat]} · בעלים: ${v.owner} · ${v.source}</div></div></div><button class="btn ghost sm" id="dwClose" aria-label="סגור">✕</button></div>
+      <div class="grid g2" style="gap:10px">
+        <div class="card flat" style="padding:14px"><div class="eyebrow">₪/שנה</div><div class="money" style="font-size:1.5rem; font-weight:800">${ils(v.amount)}</div></div>
+        <div class="card flat" style="padding:14px"><div class="eyebrow">שנה מול שנה</div><div style="font-size:1.5rem; font-weight:800; color:${v.trend > .3 ? 'var(--amber)' : 'var(--ink)'}"><span class="num">+${Math.round(v.trend * 100)}%</span></div></div>
+      </div>
+      <div><div class="row between"><h3 class="h3">24 חודשים</h3><span class="xs muted">₪ לחודש</span></div>
+        <div class="bars-wrap"><svg viewBox="0 0 ${W} ${H + 22}" width="100%" style="direction:ltr; display:block; margin-top:8px" role="img" aria-label="הוצאה חודשית ${v.name}">
+          <line x1="0" x2="${W}" y1="${H}" y2="${H}" stroke="var(--line)"/>
+          ${s.map((y, i) => { const h = y / mx * (H - 10); return `<rect data-i="${i}" x="${i * bw + 2}" y="${H - h}" width="${bw - 4}" height="${h}" rx="3" fill="${i >= 12 ? CATCOL(v.cat) : 'var(--line-2)'}" opacity="${i >= 12 ? 1 : .8}"/>`; }).join('')}
+          ${[0, 6, 12, 18, 23].map(i => `<text x="${i * bw + bw / 2}" y="${H + 16}" fill="var(--muted)" font-size="10" text-anchor="${i === 0 ? 'start' : i === 23 ? 'end' : 'middle'}">${months[i]}</text>`).join('')}
+        </svg><div class="tip" id="btip"></div></div>
+        <div class="xs muted" style="margin-top:4px">אפור: 12 החודשים הקודמים · צבע: 12 החודשים האחרונים</div></div>
+      <div><h3 class="h3" style="margin-bottom:8px">ממצאים מקושרים <span class="muted num">${fs.length}</span></h3>
+        <div class="stack" style="gap:8px">${fs.length ? fs.map(f => `<a class="flink" href="app-finding.html?id=${f.id}"><div style="min-width:0"><div style="font-weight:600">${f.title}</div><div class="xs muted"><span class="mono">${f.id}</span> · ${f.owner}</div></div><div style="text-align:end"><b class="money">${ils(f.amount)}</b><div class="xs muted">${f.kind === 'recurring' ? '₪/שנה' : f.kind === 'recovery' ? 'חד-פעמי' : 'לבדיקה'}</div></div></a>`).join('') : '<div class="muted small card flat">אין ממצאים פתוחים על הספק הזה. הוא נסרק בכל ריצה.</div>'}</div></div>
+      ${v.renewal ? `<a class="btn block" href="app-renewals.html">חידוש ב-${v.renewal} · פתח בלוח החידושים</a>` : ''}`;
+    const dlg = $('#drawer'); dlg.showModal();
+    $('#dwClose').onclick = () => dlg.close();
+    const svg = $('#dw svg'), tip = $('#btip');
+    svg.addEventListener('mousemove', (e) => { const r = e.target.closest('rect'); if (!r) { tip.style.opacity = 0; return; } const i = +r.dataset.i, b = svg.getBoundingClientRect(); tip.innerHTML = `${months[i]} · <b class="money">${ils(s[i])}</b>`; tip.style.left = Math.min(b.width - 130, Math.max(0, (i * bw) / W * b.width - 50)) + 'px'; tip.style.top = '-6px'; tip.style.opacity = 1; });
+    svg.addEventListener('mouseleave', () => tip.style.opacity = 0);
+  }
+  $('#drawer').addEventListener('click', (e) => { if (e.target.id === 'drawer') e.target.close(); });
+
+  $('#newCount').textContent = NEW.length + ' חדשים';
+  $('#newv').innerHTML = NEW.map(n => `<div class="it"><span class="logo-b" style="color:${CATCOL(n.cat)}">${n.name.slice(0, 2)}</span><div style="min-width:0"><div style="font-weight:600">${n.name}</div><div class="xs muted">${n.by} · ${n.note}</div></div><div style="text-align:end"><b class="money">${ils(n.amount)}</b><div class="xs muted">לחודש</div></div></div>`).join('');
+  const nonPayroll = D.spend.total - D.spend.byCategory.find(c => c.id === 'payroll').amount;
+  $('#totLine').innerHTML = `סה״כ <b class="money">${ilsK(D.spend.total)}</b> · ללא שכר <b class="money">₪${(nonPayroll / 1e6).toFixed(1)}M</b>`;
+
+  const render = () => { drawTm(); drawTable(); };
+  $('#tm').addEventListener('click', (e) => { const b = e.target.closest('[data-cat]'); if (!b) return; st.cat = st.cat === b.dataset.cat ? '' : b.dataset.cat; render(); });
+  $('#cats').addEventListener('click', (e) => { const b = e.target.closest('[data-cat]'); if (b) { st.cat = b.dataset.cat; render(); } });
+  $('#q').oninput = (e) => { st.q = e.target.value; drawTable(); };
+  $('#src').onchange = (e) => { st.src = e.target.value; drawTable(); };
+  $('#sort').onchange = (e) => { st.sort = e.target.value; drawTable(); };
+  $('#payrollT').onclick = (e) => { st.payroll = !st.payroll; e.currentTarget.setAttribute('aria-pressed', st.payroll); e.currentTarget.classList.toggle('primary', st.payroll); drawTm(); };
+  $('#vt').addEventListener('click', (e) => { const r = e.target.closest('tr[data-v]'); if (r) openDrawer(r.dataset.v); });
+  $('#vt').addEventListener('keydown', (e) => { const r = e.target.closest('tr[data-v]'); if (r && e.key === 'Enter') openDrawer(r.dataset.v); });
+  let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(drawTm, 120); });
+  render();
+  if (new URLSearchParams(location.search).get('vendor')) openDrawer(new URLSearchParams(location.search).get('vendor'));
+})();
+</script>
+</body>
+</html>

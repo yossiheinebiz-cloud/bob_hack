@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>אינטגרציות — איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  .sum { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--ink-2); font-size: .92rem; margin-top: 6px; }
+  .sum b { color: var(--ink); }
+  .alert { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--r); background: var(--amber-bg); border: 1px solid rgba(255,181,71,.25); flex-wrap: wrap; }
+  .alert .ic { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: rgba(255,181,71,.18); color: var(--amber); flex: none; }
+  .tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .search { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--bg-2); min-width: 260px; flex: 1; max-width: 380px; color: var(--muted); }
+  .search:focus-within { border-color: var(--brand); }
+  .search svg { width: 18px; height: 18px; flex: none; }
+  .search input { border: 0; background: transparent; outline: none; flex: 1; height: 100%; color: var(--ink); min-width: 0; }
+  .fchip { height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-2); font-weight: 600; font-size: .85rem; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+  .fchip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .fchip .n { font-size: .75rem; opacity: .7; }
+  #catalog { columns: 2 420px; column-gap: 16px; }
+  .group { break-inside: avoid; margin-bottom: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+  .group h2 { font-size: .9rem; font-weight: 700; color: var(--ink-2); margin: 0; padding: 14px 18px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); }
+  .group h2 .n { color: var(--muted); font-weight: 500; }
+  .ic-card { text-align: start; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto auto; gap: 14px; align-items: center; padding: 14px 18px; background: transparent; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; transition: background .15s; color: inherit; width: 100%; min-height: 72px; }
+  .ic-card:last-child { border-bottom: 0; }
+  .ic-card:hover { background: var(--surface-2); }
+  .ic-card.err { background: var(--amber-bg); }
+  .lt { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-weight: 800; font-size: .8rem; background: var(--surface-3); border: 1px solid var(--line-2); flex: none; direction: ltr; }
+  .ic-card .sub2 { font-size: .8rem; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .spark { width: 96px; height: 26px; flex: none; }
+  @media (max-width: 560px) { .ic-card { grid-template-columns: 40px minmax(0, 1fr) auto; } .ic-card .spark, .ic-card > .xs { display: none; } #mapT { min-width: 440px; } }
+
+  .upload { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr); gap: 0; padding: 0; overflow: hidden; }
+  .drop { padding: 28px; display: grid; gap: 14px; align-content: start; border-inline-end: 1px solid var(--line); }
+  .dz { border: 1.5px dashed var(--line-2); border-radius: var(--r); padding: 22px; text-align: center; display: grid; gap: 8px; justify-items: center; color: var(--muted); font-size: .86rem; }
+  .dz svg { color: var(--blue); }
+  .file { display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line); font-size: .85rem; }
+  .map { padding: 28px; display: grid; gap: 14px; align-content: start; }
+  .map .table td { padding: 10px 12px; }
+  .map select { height: 36px; border-radius: 9px; border: 1px solid var(--line-2); background: var(--bg-2); padding: 0 8px; min-width: 140px; }
+  .map select.low { border-color: var(--amber); }
+  .cbar { display: inline-flex; align-items: center; gap: 8px; }
+  .cbar i { width: 56px; height: 6px; border-radius: 3px; background: var(--line-2); overflow: hidden; position: relative; }
+  .cbar i b { position: absolute; inset: 0 auto 0 0; background: var(--brand); border-radius: 3px; }
+  .cbar.low i b { background: var(--amber); }
+  .sample { font-size: .78rem; color: var(--muted); }
+
+  dialog.drawer { margin: 0; margin-inline-start: auto; height: 100vh; height: 100dvh; max-height: none; width: min(560px, 100vw); max-width: 100vw; border: 0; border-inline-start: 1px solid var(--line-2); padding: 0; background: var(--bg-2); color: var(--ink); }
+  dialog.drawer::backdrop { background: rgba(3,6,10,.6); }
+  dialog.drawer[open] { animation: slide .3s cubic-bezier(.2,.8,.2,1); }
+  @keyframes slide { from { transform: translateX(-40px); opacity: 0; } }
+  .dw { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; }
+  .dw-h { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; gap: 14px; align-items: center; }
+  .dw-b { overflow: auto; padding: 8px 24px 24px; }
+  .dw-b section { padding: 18px 0; border-bottom: 1px solid var(--line); display: grid; gap: 10px; }
+  .dw-b section:last-child { border-bottom: 0; }
+  .dw-b h3 { font-size: .82rem; color: var(--muted); font-weight: 700; margin: 0; letter-spacing: .02em; }
+  .dw-f { padding: 16px 24px; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: space-between; }
+  .scope { font-family: var(--mono); font-size: .76rem; padding: 4px 8px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); direction: ltr; display: inline-block; }
+  .synclog { display: grid; gap: 0; font-size: .84rem; }
+  .synclog div { display: grid; grid-template-columns: 110px 1fr auto; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+  .synclog .ok { color: var(--brand); } .synclog .bad { color: var(--amber); }
+  .x { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--ink-2); cursor: pointer; font-size: 1.2rem; margin-inline-start: auto; }
+  .seg { display: inline-flex; gap: 4px; padding: 3px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); flex-wrap: wrap; }
+  .seg button { border: 0; background: transparent; color: var(--ink-2); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: .84rem; min-height: 32px; }
+  .seg button[aria-pressed="true"] { background: var(--surface-3); color: var(--ink); font-weight: 600; }
+
+  @media (max-width: 900px) { .upload { grid-template-columns: 1fr; } .drop { border-inline-end: 0; border-bottom: 1px solid var(--line); } }
+  @media (max-width: 560px) { .search { min-width: 0; max-width: none; flex-basis: 100%; } .drop, .map { padding: 18px; } .synclog div { grid-template-columns: 90px 1fr; } .synclog div span:last-child { grid-column: 2; } }
+</style>
+</head>
+<body data-page="integrations">
+<main data-shell>
+  <div class="page-head">
+    <div>
+      <h1 class="h1">אינטגרציות</h1>
+      <div class="sum" id="sum"></div>
+    </div>
+    <div class="row wrap"><a class="btn" href="#upload">העלאת קובץ</a><a class="btn primary" href="onboarding-connect.html">חיבור מקור</a></div>
+  </div>
+
+  <div class="alert" role="alert">
+    <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.5"/></svg></span>
+    <div class="grow"><div style="font-weight:700">ההרשאה לבנק לאומי פגה, 6 כללים עומדים</div><div class="small ink2">הסכמת בנקאות פתוחה מתחדשת כל 90 יום. בלי תנועות בנק לא נזהה כפילויות בין כרטיס להעברה. התנועות האחרונות שנקראו: 27/10/2026.</div></div>
+    <button class="btn primary" type="button" id="renew">חדש הרשאה</button>
+  </div>
+
+  <div class="tools">
+    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" placeholder="חיפוש: AWS, שכר, חשבוניות…" aria-label="חיפוש אינטגרציה"></label>
+    <div class="row wrap" id="filters" role="group" aria-label="סינון לפי סטטוס"></div>
+  </div>
+
+  <div id="catalog"></div>
+
+  <section class="card upload" id="upload" aria-labelledby="upH">
+    <div class="drop">
+      <h2 class="h2" id="upH">אין חיבור? העלו קובץ</h2>
+      <p class="small ink2" style="margin:0">ייצוא מכל מערכת: Excel, CSV או PDF של כרטיס אשראי. המודל מציע מיפוי עמודות, ואתם מאשרים. הקובץ הגולמי נמחק אחרי 24 שעות.</p>
+      <div class="dz"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg><span>גררו לכאן קובץ, או <button class="btn sm" type="button">בחרו קובץ</button></span><span class="xs">עד 50MB · xlsx, csv, pdf</span></div>
+      <div class="file"><span class="lt" style="width:34px;height:34px;font-size:.7rem">XLS</span><div class="grow"><div class="mono" style="font-size:.82rem">discount_osh_2026-10.xlsx</div><div class="xs muted">1,284 שורות · 7 עמודות · זוהה: ייצוא עו״ש בנק דיסקונט</div></div><span class="chip ai xs">מופה ע״י AI</span></div>
+    </div>
+    <div class="map">
+      <div class="row between wrap"><div><div class="h3">מיפוי עמודות</div><div class="xs muted">בדקו במיוחד עמודות עם ביטחון נמוך</div></div><span class="chip open xs" id="lowCount"></span></div>
+      <div class="table-wrap">
+        <table class="table" id="mapT">
+          <thead><tr><th>עמודה בקובץ</th><th>השדה אצלנו</th><th>ביטחון</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="row wrap between">
+        <label class="row small ink2"><input type="checkbox" checked style="accent-color:var(--brand);width:18px;height:18px"> לשמור כתבנית לייצוא הבא מאותו בנק</label>
+        <button class="btn primary" type="button" id="confirmMap">אישור מיפוי וייבוא 1,284 שורות</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog class="drawer" id="drawer" aria-labelledby="dwT">
+  <div class="dw">
+    <div class="dw-h"><span class="lt" id="dwL"></span><div><div class="h2" id="dwT"></div><div class="xs muted" id="dwG"></div></div><button class="x" id="dwX" aria-label="סגירה">×</button></div>
+    <div class="dw-b" id="dwB"></div>
+    <div class="dw-f"><button class="btn" type="button" id="dwSync">סנכרון עכשיו</button><button class="btn ghost" type="button" style="color:var(--coral)" id="dwOff">נתק</button></div>
+  </div>
+</dialog>
+
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(function () {
+  const D = window.DEMO, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const INT = D.integrations.map(x => ({ ...x }));
+  const ST = { connected: ['מחובר', 'fixed'], error: ['שגיאה', 'open'], available: ['זמין', ''] };
+  const abbr = n => n.replace(/[^A-Za-z0-9א-ת ]/g, '').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  const DESC = { okta: 'מי קיבל גישה לאיזה כלי, להשוואה מול מושבים משולמים', hashavshevet: 'חשבוניות ספק ותשלומים, דרך ייצוא אוטומטי', sap: 'AP ותשלומים דרך Service Layer', gcp: 'ייצוא Billing ל-BigQuery, קריאה בלבד', datadog: 'שימוש ונפח לוגים מאונדקסים לפי index' };
+
+  // deterministic sync health per source (14 days, rows synced)
+  const health = (id, status) => { let s = [...id].reduce((a, c) => a + c.charCodeAt(0), 0); return Array.from({ length: 14 }, (_, i) => { s = (s * 9301 + 49297) % 233280; const v = .55 + (s / 233280) * .45; return status === 'error' && i > 9 ? 0 : v; }); };
+  const spark = (vals, err) => { const w = 96, h = 26, bw = w / vals.length; return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true">${vals.map((v, i) => `<rect x="${w - (i + 1) * bw + 1}" y="${h - Math.max(2, v * h)}" width="${bw - 2}" height="${Math.max(2, v * h)}" rx="1.5" fill="${v === 0 ? 'var(--amber)' : err ? 'var(--line-2)' : 'var(--brand-2)'}" opacity="${v === 0 ? 1 : .85}"/>`).join('')}</svg>`; };
+
+  const counts = { all: INT.length, connected: 0, error: 0, available: 0 }; INT.forEach(i => counts[i.status]++);
+  $('#sum').innerHTML = `<span><b>${counts.connected}</b> מחוברים</span><span><b>${counts.error}</b> דורש טיפול</span><span><b>${counts.available}</b> זמינים</span><span>${D.kpi.rowsScanned.toLocaleString('en-US')} שורות בסריקה האחרונה</span>`;
+  let filter = 'all', q = '';
+  const FL = [['all', 'הכל'], ['connected', 'מחובר'], ['error', 'שגיאה'], ['available', 'זמין']];
+  $('#filters').innerHTML = FL.map(([k, l]) => `<button class="fchip" data-f="${k}" aria-pressed="${k === filter}">${l} <span class="n num">${counts[k]}</span></button>`).join('');
+  $('#filters').onclick = e => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; $$('.fchip').forEach(x => x.setAttribute('aria-pressed', x === b)); render(); };
+  $('#q').oninput = e => { q = e.target.value.trim().toLowerCase(); render(); };
+
+  function render() {
+    const vis = INT.filter(i => (filter === 'all' || i.status === filter) && (!q || (i.name + i.group).toLowerCase().includes(q)));
+    const groups = [...new Set(INT.map(i => i.group))];
+    $('#catalog').innerHTML = groups.map(g => { const items = vis.filter(i => i.group === g); if (!items.length) return '';
+      return `<section class="group"><h2>${g} <span class="n num">${items.length}</span></h2><div>${items.map(i => {
+        const [lbl, cls] = ST[i.status];
+        return `<button class="ic-card ${i.status === 'error' ? 'err' : ''}" data-id="${i.id}" type="button">
+          <span class="lt">${abbr(i.name)}</span>
+          <div style="min-width:0"><div class="h3">${i.name}</div><div class="sub2">${i.status === 'available' ? (DESC[i.id] || 'חיבור בקריאה בלבד') : i.status === 'error' ? `<span style="color:var(--amber)">${i.synced}</span>` : 'סנכרון ' + i.synced}</div></div>
+          ${i.status === 'available' ? '<span class="xs muted">כ-3 דק׳</span>' : spark(health(i.id, i.status), i.status === 'error')}
+          <span class="chip ${cls} xs">${cls ? '<span class="dot"></span>' : ''}${lbl}</span>
+        </button>`; }).join('')}</div></section>`; }).join('') || `<div class="card flat muted">לא נמצאה אינטגרציה בשם "${q}". אפשר להעלות קובץ במקום.</div>`;
+  }
+  render();
+
+  // drawer
+  const DET = {
+    aws: { fields: [['line_item_unblended_cost', 'עלות שורה', 'CLOUD_*'], ['line_item_resource_id', 'מזהה משאב', 'CLOUD_ZOMBIE'], ['product_instance_type', 'סוג מכונה', 'CLOUD_OLD_GEN'], ['savings_plan_*', 'כיסוי התחייבות', 'CLOUD_NO_COMMITMENT'], ['CPUUtilization (CloudWatch)', 'ניצולת', 'CLOUD_DEV_ALWAYS_ON']], scopes: ['arn:aws:iam::…:role/AyefoReadOnly', 'ce:GetCostAndUsage', 's3:GetObject', 'cloudwatch:GetMetricData'], freq: 'כל 6 שעות', rows: '92,310', ret: 'שורות ראיה 12 חודשים · קבצי CUR גולמיים 24 שעות' },
+    leumi: { fields: [['valueDate', 'תאריך ערך', 'DUP_CROSS_CURRENCY'], ['amount', 'סכום', 'DUP_CARD_AND_AP'], ['counterparty', 'מוטב', 'VENDOR_BANK_CHANGED'], ['reference', 'אסמכתא', 'DUP_INVOICE_EXACT']], scopes: ['AIS consent: accounts.read', 'transactions.read · 90 יום'], freq: 'יומי', rows: '9,871', ret: 'שורות ראיה 12 חודשים' },
+    google: { fields: [['primaryEmail → EMP-id', 'מזהה עובד (מוסתר)', 'LICENSE_DEPARTED'], ['suspended / deletionTime', 'סטטוס', 'LICENSE_DEPARTED'], ['lastLoginTime', 'כניסה אחרונה', 'LICENSE_UNUSED'], ['tokens.list', 'אפליקציות OAuth', 'SAAS_SHADOW_IT']], scopes: ['admin.directory.user.readonly', 'admin.reports.usage.readonly'], freq: 'כל שעה', rows: '4,212', ret: 'מזהים בלבד, בלי תוכן מיילים או קבצים' },
+    openai: { fields: [['project_id', 'פרויקט', 'AI_*'], ['model', 'מודל', 'AI_MODEL_OVERKILL'], ['input_cached_tokens', 'טוקנים מה-cache', 'AI_NO_PROMPT_CACHE'], ['api_key_id + owner', 'מפתח ובעלים', 'AI_KEY_ORPHAN']], scopes: ['Admin key: usage.read', 'costs.read'], freq: 'כל 15 דק׳', rows: '12,066', ret: 'לא נקראים פרומפטים או תשובות' },
+  };
+  const LOG = id => [['היום 08:14', 'סנכרון הושלם · 1,204 שורות חדשות', 'ok'], ['היום 02:14', 'סנכרון הושלם · 988 שורות', 'ok'], ['אתמול 20:14', 'סנכרון הושלם · 1,131 שורות', 'ok'], ['אתמול 14:14', 'ניסיון חוזר אחרי 429 (rate limit)', 'bad']];
+  const LOG_ERR = [['היום 06:00', 'נכשל: consent_expired (403)', 'bad'], ['אתמול 06:00', 'נכשל: consent_expired (403)', 'bad'], ['27/10/2026 06:00', 'סנכרון הושלם · 142 תנועות', 'ok']];
+  const dlg = $('#drawer');
+  function openDrawer(id) {
+    const i = INT.find(x => x.id === id); const d = DET[id] || { fields: [['date', 'תאריך', '—'], ['amount', 'סכום', '—'], ['vendor', 'ספק', '—']], scopes: ['read-only'], freq: 'יומי', rows: '—', ret: 'שורות ראיה 12 חודשים' };
+    $('#dwL').textContent = abbr(i.name); $('#dwT').textContent = i.name;
+    $('#dwG').innerHTML = `${i.group} · <span class="chip ${ST[i.status][1]} xs">${ST[i.status][0]}</span>`;
+    const err = i.status === 'error', avail = i.status === 'available';
+    $('#dwB').innerHTML = `
+      ${err ? `<section><div class="alert"><div class="grow small"><b>ההרשאה פגה ב-30/10/2026.</b> צריך לאשר מחדש באתר הבנק, זה לוקח כדקה. אין שינוי בהרשאות.</div><button class="btn primary sm" type="button">חדש הרשאה</button></div></section>` : ''}
+      <section><h3>מה נמשך</h3><div class="table-wrap"><table class="table"><thead><tr><th>שדה במקור</th><th>משמעות</th><th>כלל שמשתמש</th></tr></thead><tbody>${d.fields.map(f => `<tr><td><span class="mono">${f[0]}</span></td><td>${f[1]}</td><td><span class="mono xs muted">${f[2]}</span></td></tr>`).join('')}</tbody></table></div>
+        <div class="xs muted">כל שדה אחר מהמקור לא נקרא ולא נשמר.</div></section>
+      <section><h3>הרשאות</h3><div class="row wrap" style="gap:6px">${d.scopes.map(s => `<span class="scope">${s}</span>`).join('')}</div><div class="row small" style="color:var(--brand)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>קריאה בלבד. אין לנו הרשאת כתיבה במקור הזה.</div></section>
+      <section><h3>תדירות סנכרון</h3><div class="seg" role="group" aria-label="תדירות">${['כל 15 דק׳', 'כל שעה', 'כל 6 שעות', 'יומי'].map(f => `<button type="button" aria-pressed="${f === d.freq}">${f}</button>`).join('')}</div></section>
+      ${avail ? '' : `<section><h3>יומן סנכרון</h3><div class="synclog">${(err ? LOG_ERR : LOG(id)).map(l => `<div><span class="muted">${l[0]}</span><span>${l[1]}</span><span class="${l[2]}">${l[2] === 'ok' ? 'הצליח' : 'נכשל'}</span></div>`).join('')}</div><div class="xs muted">סה״כ ${d.rows} שורות בסריקה האחרונה</div></section>`}
+      <section><h3>שמירת נתונים למקור הזה</h3><div class="small ink2">${d.ret}. הסתרת זהות עובדים פעילה.</div><select class="input" aria-label="תקופת שמירה" style="max-width:240px"><option>6 חודשים</option><option selected>12 חודשים</option><option>24 חודשים</option></select></section>`;
+    $('#dwOff').style.display = avail ? 'none' : ''; $('#dwSync').textContent = avail ? 'חיבור' : err ? 'חדש הרשאה' : 'סנכרון עכשיו';
+    dlg.showModal();
+  }
+  $('#catalog').onclick = e => { const c = e.target.closest('.ic-card'); if (c) openDrawer(c.dataset.id); };
+  $('#dwX').onclick = () => dlg.close();
+  dlg.onclick = e => { if (e.target === dlg) dlg.close(); };
+  $('#dwB').onclick = e => { const b = e.target.closest('.seg button'); if (b) [...b.parentElement.children].forEach(x => x.setAttribute('aria-pressed', x === b)); };
+  $('#dwOff').onclick = () => { if (confirm('לנתק את המקור? הכללים שתלויים בו יפסיקו לרוץ. הנתונים יימחקו לפי מדיניות השמירה.')) dlg.close(); };
+  $('#renew').onclick = () => openDrawer('leumi');
+
+  // AI column mapping
+  const OURS = ['תאריך עסקה', 'תאריך ערך', 'תיאור / ספק', 'סכום חובה', 'סכום זכות', 'אסמכתא', 'יתרה', 'התעלם'];
+  const MAP = [['תאריך', '03/10/2026', 'תאריך עסקה', .98], ['יום ערך', '04/10/2026', 'תאריך ערך', .95], ['תיאור הפעולה', 'העב. לאחר-נייד MONGODB', 'תיאור / ספק', .93], ['חובה', '38,900.00', 'סכום חובה', .97], ['זכות', '', 'סכום זכות', .96], ['אסמכתא', '88213', 'אסמכתא', .71], ['יתרה בש"ח', '1,204,331.18', 'יתרה', .62]];
+  $('#mapT tbody').innerHTML = MAP.map(([c, s, f, p]) => `<tr><td><div style="font-weight:600">${c}</div><div class="sample">למשל: <span class="num">${s || '—'}</span></div></td>
+    <td><select class="${p < .8 ? 'low' : ''}" aria-label="שדה עבור ${c}">${OURS.map(o => `<option ${o === f ? 'selected' : ''}>${o}</option>`).join('')}</select></td>
+    <td><span class="cbar ${p < .8 ? 'low' : ''}"><i><b style="width:${p * 100}%"></b></i><span class="num xs">${Math.round(p * 100)}%</span></span></td></tr>`).join('');
+  $('#lowCount').textContent = MAP.filter(m => m[3] < .8).length + ' לבדיקה';
+  $('#confirmMap').onclick = e => { e.target.textContent = 'מייבא…'; e.target.disabled = true; };
+
+  const h = location.hash; if (h.startsWith('#drawer=')) openDrawer(h.slice(8));
+})();
+</script>
+</body>
+</html>

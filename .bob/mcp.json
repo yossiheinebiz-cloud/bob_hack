@@ -1,0 +1,82 @@
+{
+  "mcpServers": {
+
+    "aws-cost": {
+      "command": "npx",
+      "args": ["-y", "@aws-sdk/mcp-server-cost-explorer"],
+      "env": {
+        "AWS_ACCESS_KEY_ID":     "${env:AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${env:AWS_SECRET_ACCESS_KEY}",
+        "AWS_DEFAULT_REGION":    "${env:AWS_DEFAULT_REGION}"
+      },
+      "disabled": true,
+      "alwaysAllow": ["get_cost_and_usage", "list_services"]
+    },
+
+    "gcp-billing": {
+      "command": "npx",
+      "args": ["-y", "@google-cloud/mcp-billing"],
+      "env": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "${env:GOOGLE_APPLICATION_CREDENTIALS}",
+        "GCP_PROJECT_ID": "${env:GCP_PROJECT_ID}"
+      },
+      "disabled": true
+    },
+
+    "priority-erp": {
+      "command": "npx",
+      "args": ["-y", "@priority-software/mcp-server"],
+      "env": {
+        "PRIORITY_URL":      "${env:PRIORITY_URL}",
+        "PRIORITY_USER":     "${env:PRIORITY_USER}",
+        "PRIORITY_PASSWORD": "${env:PRIORITY_PASSWORD}",
+        "PRIORITY_COMPANY":  "${env:PRIORITY_COMPANY}"
+      },
+      "disabled": true,
+      "alwaysAllow": ["get_invoices", "get_vendors", "get_employees"]
+    },
+
+    "slack-notifications": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": {
+        "SLACK_BOT_TOKEN": "${env:SLACK_BOT_TOKEN}",
+        "SLACK_CHANNEL_ID": "${env:SLACK_FINDINGS_CHANNEL}"
+      },
+      "disabled": true,
+      "alwaysAllow": ["slack_post_message"]
+    },
+
+    "sendgrid-email": {
+      "command": "npx",
+      "args": ["-y", "@sendgrid/mcp-server"],
+      "env": {
+        "SENDGRID_API_KEY": "${env:SENDGRID_API_KEY}",
+        "FROM_EMAIL":       "${env:FINDINGS_FROM_EMAIL}"
+      },
+      "disabled": true
+    },
+
+    "google-sheets": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-google-drive"],
+      "env": {
+        "GDRIVE_CREDENTIALS": "${env:GDRIVE_CREDENTIALS}"
+      },
+      "disabled": true,
+      "alwaysAllow": ["read_spreadsheet", "list_files"]
+    },
+
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "data/synthetic"
+      ],
+      "disabled": false,
+      "alwaysAllow": ["read_file", "list_directory"]
+    }
+
+  }
+}

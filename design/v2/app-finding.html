@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ממצא · איפה הכסף</title>
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+  .topbar svg { width:18px; height:18px; flex:none; }
+  .topbar .search { min-width:0; }
+  .content > * { min-width:0; }
+  .topbar .search > span:first-of-type { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  @media (max-width:600px){ .topbar .kbd, .topbar .small { display:none; } }
+
+  .layout { display:grid; grid-template-columns: minmax(0,1fr) 340px; gap:20px; align-items:start; }
+  .aside { position:sticky; top:84px; display:grid; gap:16px; }
+  .aside > *, #related > * { min-width:0; } #related .money { flex:none; } .ask .input { min-width:0; }
+  .ev-grid.norcpt { grid-template-columns:1fr; } .ev-grid.norcpt figure { display:none; }
+  .crumb { display:flex; gap:8px; align-items:center; font-size:.85rem; color:var(--muted); }
+  .crumb a:hover { color:var(--ink); }
+  .head-card { padding:24px; }
+  .amount { font-size:clamp(2.4rem, 4.6vw, 3.6rem); font-weight:900; letter-spacing:-.04em; line-height:1; }
+  .amount.rec { color:var(--brand); text-shadow:0 0 36px var(--brand-glow); }
+  .amount.recv { color:var(--ink); }
+  .amount.rev { color:var(--amber); }
+  .kv { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; margin-top:18px; }
+  .kv > div { background:var(--surface); padding:12px 14px; min-width:0; }
+  .kv .k { font-size:.72rem; color:var(--muted); font-weight:600; }
+  .kv .v { font-weight:600; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .confbar { height:6px; border-radius:99px; background:var(--surface-3); overflow:hidden; margin-top:6px; }
+  .confbar i { display:block; height:100%; background:var(--brand); border-radius:99px; }
+
+  .stepper { display:flex; align-items:center; gap:0; margin-top:20px; }
+  .step { display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--muted); font-weight:600; white-space:nowrap; }
+  .step .b { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; border:1.5px solid var(--line-2); font-size:.75rem; background:var(--bg-2); }
+  .step.done .b { background:var(--brand); border-color:var(--brand); color:var(--brand-ink); }
+  .step.cur { color:var(--ink); }
+  .step.cur .b { border-color:var(--blue); color:var(--blue); box-shadow:0 0 0 4px var(--blue-bg); }
+  .step.okd .b { background:var(--ok-gray); border-color:var(--ok-gray); color:var(--bg); }
+  .bar-sep { flex:1; height:2px; background:var(--line); margin:0 10px; min-width:16px; border-radius:2px; }
+  .bar-sep.done { background:var(--brand); }
+  .fork { display:flex; flex-direction:column; gap:8px; }
+
+  .sec-title { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .sec-title .n { width:24px; height:24px; border-radius:7px; background:var(--surface-3); display:grid; place-items:center; font-size:.75rem; font-weight:800; color:var(--ink-2); }
+  .rulebox { padding:14px 16px; border-radius:var(--r); background:var(--bg-2); border:1px solid var(--line); }
+  .calc { display:grid; gap:0; margin-top:14px; border-radius:var(--r); border:1px solid var(--line); overflow:hidden; }
+  .calc .ln { display:grid; grid-template-columns: 28px minmax(0,1fr) auto; gap:12px; align-items:center; padding:11px 14px; border-top:1px solid var(--line); }
+  .calc .ln:first-child { border-top:0; }
+  .calc .ln .i { font-family:var(--mono); color:var(--faint); font-size:.75rem; }
+  .calc .ln .r { font-weight:700; }
+  .calc .ln.res { background:linear-gradient(90deg, transparent, rgba(46,230,168,.08)); }
+  .calc .ln.res .r { color:var(--brand); }
+  .src { display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px; border-radius:7px; font-size:.74rem; font-weight:700; background:var(--surface-3); border:1px solid var(--line-2); white-space:nowrap; }
+  .src i { width:6px; height:6px; border-radius:2px; }
+  .ev-grid { display:grid; grid-template-columns: minmax(0,1fr) 180px; gap:16px; align-items:start; }
+  .ev-table td { font-size:.86rem; }
+  .ev-table tr.hl td { background:rgba(255,181,71,.05); }
+  .receipt { position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:var(--surface-3); aspect-ratio: 3/4; }
+  .receipt img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .paper { position:absolute; inset:10px; background:#F4F1EA; color:#1E2630; border-radius:4px; padding:12px 11px; font-size:9.5px; line-height:1.45; direction:ltr; text-align:left; font-family:var(--mono); box-shadow:0 8px 20px -6px rgba(0,0,0,.5); overflow:hidden; }
+  .paper b { font-family:var(--font); font-size:12px; }
+  .paper hr { border:0; border-top:1px dashed #9aa3ad; margin:6px 0; }
+  .paper .tot { display:flex; justify-content:space-between; font-weight:700; font-size:10.5px; }
+  .paper .stamp { position:absolute; bottom:14px; right:10px; transform:rotate(-12deg); border:2px solid #C2410C; color:#C2410C; font-weight:800; padding:2px 6px; border-radius:4px; font-size:10px; opacity:.85; }
+  .action-main { padding:16px; border-radius:var(--r); border:1px solid rgba(91,157,255,.35); background:var(--blue-bg); display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .email { margin-top:14px; border:1px solid var(--line); border-radius:var(--r); background:var(--bg-2); overflow:hidden; }
+  .email .hd { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .email textarea { width:100%; min-height:220px; resize:vertical; border:0; background:transparent; padding:14px; line-height:1.6; font-size:.9rem; outline:none; }
+  .email textarea:focus-visible { box-shadow: inset 0 0 0 2px var(--brand); }
+  .email textarea[dir="ltr"] { text-align:left; }
+  .seg { display:inline-flex; padding:3px; border-radius:10px; background:var(--surface); border:1px solid var(--line); }
+  .seg button { border:0; background:none; padding:0 12px; min-height:30px; border-radius:7px; color:var(--muted); font-weight:600; font-size:.82rem; cursor:pointer; }
+  .seg button[aria-pressed="true"] { background:var(--surface-3); color:var(--ink); }
+  .tl { position:relative; display:grid; gap:16px; padding-inline-start:22px; }
+  .tl::before { content:""; position:absolute; inset-inline-start:6px; top:6px; bottom:6px; width:2px; background:var(--line); border-radius:2px; }
+  .tl .ev { position:relative; font-size:.88rem; }
+  .tl .ev::before { content:""; position:absolute; inset-inline-start:-21px; top:6px; width:12px; height:12px; border-radius:50%; background:var(--bg-2); border:2px solid var(--c, var(--line-2)); }
+  .chat { display:grid; gap:10px; }
+  .bubble { padding:10px 12px; border-radius:14px; font-size:.86rem; line-height:1.55; max-width:94%; }
+  .bubble.me { background:var(--surface-3); justify-self:start; border-start-start-radius:4px; }
+  .bubble.bot { background:var(--violet-bg); border:1px solid rgba(167,139,250,.25); justify-self:end; border-start-end-radius:4px; }
+  .sugg { display:grid; gap:6px; }
+  .sugg button { text-align:start; border:1px solid var(--line-2); background:var(--surface); border-radius:12px; padding:10px 12px; min-height:44px; cursor:pointer; font-size:.85rem; color:var(--ink-2); }
+  .sugg button:hover { border-color:var(--violet); color:var(--ink); }
+  .ask { display:flex; gap:6px; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--surface-3); border:1px solid var(--line-2); padding:10px 16px; border-radius:12px; font-size:.9rem; opacity:0; transition:.2s; z-index:60; pointer-events:none; }
+  .toast.on { opacity:1; transform:translateX(-50%); }
+  @media (max-width:1180px){ .layout { grid-template-columns:1fr; } .aside { position:static; } }
+  @media (max-width:760px){ .kv { grid-template-columns: repeat(2, minmax(0,1fr)); } .ev-grid { grid-template-columns:1fr; } .receipt { max-width:220px; } .head-card { padding:18px; } }
+  @media (max-width:760px){ .ev-table thead { display:none; } .ev-table tr { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:6px 10px; padding:12px; border-bottom:1px solid var(--line); align-items:center; } .ev-table td { border:0; padding:0; background:none !important; } .ev-table td:nth-child(3) { grid-column:1/-1; order:5; } .ev-table td:nth-child(4) { display:none; } .ev-table tr.hl { background:rgba(255,181,71,.05); } .action-main .grow { flex:1 1 220px; } .action-main .btn { flex:1 1 200px; } }
+  @media (max-width:520px){ .stepper { flex-wrap:wrap; gap:10px; } .bar-sep { display:none; } .ev-table th:nth-child(4), .ev-table td:nth-child(4) { display:none; } }
+</style>
+</head>
+<body data-page="findings">
+<main data-shell>
+  <nav class="crumb" aria-label="פירורי לחם"><a href="app-findings.html">ממצאים</a><span>/</span><span class="mono" id="crumbId"></span></nav>
+  <div class="layout">
+    <div class="stack lg" style="min-width:0">
+      <section class="card glow head-card" id="head"></section>
+
+      <section class="card">
+        <div class="sec-title"><span class="n">1</span><h2 class="h2">למה זה סומן</h2></div>
+        <div class="rulebox" id="rule"></div>
+        <div class="calc" id="calc"></div>
+      </section>
+
+      <section class="card">
+        <div class="sec-title"><span class="n">2</span><h2 class="h2">ראיות</h2><span class="xs muted" style="margin-inline-start:auto" id="evCount"></span></div>
+        <div class="ev-grid">
+          <div class="table-wrap"><table class="table ev-table" id="ev"></table></div>
+          <figure style="margin:0" id="rcptFig">
+            <div class="receipt" id="receipt"></div>
+            <figcaption class="xs muted" style="margin-top:8px" id="rcptCap"></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sec-title"><span class="n">3</span><h2 class="h2">פעולה מומלצת</h2></div>
+        <div class="action-main">
+          <div class="grow"><div class="xs" style="color:var(--blue); font-weight:700">פעולה אחת</div><div style="font-weight:700; margin-top:2px" id="actionText"></div></div>
+          <button class="btn primary" id="primary"></button>
+        </div>
+        <div class="email">
+          <div class="hd">
+            <div class="small"><span class="muted">טיוטה אל </span><b id="to"></b></div>
+            <div class="row" style="gap:8px"><div class="seg" role="group" aria-label="שפת הטיוטה"><button data-lang="he" aria-pressed="true">עברית</button><button data-lang="en" aria-pressed="false">English</button></div><button class="btn sm" id="copy">העתק</button></div>
+          </div>
+          <textarea id="mail" aria-label="טיוטת מייל"></textarea>
+        </div>
+        <div class="row wrap" style="margin-top:14px">
+          <button class="btn" id="jira">צור משימה ב-Jira</button>
+          <button class="btn" id="slack">שלח ל-Slack</button>
+          <button class="btn ghost" id="okBtn">סמן "נבדק תקין"</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sec-title"><span class="n">4</span><h2 class="h2">יומן פעילות</h2></div>
+        <div class="tl" id="tl"></div>
+      </section>
+    </div>
+
+    <aside class="aside">
+      <section class="card">
+        <div class="row between"><h2 class="h3">שאל את הסוכן על הממצא</h2><span class="chip ai xs">AI</span></div>
+        <div class="chat" style="margin-top:12px" id="chat"></div>
+        <div class="sugg" style="margin-top:12px" id="sugg"></div>
+        <form class="ask" style="margin-top:12px" id="askForm"><input class="input" id="askIn" placeholder="שאלה על הממצא…" aria-label="שאלה לסוכן"><button class="btn" type="submit" aria-label="שלח">שלח</button></form>
+      </section>
+      <section class="card flat small stack" id="related"></section>
+    </aside>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/demo-data.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+(() => {
+  const D = DEMO, $ = (s) => document.querySelector(s);
+  const id = new URLSearchParams(location.search).get('id') || 'F-1012';
+  const f = D.findings.find(x => x.id === id) || D.findings.find(x => x.id === 'F-1012');
+  const TODAY = new Date(2026, 10, 1);
+  const fmtD = (d) => [d.getDate(), d.getMonth() + 1].map(n => String(n).padStart(2, '0')).join('/') + '/' + d.getFullYear();
+  const ageDays = (+f.id.slice(2) * 37) % 58 + 2; // same deterministic age as the findings list
+  const found = new Date(TODAY - ageDays * 864e5);
+  const plus = (d, n) => new Date(+d + n * 864e5);
+  const usd = (n) => '$' + n.toLocaleString('en-US');
+  const M = (s) => `<span class="money">${s}</span>`;
+  const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2400); };
+  const STATUS = { open: ['open', 'פתוח'], in_progress: ['progress', 'בטיפול'], fixed: ['fixed', 'נחסך'], reviewed_ok: ['ok', 'נבדק תקין'] };
+  const KIND = { recurring: ['חיסכון חוזר', 'לשנה', 'rec'], recovery: ['החזר חד-פעמי', 'חד-פעמי', 'recv'], review: ['לבדיקה אנושית', 'לא נספר כחיסכון', 'rev'], opportunity: ['הזדמנות', 'לא נספר', 'rev'] };
+  const RULES = {
+    AI_MODEL_OVERKILL: 'משימה פשוטה רצה על מודל יקר', CLOUD_NO_COMMITMENT: 'שימוש יציב בלי התחייבות', CLOUD_ZOMBIE: 'משאב ענן בלי תעבורה', SAAS_TIER_OVERKILL: 'משלמים על נפח שאף אחד לא קורא',
+    AI_KEY_ORPHAN: 'מפתח API בלי בעלים פעיל', CLOUD_DEV_ALWAYS_ON: 'סביבת פיתוח דולקת מחוץ לשעות עבודה', AI_NO_PROMPT_CACHE: 'פרומפט חוזר בלי caching', LICENSE_DUPLICATE_FUNC: 'שני כלים לאותה פונקציה',
+    AUTO_RENEWAL_JUMP: 'חידוש אוטומטי בקפיצת מחיר', CLOUD_EGRESS_SPIKE: 'קפיצה בתעבורה יוצאת', LICENSE_UNUSED: 'רישיונות בלי שימוש', DUP_CROSS_CURRENCY: 'אותה חשבונית שולמה פעמיים בשני מטבעות',
+    CLOUD_ORPHAN_STORAGE: 'אחסון יתום', PAYROLL_POST_TERMINATION: 'תשלום שכר אחרי תאריך סיום', LICENSE_DEPARTED: 'מושבים של עובדים שעזבו', FX_CARD_FEES: 'עמלות המרה שאפשר לחסוך',
+    DUP_INVOICE_EXACT: 'חשבונית כפולה זהה', AI_SEAT_OVERLAP: 'שני כלי AI לאותו אדם', PAYROLL_DUPLICATE_BANK: 'חשבון בנק משותף לשתי רשומות עובד', INVOICE_NO_ALLOCATION: 'חשבונית מס בלי מספר הקצאה',
+    UTILITY_SPIKE: 'קפיצה בצריכה בלי שינוי בפעילות', DUP_CARD_AND_AP: 'שולם גם בכרטיס וגם בהעברה', CAR_LEASE_DEPARTED: 'חיוב ליסינג אחרי החזרת רכב', PHONE_LINE_DEPARTED: 'קו סלולרי של עובד שעזב',
+    PHONE_ROAMING: 'נדידה בלי חבילה', INVOICE_SPLITTING: 'פיצול חשבוניות מתחת לסף אישור',
+  };
+  const SRC = { 'Cal': '#38BDF8', 'בנק לאומי': '#FACC15', 'Priority': '#2EE6A8', 'AWS CUR': '#5B9DFF', 'OpenAI Usage API': '#A78BFA', 'Anthropic Admin API': '#A78BFA', 'HiBob': '#F472B6', 'Gmail': '#FB923C', 'Google Admin': '#38BDF8', 'חשבונית': '#FFB547', 'פרטנר': '#F472B6', 'קובץ שכר': '#FB923C', 'GitHub API': '#B7C3D0', 'Slack Admin': '#A78BFA' };
+  const src = (s) => `<span class="src"><i style="background:${SRC[s] || 'var(--muted)'}"></i>${s}</span>`;
+  const CAT_SRC = { cloud: 'AWS CUR', ai: f.vendor === 'Anthropic' ? 'Anthropic Admin API' : 'OpenAI Usage API', saas: 'Google Admin', ap: 'Priority', payroll: 'קובץ שכר', office: 'חשבונית', telecom: 'פרטנר', finance: 'Cal' };
+
+  // Specific evidence + calc for the showcase findings; everything else is built generically from f.why.
+  const SPEC = {
+    'F-1012': {
+      calc: [['חיוב בכרטיס Cal, 03/08/2026', M(usd(10450))], ['שער יציג ביום החיוב', M('3.72')], [`${usd(10450)} × 3.72`, M('₪38,874')], ['העברה בנקאית ללא הכרטיס, 11/08/2026', M('₪38,900')], ['הפרש (עיגול וחלק עמלת המרה)', M('₪26 · 0.07%')], ['שולם פעמיים: ההעברה מיותרת', M(ils(38900)), 1]],
+      ev: [['Cal', '03/08/2026', 'MONGODB INC NEW YORK · כרטיס 4417', usd(10450), 'חיוב'], ['בנק לאומי', '11/08/2026', 'העברה ל-MongoDB Ltd · אסמכתא 77310942', ils(38900), 'העברה'], ['Priority', '05/08/2026', 'INV-ATL-88213 · Atlas Dedicated · 07/2026', usd(10450), 'חשבונית']],
+      hl: [0, 1], email: { he: 'צוות החיובים של MongoDB שלום,\n\nחשבונית INV-ATL-88213 (Atlas, יולי 2026) על סך 10,450$ נפרעה פעמיים:\n• חיוב בכרטיס האשראי ב-03/08/2026\n• העברה בנקאית בסך 38,900 ₪ ב-11/08/2026\n\nנבקש לזכות את התשלום הכפול או לקזז אותו מהחשבונית הבאה. מצורפים פירוט החיוב, אישור ההעברה והחשבונית.\n\nתודה,\nיעל\nכספים, טכנוסיס בע״מ', en: 'Hi MongoDB Billing team,\n\nInvoice INV-ATL-88213 (Atlas, July 2026) for $10,450 was paid twice:\n• Credit card charge on 03/08/2026\n• Bank transfer of ILS 38,900 on 11/08/2026\n\nPlease refund the duplicate payment or apply it as a credit against our next invoice. Card statement line, transfer confirmation and the invoice are attached.\n\nThanks,\nYael\nFinance, Technosis Ltd' }, to: 'billing@mongodb.com', rcpt: 'mongodb_INV-ATL-88213',
+    },
+    'F-1017': {
+      calc: [['העברה ראשונה', M(ils(23400))], ['העברה שנייה, 9 ימים אחר כך', M(ils(23400))], ['מספר חשבונית זהה בשתיהן', '<span class="mono">2026-0412</span>'], ['לזיכוי', M(ils(23400)), 1]],
+      ev: [['Priority', '14/04/2026', 'חשבונית 2026-0412 · שמיר-כהן עורכי דין', ils(23400), 'חשבונית'], ['בנק לאומי', '20/04/2026', 'העברה לשמיר-כהן · אסמכתא 66120871', ils(23400), 'העברה'], ['בנק לאומי', '29/04/2026', 'העברה לשמיר-כהן · אסמכתא 66231409', ils(23400), 'העברה']], hl: [1, 2], to: 'office@shamir-cohen.co.il',
+    },
+    'F-1009': {
+      calc: [['מחיר שנתי 10/2025, 14 מושבים', M(ils(140000))], ['מחיר שנתי 10/2026, אותם 14 מושבים', M(ils(187500))], ['187,500 − 140,000', M(ils(47500))], ['קפיצה', M('+34%')], ['פוטנציאל חיסכון אם חוזרים למחיר הקודם', M(ils(47500) + ' / שנה'), 1]],
+      ev: [['Priority', '01/10/2025', 'HubSpot Sales Hub Pro · 14 seats · 12 חודשים', ils(140000), 'חשבונית'], ['Priority', '01/10/2026', 'HubSpot Sales Hub Pro · 14 seats · 12 חודשים · חידוש אוטומטי', ils(187500), 'חשבונית'], ['Gmail', '—', 'חיפוש "HubSpot quote" בתיבת החשבוניות: 0 תוצאות', '—', 'הצעת מחיר']], hl: [1], to: 'account manager, HubSpot',
+    },
+    'F-1005': {
+      calc: [['צריכה חודשית של המפתח dan-experiments', M(usd(1840))], ['× שער 3.70', M('₪6,808')], ['× 12 חודשים', M('₪81,696')], ['מעוגל', M(ils(81600) + ' / שנה'), 1]],
+      ev: [['OpenAI Usage API', '31/10/2026', 'key: dan-experiments · 1,212 requests · gpt-5', '$61', 'שימוש יומי'], ['OpenAI Usage API', '10/2026', 'key: dan-experiments · סה״כ חודש', usd(1840), 'שימוש'], ['HiBob', '15/07/2026', 'EMP-1052 · R&D · סטטוס: עזב', '—', 'סיום העסקה']], hl: [1],
+    },
+    'F-1024': { calc: [['קווים לא פעילים', M('9')], ['× ₪89 לקו לחודש', M('₪801')], ['× 12 חודשים', M('₪9,612')], ['מעוגל', M(ils(9600) + ' / שנה'), 1]] },
+    'F-1026': { calc: [['חשבונית בודדת', M(ils(18500))], ['סף אישור סמנכ״ל', M(ils(20000))], ['4 חשבוניות × 18,500 תוך 25 יום', M(ils(74000))], ['סכום בבדיקה (לא נספר כחיסכון)', M(ils(74000)), 1]] },
+    'F-1020': { calc: [['סכום לפני מע״מ ב-6 החשבוניות', M(ils(110000))], ['× 18% מע״מ', M(ils(19800))], ['מע״מ שלא ניתן לקזז בלי מספר הקצאה', M(ils(19800)), 1]] },
+  };
+  const sp = SPEC[f.id] || {};
+
+  document.title = f.id + ' · ' + f.title + ' · איפה הכסף';
+  $('#crumbId').textContent = f.id;
+  const K = KIND[f.kind];
+  const pct = Math.round(f.conf * 100);
+  const confWhy = f.conf >= .95 ? 'כמעט ודאי: כל השדות המזהים תואמים בין המקורות' : f.conf >= .85 ? 'גבוה: הדפוס ברור, נשאר אימות קצר מול בעל התקציב' : f.conf >= .72 ? 'בינוני-גבוה: הנתונים תומכים, ייתכן הקשר עסקי שלא רואים בנתונים' : 'בינוני: חשד לבדיקה, ייתכן הסבר תקין';
+
+  // header
+  const steps = f.status === 'reviewed_ok' ? [['נמצא', 'done'], ['בטיפול', 'done'], ['נבדק תקין', 'okd']] :
+    [['נמצא', 'done'], ['בטיפול', f.status === 'in_progress' ? 'cur' : f.status === 'fixed' ? 'done' : ''], [f.kind === 'recovery' ? 'הוחזר' : 'נחסך', f.status === 'fixed' ? 'done' : '']];
+  if (f.status === 'open') steps[0][1] = 'cur';
+  $('#head').innerHTML = `
+    <div class="row wrap" style="gap:8px; position:relative"><span class="mono muted">${f.id}</span><span class="chip"><i class="dot" style="color:var(--cat-${f.cat})"></i>${D.categories[f.cat]}</span><span class="chip ${STATUS[f.status][0]}">${STATUS[f.status][1]}</span><span class="chip">${K[0]}</span></div>
+    <h1 class="h1" style="margin-top:12px; position:relative">${f.title}</h1>
+    <div class="row wrap" style="margin-top:18px; align-items:flex-end; gap:12px; position:relative">
+      <span class="amount ${K[2]} money">${f.amount ? ils(f.amount) : '—'}</span><span class="ink2" style="font-weight:600; padding-bottom:6px">${K[1]}</span>
+    </div>
+    <div class="kv">
+      <div><div class="k">ספק</div><div class="v">${f.vendor}</div></div>
+      <div><div class="k">בעלים</div><div class="v">${f.owner}</div></div>
+      <div><div class="k">נמצא</div><div class="v num">${fmtD(found)}</div></div>
+      <div title="${confWhy}"><div class="k">ביטחון <b class="num" style="color:var(--ink)">${pct}%</b></div><div class="confbar"><i style="width:${pct}%"></i></div></div>
+    </div>
+    <div class="xs muted" style="margin-top:8px">ביטחון ${pct}%: ${confWhy}.</div>
+    <div class="stepper" aria-label="סטטוס">${steps.map(([l, c], i) => `${i ? `<span class="bar-sep ${c === 'done' || c === 'okd' || (c === 'cur' && i) ? 'done' : ''}"></span>` : ''}<span class="step ${c}"><span class="b">${c === 'done' || c === 'okd' ? '✓' : i + 1}</span>${l}</span>`).join('')}
+      ${f.status === 'open' || f.status === 'in_progress' ? `<span class="xs muted" style="margin-inline-start:14px">או: נבדק תקין</span>` : ''}</div>`;
+
+  // why
+  $('#rule').innerHTML = `<div class="row wrap" style="gap:8px"><b>${RULES[f.rule] || f.rule}</b><span class="mono muted xs">${f.rule}</span></div><div class="ink2" style="margin-top:6px">${f.why}</div>`;
+  const calc = sp.calc || (f.kind === 'recurring' ? [['עלות עודפת לחודש (ממוצע 3 חודשים)', M(ils(f.amount / 12))], ['× 12 חודשים', M(ils(f.amount))], ['חיסכון שנתי צפוי אחרי הפעולה', M(ils(f.amount) + ' / שנה'), 1]]
+    : f.kind === 'recovery' ? [['סכום שחויב או שולם ביתר', M(ils(f.amount))], ['זיכוי או החזר לבקש', M(ils(f.amount)), 1]]
+    : f.kind === 'review' ? [['סכום שעובר דרך החריגה', M(ils(f.amount))], ['לבדיקה אנושית, לא נספר כחיסכון', M(ils(f.amount)), 1]]
+    : [['אין סכום כספי עד בדיקת זכאות', '—', 1]]);
+  $('#calc').innerHTML = calc.map(([l, r, res], i) => `<div class="ln ${res ? 'res' : ''}"><span class="i">${res ? '=' : String(i + 1).padStart(2, '0')}</span><span class="${res ? '' : 'ink2'}">${l}</span><span class="r">${r}</span></div>`).join('');
+
+  // evidence
+  const evRows = sp.ev || f.why.split(/\.\s+/).filter(Boolean).map((s, i) => [i === 0 ? CAT_SRC[f.cat] : (f.cat === 'payroll' || /HiBob|עזב/.test(s) ? 'HiBob' : CAT_SRC[f.cat]), fmtD(plus(found, -3 - i * 6)), s.replace(/\.$/, ''), i === 0 && f.amount ? ils(f.amount) : '—', i === 0 ? 'מדד' : 'הקשר']);
+  const hl = sp.hl || [0];
+  $('#evCount').textContent = `${evRows.length} שורות מקור · ${new Set(evRows.map(r => r[0])).size} מערכות`;
+  $('#ev').innerHTML = `<thead><tr><th>מקור</th><th>תאריך</th><th>שורה</th><th>סוג</th><th class="end">סכום</th></tr></thead><tbody>` +
+    evRows.map((r, i) => `<tr class="${hl.includes(i) ? 'hl' : ''}"><td>${src(r[0])}</td><td><span class="num">${r[1]}</span></td><td>${r[2]}</td><td class="muted">${r[4]}</td><td class="end"><span class="money" style="font-weight:700">${r[3]}</span></td></tr>`).join('') + '</tbody>';
+  if (!(sp.rcpt || f.cat === 'ap' || f.kind === 'recovery')) document.querySelector('.ev-grid').classList.add('norcpt');
+  const slug = sp.rcpt || f.vendor.toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const invNo = f.id === 'F-1012' ? 'INV-ATL-88213' : 'INV-' + f.id.slice(2) + '-' + (found.getMonth() + 1);
+  const paperAmt = f.id === 'F-1012' ? usd(10450) : f.amount ? ils(f.amount) : '—';
+  $('#receipt').innerHTML = `<div class="paper" aria-hidden="true"><b>${/[a-z]/i.test(f.vendor) ? f.vendor : 'Vendor'}</b><br>Tax invoice / Receipt<br>${invNo}<br>Date: ${f.id === 'F-1012' ? '05/08/2026' : fmtD(plus(found, -10))}<hr>Bill to: Technosis Ltd<br>VAT ID 515873214<hr>${f.id === 'F-1012' ? 'Atlas Dedicated M40<br>Jul 2026 usage<br>Data transfer' : 'Services · period<br>As per agreement'}<hr><div class="tot"><span>TOTAL</span><span>${paperAmt}</span></div>${f.kind === 'recovery' ? '<div class="stamp">PAID ×2</div>' : ''}</div>
+    ${sp.rcpt ? `<img src="../../data/startup/receipts/receipt_${slug}.png" alt="סריקת חשבונית ${f.vendor}" onerror="this.remove()">` : ''}`;
+  $('#rcptCap').innerHTML = `${src('Gmail')} נקלט מתיבת החשבוניות · <span class="mono">${invNo}</span>`;
+
+  // action
+  $('#actionText').textContent = f.action;
+  const primaryLbl = { recovery: 'שלח בקשת זיכוי לספק', recurring: 'שלח לבעלים לביצוע', review: 'העבר לבדיקה', opportunity: 'בדוק זכאות' }[f.kind];
+  $('#primary').textContent = primaryLbl;
+  $('#to').textContent = sp.to || (f.kind === 'recovery' ? `${f.vendor}, הנהלת חשבונות` : f.owner);
+  const genMail = {
+    he: f.kind === 'recovery' ? `שלום,\n\nבבדיקת התשלומים שלנו מצאנו: ${f.title}.\n${f.why}\n\nנבקש זיכוי או קיזוז בסך ${ils(f.amount)} בחשבונית הבאה. מצורפות שורות המקור.\n\nתודה,\n${f.owner.split(' ')[0]}\nטכנוסיס בע״מ`
+      : `היי ${f.owner.split(' ')[0]},\n\nממצא ${f.id}: ${f.title}.\n${f.why}\n\nהפעולה המוצעת: ${f.action}.\nהשפעה: ${f.amount ? ils(f.amount) + ' ' + K[1] : 'לבדיקה'}. הראיות מקושרות בממצא.\n\nתודה,\nמיכל`,
+    en: f.kind === 'recovery' ? `Hello,\n\nDuring our payment review we found a duplicate / excess charge (${f.id}).\nWe'd appreciate a refund or a credit of ILS ${f.amount.toLocaleString('en-US')} against our next invoice. Source records are attached.\n\nThanks,\nFinance, Technosis Ltd`
+      : `Hi,\n\nFinding ${f.id} (${f.rule}) is assigned to you.\nEstimated impact: ILS ${f.amount.toLocaleString('en-US')}${f.kind === 'recurring' ? ' per year' : ''}.\nThe evidence rows and suggested action are linked in the finding.\n\nThanks,\nMichal`,
+  };
+  const mail = sp.email || genMail;
+  const setLang = (l) => { $('#mail').value = mail[l]; $('#mail').dir = l === 'en' ? 'ltr' : 'rtl'; document.querySelectorAll('[data-lang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === l)); };
+  document.querySelectorAll('[data-lang]').forEach(b => b.onclick = () => setLang(b.dataset.lang));
+  setLang('he');
+  $('#copy').onclick = () => { navigator.clipboard?.writeText($('#mail').value).catch(() => {}); toast('הטיוטה הועתקה'); };
+  $('#primary').onclick = () => { addEv('נשלח ' + (f.kind === 'recovery' ? 'מייל לספק' : 'לבעלים'), 'var(--blue)'); toast(f.kind === 'recovery' ? 'המייל נשלח מתיבת finance@ והממצא עבר ל"בטיפול"' : `נשלח ל-${f.owner}`); };
+  const jiraKey = 'FIN-' + (400 + +f.id.slice(2) % 100);
+  $('#jira').textContent = 'צור משימה ב-Jira';
+  $('#jira').onclick = () => { addEv(`נפתחה משימה ${jiraKey} ב-Jira`, 'var(--blue)'); toast(`נפתחה ${jiraKey} עם הראיות`); };
+  $('#slack').onclick = () => { addEv(`נשלח ל-${f.owner} ב-Slack`, 'var(--violet)'); toast(`נשלח ל-${f.owner} ב-Slack`); };
+  $('#okBtn').onclick = () => { addEv('סומן "נבדק תקין" ע״י מיכל לוי, עם נימוק', 'var(--ok-gray)'); toast('סומן נבדק תקין. הכלל ילמד מזה בסריקה הבאה'); };
+
+  // timeline
+  const tl = [[fmtD(found) + ' 06:12', `נמצא בסריקה אוטומטית · כלל <span class="mono">${f.rule}</span>`, 'var(--amber)'],
+    [fmtD(found) + ' 06:12', `שויך אוטומטית ל-${f.owner} לפי בעלות על ${f.vendor}`, 'var(--line-2)'],
+    [fmtD(plus(found, 1)) + ' 08:00', 'נכלל בסיכום השבועי ב-Slack #finance', 'var(--violet)']];
+  if (f.status !== 'open') tl.push([fmtD(plus(found, 3)) + ' 11:40', `${f.owner.split(' ')[0]} סימן/ה "בטיפול"`, 'var(--blue)']);
+  if (f.status === 'fixed') tl.push([fmtD(plus(found, 19)) + ' 09:05', `אומת: החיוב ירד בחשבונית הבאה · ${ils(f.amount)} לשנה נכנס ל"נחסך ואומת"`, 'var(--brand)']);
+  if (f.status === 'reviewed_ok') tl.push([fmtD(plus(found, 6)) + ' 14:22', 'סומן "נבדק תקין": חבילה ייעודית לנסיעות שכבר נרכשה', 'var(--ok-gray)']);
+  const drawTl = () => $('#tl').innerHTML = [...tl].reverse().map(([d, t, c]) => `<div class="ev" style="--c:${c}"><div>${t}</div><div class="xs muted num">${d}</div></div>`).join('');
+  const addEv = (t, c) => { tl.push(['01/11/2026 ' + new Date().toTimeString().slice(0, 5), t + ' · מיכל לוי', c]); drawTl(); };
+  drawTl();
+
+  // agent mini chat
+  const QA = [
+    ['איך בדיוק חישבת את הסכום?', `לקחתי את ${calc.length - 1} שורות החישוב שמופיעות בסעיף "למה זה סומן". ${calc.at(-1)[0]}: ${calc.at(-1)[1]}. כל מספר מקושר לשורת מקור בסעיף הראיות.`],
+    ['האם ייתכן שזה תקין?', f.conf >= .9 ? `לא סביר. ${confWhy}. מה שעלול להסביר: הסכם מיוחד עם ${f.vendor} שלא נמצא במערכות. אם יש כזה, סמני "נבדק תקין" והכלל ילמד.` : `ייתכן. ${confWhy}. כדאי לשאול את ${f.owner} לפני פעולה. זו חשד לבדיקה, לא קביעה.`],
+    ['יש עוד מקרים דומים?', (() => { const sim = D.findings.filter(x => x.id !== f.id && (x.cat === f.cat || x.vendor === f.vendor)).slice(0, 3); return sim.length ? `כן, ${sim.length} ממצאים באותה קטגוריה: ${sim.map(x => `<a href="app-finding.html?id=${x.id}" style="color:var(--violet)">${x.id}</a> (${ils(x.amount)})`).join(', ')}.` : 'לא נמצאו מקרים דומים ב-24 החודשים האחרונים.'; })()],
+  ];
+  const chat = $('#chat');
+  chat.innerHTML = `<div class="bubble bot">יש לי את כל ${evRows.length} שורות המקור של ${f.id}. מה לבדוק?</div>`;
+  const ask = (q, a) => { chat.insertAdjacentHTML('beforeend', `<div class="bubble me">${q}</div><div class="bubble bot">${a}</div>`); };
+  $('#sugg').innerHTML = QA.map(([q], i) => `<button data-q="${i}">${q}</button>`).join('');
+  $('#sugg').onclick = (e) => { const b = e.target.closest('[data-q]'); if (!b) return; ask(...QA[b.dataset.q]); b.remove(); };
+  $('#askForm').onsubmit = (e) => { e.preventDefault(); const q = $('#askIn').value.trim(); if (!q) return; ask(q.replace(/</g, '&lt;'), 'בהדגמה הסוכן עונה רק על השאלות המוצעות. בגרסה המלאה הוא עונה מתוך שורות המקור של הממצא דרך MCP.'); $('#askIn').value = ''; };
+
+  // related
+  const rel = D.findings.filter(x => x.id !== f.id && x.cat === f.cat).sort((a, b) => b.amount - a.amount).slice(0, 4);
+  $('#related').innerHTML = `<div class="h3">עוד ב${D.categories[f.cat]}</div>` + (rel.length ? rel.map(x => `<a class="row between" style="min-height:36px" href="app-finding.html?id=${x.id}"><span class="ink2" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0">${x.title}</span><span class="money" style="font-weight:700">${ilsK(x.amount)}</span></a>`).join('') : '<div class="muted">אין ממצאים נוספים</div>');
+})();
+</script>
+</body>
+</html>
