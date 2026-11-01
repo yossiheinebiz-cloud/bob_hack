@@ -1,0 +1,9 @@
+# eifo-money.fit: the host nginx terminates TLS and proxies to 127.0.0.1:3050.
+services:
+  site:
+    build: .
+    image: eifo-money-site:latest
+    container_name: eifo-money-site
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3050:80"

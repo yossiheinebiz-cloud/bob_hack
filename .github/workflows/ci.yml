@@ -86,3 +86,47 @@ jobs:
           cache: pip
       - run: pip install playwright && python -m playwright install --with-deps chromium
       - run: python scripts/check_design.py
+
+  docker:
+    name: Gate · docker image serves the site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t eifo-money-site:ci .
+      - run: |
+          docker run -d --name site -p 8080:80 eifo-money-site:ci
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8080/health && break; sleep 1; done
+          curl -fsS -o /dev/null http://127.0.0.1:8080/design/v2/
+          curl -fsS -o /dev/null http://127.0.0.1:8080/dashboard/
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/no-such-page)" = 404
+
+  # CD: main only, after every gate passes. SSH to the droplet and run scripts/deploy.sh.
+  # Skipped until the repo secrets DEPLOY_HOST, DEPLOY_USER and DEPLOY_SSH_KEY are set.
+  deploy:
+    name: Deploy · eifo-money.fit
+    needs: [secrets, policy, lint, test, data, design, docker]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    concurrency: production
+    environment:
+      name: production
+      url: https://eifo-money.fit/design/v2/
+    env:
+      HAS_SSH: ${{ secrets.DEPLOY_SSH_KEY != '' }}
+    steps:
+      - if: env.HAS_SSH != 'true'
+        run: echo "::notice::Skipping deploy, DEPLOY_* secrets are not set"
+      - if: env.HAS_SSH == 'true'
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy "$USER@$HOST" deploy
+      - if: env.HAS_SSH == 'true'
+        run: |
+          for i in $(seq 1 10); do curl -fsS -o /dev/null https://eifo-money.fit/design/v2/ && exit 0; sleep 3; done
+          echo "eifo-money.fit is not answering" >&2; exit 1
