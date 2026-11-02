@@ -38,7 +38,7 @@ Design prototype: The screens at eifo-money.fit/design/v2/ show the target produ
 
 === CODE REPOSITORY ===
 
-https://github.com/yossiheinebiz-cloud/eifo-money
+https://github.com/yossiheinebiz-cloud/bob_hack
 
 === LINKS (optional) ===
 

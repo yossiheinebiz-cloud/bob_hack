@@ -1,7 +1,7 @@
 # איפה הכסף · Pitch
 
 *1 בנובמבר 2026. מבוסס על `08-spec-v2.md`. כל מספר בטבלת המקורות בסוף. מספרי הדגמה מסומנים **[סינתטי]**.*
-*דומיין מוצע: eifo.ai · ריפו: eifo-money · **המצגת המעוצבת: `design/v2/pitch.html`** (← → מעבר, N הערות דובר, F מסך מלא) · **גרסת PowerPoint/PDF:** https://claude.ai/artifact/GRm3szpbdoFUkJzdAdLcxZ (פרטית, לשתף מתפריט Share)*
+*דומיין מוצע: eifo.ai · ריפו: bob_hack · **המצגת המעוצבת: `design/v2/pitch.html`** (← → מעבר, N הערות דובר, F מסך מלא) · **גרסת PowerPoint/PDF:** https://claude.ai/artifact/GRm3szpbdoFUkJzdAdLcxZ (פרטית, לשתף מתפריט Share)*
 
 ---
 
